@@ -26,8 +26,11 @@
 .menu-logo1:hover{
   cursor: pointer;
 }
-.modal-dialog{
+#addProjectModal .modal-dialog{
   max-width: 700px;
+}
+#addMemberModal .modal-dialog{
+  max-width: 1000px;
 }
 .modal-header{
   border-bottom: none;
@@ -57,4 +60,55 @@
 }
 .modal-footer button{
   width: 250px;
+}
+.endTask > p{
+  color: white;
+  font-size: 20px;
+}
+.endTask{
+  padding: 5px 30px;
+  background-color: #39393e;
+  height: 120px;
+  border-radius: 5px;
+}
+.progress-bar {
+  background-color: #5331c2 !important;
+}
+.add-member{
+  background: #252529;
+}
+.custom-rounded{
+  border-radius: 5px;
+}
+.md-plus{
+  font-size: 30px;
+  color: #18191d !important;
+  width: 100%;
+  display: block;
+}
+.md-plus:hover{
+  cursor: pointer;
+}
+.circle-light{
+  height: 11px;
+  width: 11px;
+  border-radius: 50%;
+}
+.light-green{
+  background: #3ad83a;
+}
+.member-status{
+  overflow: hidden;
+  padding: 10px;
+  background: #272727;
+}
+.suggestion-icon{
+  color: white;
+  font-size: 11px;
+}
+.light-red{
+  background: #e04c4c;
+}
+.light-yellow{
+  background: #ceb610;
 }

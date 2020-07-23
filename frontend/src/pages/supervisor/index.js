@@ -19,7 +19,7 @@ const SupervisorWelcome = () => {
     return (
         <React.Fragment>
             <div className="col-sm-4 col-xl-4 col-md-4">
-                <div className="popup" data-toggle="modal" data-target="#myModal">
+                <div className="popup" data-toggle="modal" data-target="#addProjectModal">
                     <img src={require('../../images/plus.png')} alt="user" className="menu-logo1"/>
                     <p className="addNewProject">Add a new project</p>
                 </div>
@@ -58,7 +58,7 @@ const SupervisorWelcome = () => {
                 </div>
             </div>            
             <div className="col-sm-12 col-xl-12 col-md-12">
-                <div className="modal fade" id="myModal" role="dialog">
+                <div className="modal fade" id="addProjectModal" role="dialog">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
