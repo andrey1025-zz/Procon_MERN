@@ -20,7 +20,7 @@ const SupervisorWelcome = () => {
         <React.Fragment>
             <div className="col-sm-4 col-xl-4 col-md-4">
                 <div className="popup" data-toggle="modal" data-target="#myModal">
-                    <img src={require('../../images/plus.png')} alt="user" class="menu-logo1"/>
+                    <img src={require('../../images/plus.png')} alt="user" className="menu-logo1"/>
                     <p className="addNewProject">Add a new project</p>
                 </div>
             </div>
