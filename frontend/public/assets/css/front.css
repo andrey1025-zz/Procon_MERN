@@ -3,3 +3,11 @@
   width: 100%;
   padding: 16px;
 }
+.popup{
+  height:312px !important;
+}
+.addNewProject{
+  margin-top: 60px;
+  font-size: 18px;
+  color: #3a3c43;
+}

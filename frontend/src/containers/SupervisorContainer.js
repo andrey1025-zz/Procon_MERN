@@ -32,8 +32,9 @@ const SupervisorContainer = () => {
             <div className="content-page">
                 <div className="content">
                     <div className="container-fluid">
-                        <div className="row space-top"></div>
-                        {token && user && user.role === SupervisorRole ? switchRoutes : <Redirect to={`/authentication/sign-in`} />}
+                        <div className="row space-top">
+                            {token && user && user.role === SupervisorRole ? switchRoutes : <Redirect to={`/authentication/sign-in`} />}
+                        </div>
                     </div>
                 </div>
             </div>
