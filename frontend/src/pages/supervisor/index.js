@@ -90,7 +90,9 @@ const SupervisorWelcome = () => {
                                         <input type="file" name="fileToUpload"/>
                                     </div>
                                 </div>
-                                <button type="button" className="btn btn-info btn-lg waves-effect waves-light task-btn3 float-left">Create</button>
+                            </div>
+                            <div className="modal-footer text-center">
+                                <p><button type="button" className="btn btn-info btn-lg waves-effect waves-light task-btn3">Create</button></p>
                             </div>
                         </div>
                     </div>

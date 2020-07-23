@@ -49,3 +49,12 @@
 .modal-body .form-control-pop{
   border-radius: 5px;
 }
+.modal-footer{
+  border: none;
+}
+.modal-footer p{
+  width: 100%;
+}
+.modal-footer button{
+  width: 250px;
+}
