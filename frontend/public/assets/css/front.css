@@ -20,3 +20,6 @@
 .roundedImg{
   border-radius: 5px;
 }
+.card .pro-image img{
+  max-height: 235px !important;
+}
