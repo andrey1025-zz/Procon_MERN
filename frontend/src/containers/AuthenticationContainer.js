@@ -30,7 +30,7 @@ const AuthenticationContainer = () => {
         else if (token && user && user.role === TeamMemberRole)
             return <Redirect to={`/member/home`} />
         else if (token && user && user.role === SupervisorRole)
-            return <Redirect to={`/supervisor/home`} />
+            return <Redirect to={`/supervisor/welcome`} />
         else
             return switchRoutes;
     }

@@ -1,11 +1,11 @@
-import SupervisorHome from '../pages/supervisor';
+import SupervisorWelcome from '../pages/supervisor';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 
 const supervisorRoutes = [
     {
-        path: '/supervisor/home',
-        component: SupervisorHome
+        path: '/supervisor/welcome',
+        component: SupervisorWelcome
     },
     {
         path: '/supervisor/change-password',
