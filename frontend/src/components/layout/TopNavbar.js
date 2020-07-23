@@ -39,15 +39,15 @@ const TopNavbar = () => {
 
                     <li className="dropdown notification-list list-inline-item">
                         <div className="dropdown notification-list nav-pro-img">
-                            <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                            <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
                                 {titleCase(user.lastName)}&nbsp;
                                 <img src={user && user.photo ? user.photo : require('../../images/users/user-4.jpg')} alt="user" className="rounded-circle1" />
                             </a>
                             <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
                                 <Link className="dropdown-item" to={`/${getSimpleRoleName(user.role)}/account`}><i className="mdi mdi-account-circle"></i> Your account</Link>
-                                <a className="dropdown-item d-block" href="#"><i className="mdi mdi-settings"></i> Settings</a>
+                                <a className="dropdown-item d-block"><i className="mdi mdi-settings"></i> Settings</a>
                                 <div className="dropdown-divider"></div>
-                                <a href onClick={() => onLogout()} className="dropdown-item text-danger"><i className="mdi mdi-power text-danger"></i> Sign out</a>
+                                <a onClick={() => onLogout()} className="dropdown-item text-danger"><i className="mdi mdi-power text-danger"></i> Sign out</a>
                             </div>
                         </div>
                     </li>

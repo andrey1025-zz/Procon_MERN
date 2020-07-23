@@ -14,3 +14,9 @@
 .logo-light{
   text-transform: none !important;
 }
+.dropdown-item{
+  color: #a5a6ad !important;
+}
+.roundedImg{
+  border-radius: 5px;
+}
