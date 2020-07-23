@@ -9,18 +9,19 @@ import { getSimpleRoleName } from '../../services';
 
 import $ from 'jquery'; 
 
-const SupervisorWelcome = () => {
+const SupervisorHome = () => {
     const user = useSelector(state => state.auth.user);
 
     useEffect(() => {
-        $("#side-menu").hide();
+        $(".Forhome").hide();
+        $("#side-menu").show();
     });
 
     return (
         <React.Fragment>
             <div className="col-sm-4 col-xl-4 col-md-4">
                 <div className="popup" data-toggle="modal" data-target="#myModal">
-                    <img src={require('../../images/plus.png')} alt="user" class="menu-logo1"/>
+                    <img src={require('../../images/plus.png')} alt="user" className="menu-logo1"/>
                     <p className="addNewProject">Add a new project</p>
                 </div>
             </div>
@@ -32,8 +33,7 @@ const SupervisorWelcome = () => {
                                 <ul className="navbar-right list-inline float-right mb-0">
                                     <li className="dropdown notification-list list-inline-item">
                                         <div className="dropdown notification-list nav-pro-img">
-                                            <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                data-toggle="dropdown" role="button"
+                                            <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" role="button"
                                                 aria-haspopup="false" aria-expanded="false">
                                                 <i className="mdi mdi-menu"></i>
                                             </a>
@@ -60,4 +60,4 @@ const SupervisorWelcome = () => {
         </React.Fragment>
     )
 }
-export default SupervisorWelcome;
+export default SupervisorHome;

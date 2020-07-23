@@ -20,9 +20,9 @@ const TopNavbar = () => {
             <div className="topbar-left">
                 <Link to={`/${getSimpleRoleName(user.role)}/home`} className="logo">
                     <span className="logo-light">
-                        {user.firstName}
-                        <br />
-                        {user.lastName}
+                        Welcome
+                        <br/>
+                        {user.firstName} {user.lastName}
                     </span>
                     <span className="logo-sm">
                         <i className="mdi mdi-camera-control"></i>

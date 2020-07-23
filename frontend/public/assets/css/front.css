@@ -11,3 +11,6 @@
   font-size: 18px;
   color: #3a3c43;
 }
+.logo-light{
+  text-transform: none !important;
+}
