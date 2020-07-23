@@ -12,16 +12,8 @@ const SideMenu = () => {
         <div className="left side-menu">
             <div className="slimscroll-menu" id="remove-scroll">
                 <div id="sidebar-menu">
+                    <img src={require('../../images/side-logo.png')} className="Forhome"/>
                     <ul className="metismenu icon-image-menu" id="side-menu">
-                        {/* <li>
-                            <a href className="waves-effect"><span> Procon team <span className="float-right menu-arrow"><i className="mdi mdi-chevron-right"></i></span> </span></a>
-                            <ul className="submenu">
-                                <li><a href="members.html">Team 1</a></li>
-                                <li><a href="#">Team 2</a></li>
-                                <li><a href="#">Team 3</a></li>
-                                <li><a href="#">Add Team +</a></li>
-                            </ul>
-                        </li> */}
                         <li>
                             <NavLink to={`/${getSimpleRoleName(user.role)}/home`} className="waves-effect">
                                 <img src={require('../../images/home.png')} /> <span> Homepage </span>
