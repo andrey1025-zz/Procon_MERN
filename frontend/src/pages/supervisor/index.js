@@ -57,6 +57,45 @@ const SupervisorWelcome = () => {
                     </div>
                 </div>
             </div>            
+            <div className="col-sm-12 col-xl-12 col-md-12">
+                <div className="modal fade" id="myModal" role="dialog">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <p>Add a new project</p>
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group row">
+                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project name</label>
+                                    <div className="col-sm-9">
+                                        <input className="form-control-pop" type="text"/>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project lcoation</label>
+                                    <div className="col-sm-9">
+                                        <input className="form-control-pop" type="text"/>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">3D model file</label>
+                                    <div className="col-sm-9">
+                                        <input type="file" name="fileToUpload"/>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Cover page</label>
+                                    <div className="col-sm-9">
+                                        <input type="file" name="fileToUpload"/>
+                                    </div>
+                                </div>
+                                <button type="button" className="btn btn-info btn-lg waves-effect waves-light task-btn3 float-left">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </React.Fragment>
     )
 }

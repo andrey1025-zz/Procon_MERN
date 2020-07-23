@@ -18,7 +18,7 @@ const TopNavbar = () => {
     return (
         <div className="topbar">
             <div className="topbar-left">
-                <Link to={`/${getSimpleRoleName(user.role)}/home`} className="logo">
+                <Link to={`/${getSimpleRoleName(user.role)}/welcome`} className="logo">
                     <span className="logo-light">
                         Welcome
                         <br/>
