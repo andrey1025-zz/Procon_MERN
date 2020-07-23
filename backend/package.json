@@ -1,0 +1,44 @@
+{
+  "name": "procon_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "set NODE_ENV=development&&nodemon index.js",
+    "prod": "export NODE_ENV=production && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lingzhi11/procon_backend.git"
+  },
+  "author": "dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lingzhi11/procon_backend/issues"
+  },
+  "homepage": "https://github.com/lingzhi11/procon_backend#readme",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@sendgrid/mail": "^7.2.1",
+    "axios": "^0.19.2",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.3",
+    "helmet": "^3.23.3",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.19",
+    "mongodb": "^3.5.9",
+    "mongoose": "^5.9.23",
+    "multer": "^1.4.2",
+    "sharp": "^0.25.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

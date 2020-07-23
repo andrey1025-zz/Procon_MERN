@@ -1,0 +1,8 @@
+{
+  "assetsBaseUrl": "http://localhost:3000",
+  "SENDGRID_API_KEY": "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",
+  "emailFrom": "liuruiaijiu@gmail.com",
+  "db": "mongodb+srv://Ling_procon:3PDMbBFrmGgh1kJs@cluster0.tn1om.mongodb.net/procon?retryWrites=true&w=majority",
+  "secret": "DNuRDgxFfP",
+  "passwordResetLink": "http://localhost:3001/authentication/reset-password"
+}
