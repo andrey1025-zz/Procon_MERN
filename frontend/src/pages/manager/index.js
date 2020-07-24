@@ -1,19 +1,46 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { getSimpleRoleName } from '../../services';
+import { Form, SubmitButton, FormField, ErrorMessage } from '../../components/form';
+import { loadingSelector, errorSelector } from '../../store/selectors';
+import { addProject } from '../../store/actions/projectActions';
+
+import * as Yup from 'yup';
 
 import $ from 'jquery'; 
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().max(255).required().label("name"),
+  location: Yup.string().required().max(255).label("location"),
+});
+
+const initialValues = {
+  name: "",
+  location : ""
+};
+const files = {};
 const ManagerWelcome = () => {
     const user = useSelector(state => state.auth.user);
-
+    const loading = useSelector(state => loadingSelector(['LOGIN'])(state));
+    const errors = useSelector(state => errorSelector(['LOGIN'])(state));
     useEffect(() => {
         $("#side-menu").hide();
     });
-
+    const dispatch = useDispatch();
+    const uploadModel = (e) => {
+      files.model = e.target.files[0];
+    }
+    const uploadCoverImage = (e) => {
+      files.coverImage = e.target.files[0];
+    }
+    const handleSubmit = (data, { setErrors, setSubmitting }) => {
+      data.model = files.model;
+      data.coverImage = files.coverImage;
+      dispatch(addProject(data, setErrors, setSubmitting));
+    }
     return (
         <React.Fragment>
             <div className="col-sm-4 col-xl-4 col-md-4">
@@ -59,6 +86,11 @@ const ManagerWelcome = () => {
                 <div className="modal fade" id="addProjectModal" role="dialog">
                     <div className="modal-dialog">
                         <div className="modal-content">
+                          <Form className="form-horizontal m-t-30"
+                            onSubmit={handleSubmit}
+                            validationSchema={validationSchema}
+                            initialValues={initialValues}
+                            >
                             <div className="modal-header">
                                 <p>Add a new project</p>
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
@@ -67,31 +99,32 @@ const ManagerWelcome = () => {
                                 <div className="form-group row">
                                     <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project name</label>
                                     <div className="col-sm-9">
-                                        <input className="form-control-pop" type="text"/>
+                                        <FormField name="name" type="text"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project lcoation</label>
+                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project location</label>
                                     <div className="col-sm-9">
-                                        <input className="form-control-pop" type="text"/>
+                                        <FormField name="location" type="text"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <label htmlFor="example-text-input" className="col-sm-3 col-form-label">3D model file</label>
                                     <div className="col-sm-9">
-                                        <input type="file" name="fileToUpload"/>
+                                        <input type="file" name="model" onChange={uploadModel} />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Cover page</label>
                                     <div className="col-sm-9">
-                                        <input type="file" name="fileToUpload"/>
+                                      <input type="file" name="coverImage" onChange={uploadCoverImage}/>
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer text-center">
-                                <p><button type="button" className="btn btn-info btn-lg waves-effect waves-light task-btn3">Create</button></p>
+                                <p><SubmitButton title='Create' loading={loading} disabled={loading} className="btn btn-info btn-lg waves-effect waves-light task-btn3"/></p>
                             </div>
+                          </Form>
                         </div>
                     </div>
                 </div>

@@ -18,6 +18,8 @@ const saltRounds = 10;
 
 // Add New Project
 async function addProject({ name, location, model, coverImage, userId, ipAddress }) {
+    console.log(userId);
+    console.log("========");
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
@@ -25,12 +27,12 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
     try {
         // Check if name already add
         const user = await User.findById(userId);
-        if (user.role != SupervisorRole) {
+        if (user.role != ProjectManagerRole) {
             return {
                 ...response,
                 errorMessage: {
                     ...response.errorMessage,
-                    email: "Only Supervisor can add new Project"
+                    email: "Only Project Manager can add new Project"
                 }
             };
         } else {
