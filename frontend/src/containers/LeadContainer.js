@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { TeamLeadRole } from '../enums/roles';
+import { EngineerRole } from '../enums/roles';
 import leadRoutes from '../routes/leadRoutes';
 import TopNavbar from '../components/layout/TopNavbar';
 import SideMenu from '../components/layout/SideMenu';
@@ -33,7 +33,7 @@ const LeadContainer = () => {
                 <div className="content">
                     <div className="container-fluid">
                         <div className="row space-top"></div>
-                        {token && user && user.role === TeamLeadRole ? switchRoutes : <Redirect to={`/authentication/sign-in`} />}
+                        {token && user && user.role === EngineerRole ? switchRoutes : <Redirect to={`/authentication/sign-in`} />}
                     </div>
                 </div>
             </div>

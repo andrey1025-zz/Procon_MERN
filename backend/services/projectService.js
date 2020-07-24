@@ -12,7 +12,7 @@ const mailService = require('../services/mailService');
 const responseStatus = require("../enums/responseStatus");
 const RefreshToken = require("../models/refreshTokenModel");
 const { basicDetails, projectDetails } = require('../services/helperService');
-const { SupervisorRole, ProjectManagerRole, TeamLeadRole, TeamMemberRole } = require('../enums/roles');
+const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
 const { Console } = require('console');
 const saltRounds = 10;
 
@@ -84,6 +84,7 @@ async function getProjects(userId) {
         const user = await User.findById(userId);
         if(user.role == SupervisorRole){
             const projects = await Project.find({ userId: userId });
+            console.log(projects);
             try {
                 return {
                     ...response,
