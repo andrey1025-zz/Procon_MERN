@@ -12,6 +12,7 @@ const errorHandler = require('./middleware/errorHandler');
 
 // api routes
 const auth = require('./routes/authRoutes');
+const project = require('./routes/projectRoutes');
 
 // express setups
 const app = express();
@@ -47,6 +48,7 @@ mongoose.connect(config.get("db"), {
 //#region API Routes
 app.get('/', (req, res) => res.json({ message: 'Welcome to Procon API' }));
 app.use('/api/auth', auth);
+app.use('/api/project', project);
 app.use(errorHandler);
 //#endregion API Routes
 

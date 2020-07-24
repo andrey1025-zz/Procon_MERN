@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 
-const { SuperviorRole, TeamLeadRole, TeamMemberRole } = require('../enums/roles');
+const { SupervisorRole, ProjectManagerRole, TeamLeadRole, TeamMemberRole } = require('../enums/roles');
 const { join } = require('lodash');
 
 // Register
@@ -10,7 +10,7 @@ const registerValidation = Joi.object({
     email: Joi.string().email().max(255).required().trim(),
     password: Joi.string().min(6).max(255).required().trim().equal(Joi.ref('reEnterPassword')),
     reEnterPassword: Joi.string().min(6).max(255).required().trim(),
-    role: Joi.string().valid(SuperviorRole, TeamLeadRole, TeamMemberRole).max(50).required().trim()
+    role: Joi.string().valid(SupervisorRole, ProjectManagerRole, TeamLeadRole, TeamMemberRole).max(50).required().trim()
 }).options({
     abortEarly: false
 });

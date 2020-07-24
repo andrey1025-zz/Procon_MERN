@@ -138,6 +138,7 @@ export const getUserProfile = (data) => async dispatch => {
         type: FETCH_USER_PROFILE_REQUEST
     });
     const response = await api.post('/auth/profile', data);
+    // const response = await api.post('/project/list', data);
     if (response.data.status === "success") {
         const { profile } = response.data;
         dispatch({

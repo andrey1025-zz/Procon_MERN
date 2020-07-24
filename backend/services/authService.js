@@ -108,11 +108,11 @@ async function login({ email, password, ipAddress }) {
         const session = await mongoose.startSession();
         const opts = { session, returnOriginal: false };
         try {
-            await session.startTransaction();
+            //await session.startTransaction();
             const jwtToken = generateJwtToken(user);
             const refreshToken = generateRefreshToken(user, ipAddress);
             await refreshToken.save(opts);
-            await session.commitTransaction();
+            //await session.commitTransaction();
             await session.endSession();
             return {
                 ...response,

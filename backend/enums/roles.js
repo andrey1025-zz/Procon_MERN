@@ -1,5 +1,6 @@
 module.exports = {
-    SuperviorRole: "Supervisor",
-    TeamLeadRole: "Team Lead",
-    TeamMemberRole: "Team Member"
+    SupervisorRole: "Superintendent",
+    ProjectManagerRole: "Project Manager",
+    TeamLeadRole: "Engineer",
+    TeamMemberRole: "Member"
 }
