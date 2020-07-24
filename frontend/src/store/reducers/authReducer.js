@@ -9,6 +9,7 @@ import {
     FETCH_USER_PROFILE_FAILURE,
     UPDATE_PROFILE_SUCCESS
 } from "../types";
+
 const initialState = {
     token: getToken(),
     user: getUser(),

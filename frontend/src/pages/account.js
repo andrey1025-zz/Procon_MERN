@@ -126,7 +126,7 @@ const Account = () => {
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label for="example-date-input" className="col-sm-12 col-form-label">Date</label>
+                                    <label htmlFor="example-date-input" className="col-sm-12 col-form-label">Date</label>
                                     <div className="col-sm-12">
                                         <FormField
                                             name="dob"
