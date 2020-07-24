@@ -1,4 +1,4 @@
-import { TeamLeadRole, TeamMemberRole, SupervisorRole } from '../enums/roles';
+import { TeamLeadRole, TeamMemberRole, SupervisorRole, ProjectManagerRole } from '../enums/roles';
 
 export const getSimpleRoleName = (role) => {
     if (role === SupervisorRole)
@@ -7,4 +7,6 @@ export const getSimpleRoleName = (role) => {
         return 'lead'
     else if (role === TeamMemberRole)
         return 'member'
+    else if (role === ProjectManagerRole)
+        return 'manager'
 }

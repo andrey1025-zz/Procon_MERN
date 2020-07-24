@@ -3,8 +3,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import Logout from '../../components/Logout';
-import { $CombinedState } from 'redux';
 import { getSimpleRoleName } from '../../services';
 
 import $ from 'jquery'; 
@@ -18,12 +16,6 @@ const SupervisorWelcome = () => {
 
     return (
         <React.Fragment>
-            <div className="col-sm-4 col-xl-4 col-md-4">
-                <div className="popup" data-toggle="modal" data-target="#addProjectModal">
-                    <img src={require('../../images/plus.png')} alt="user" className="menu-logo1"/>
-                    <p className="addNewProject">Add a new project</p>
-                </div>
-            </div>
             <div className="col-sm-4 col-xl-4 col-md-4">
                 <div className="card">
                     <div className="card-heading">

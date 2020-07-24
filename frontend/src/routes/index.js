@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 
 import LeadContainer from '../containers/LeadContainer';
 import MemberContainer from '../containers/MemberContainer';
+import ManagerContainer from '../containers/ManagerContainer';
 import SupervisorContainer from '../containers/SupervisorContainer';
 
 import AuthenticationContainer from "../containers/AuthenticationContainer";
@@ -24,6 +25,10 @@ const indexRoutes = [
     {
         path: '/member',
         component: MemberContainer
+    },
+    {
+        path: '/manager',
+        component: ManagerContainer
     },
     {
         path: '/supervisor',

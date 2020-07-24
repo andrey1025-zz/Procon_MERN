@@ -41,7 +41,7 @@ const TopNavbar = () => {
                         <div className="dropdown notification-list nav-pro-img">
                             <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">
                                 {titleCase(user.lastName)}&nbsp;
-                                <img src={user && user.photo ? user.photo : require('../../images/users/user-4.jpg')} alt="user" className="rounded-circle1" />
+                                <img src={user && user.photo ? user.photo : require('../../images/users/user-4.jpg')} alt="user" className="custom-rounded" />
                             </a>
                             <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
                                 <Link className="dropdown-item" to={`/${getSimpleRoleName(user.role)}/account`}><i className="mdi mdi-account-circle"></i> Your account</Link>
