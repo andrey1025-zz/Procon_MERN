@@ -19,6 +19,8 @@ function authorize(roles = []) {
 
     // authorize based on user role
     async (req, res, next) => {
+
+
       const user = await User.findById(req.user.id);
       if (!user || !user.id) {
         return res.status(401).json({
@@ -36,7 +38,6 @@ function authorize(roles = []) {
           }
         });
       }
-
       // authentication and authorization successful
       req.user.role = user.role;
       req.user.ownsToken = token => !!refreshTokens.find(x => x.token === token);

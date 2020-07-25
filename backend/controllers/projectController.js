@@ -7,10 +7,14 @@ const { setTokenCookie, parseCookies } = require('../services/helperService');
 // Add New Project
 addProject = (req, res, next) => {
     const { name, location } = req.body;
-    const { sub: userId } = req.user;
+    const { sub: userId } = req.user.id;
+    console.log(req);
+    console.log("========");
+
     const ipAddress = req.ip;
     const coverFile = req.body.coverImage;
     const modelFile = req.body.model;
+
     if (!modelFile)
         throw 'Please choose model file to upload';
     if (!coverFile)

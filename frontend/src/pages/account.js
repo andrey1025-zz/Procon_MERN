@@ -43,7 +43,6 @@ const Account = () => {
     const loading = useSelector(state => loadingSelector(['UPDATE_PROFILE', 'PHOTO_UPLOAD'])(state));
 
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
-        console.log(data);
         if (tempPhotoId)
             data = { ...data, tempPhotoId };
         dispatch(updateProfile(data, setErrors, setSubmitting));

@@ -16,26 +16,29 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().max(255).required().label("name"),
   location: Yup.string().required().max(255).label("location"),
 });
-
 const initialValues = {
   name: "",
   location : ""
 };
 const files = {};
 const ManagerWelcome = () => {
+  
     const user = useSelector(state => state.auth.user);
     const loading = useSelector(state => loadingSelector(['LOGIN'])(state));
-    const errors = useSelector(state => errorSelector(['LOGIN'])(state));
+
     useEffect(() => {
         $("#side-menu").hide();
     });
     const dispatch = useDispatch();
+
     const uploadModel = (e) => {
       files.model = e.target.files[0];
     }
+    
     const uploadCoverImage = (e) => {
       files.coverImage = e.target.files[0];
     }
+
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
       data.model = files.model;
       data.coverImage = files.coverImage;
@@ -89,6 +92,7 @@ const ManagerWelcome = () => {
                           <Form className="form-horizontal m-t-30"
                             onSubmit={handleSubmit}
                             validationSchema={validationSchema}
+                            enableReinitialize={true}
                             initialValues={initialValues}
                             >
                             <div className="modal-header">
@@ -97,25 +101,25 @@ const ManagerWelcome = () => {
                             </div>
                             <div className="modal-body">
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project name</label>
+                                    <label className="col-sm-3 col-form-label">Project name</label>
                                     <div className="col-sm-9">
                                         <FormField name="name" type="text"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project location</label>
+                                    <label className="col-sm-3 col-form-label">Project location</label>
                                     <div className="col-sm-9">
                                         <FormField name="location" type="text"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">3D model file</label>
+                                    <label className="col-sm-3 col-form-label">3D model file</label>
                                     <div className="col-sm-9">
                                         <input type="file" name="model" onChange={uploadModel} />
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Cover page</label>
+                                    <label className="col-sm-3 col-form-label">Cover page</label>
                                     <div className="col-sm-9">
                                       <input type="file" name="coverImage" onChange={uploadCoverImage}/>
                                     </div>

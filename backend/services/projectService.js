@@ -17,16 +17,14 @@ const { Console } = require('console');
 const saltRounds = 10;
 
 // Add New Project
-async function addProject({ name, location, model, coverImage, userId, ipAddress }) {
-    console.log(userId);
-    console.log("========");
+async function addProject({ name, location, model, coverImage, user, ipAddress }) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
         // Check if name already add
-        const user = await User.findById(userId);
+        const user = await User.findById(user.id);
         if (user.role != ProjectManagerRole) {
             return {
                 ...response,
@@ -37,6 +35,7 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
             };
         } else {
             // Create new project
+            const userId = user.id;
             const project = new Project({
                 name,
                 location,
