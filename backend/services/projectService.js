@@ -25,7 +25,6 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
     try {
         // Check if name already add
         const user = await User.findById(userId);
-        // console.log(user);
         if (user.role != ProjectManagerRole) {
             return {
                 ...response,
@@ -98,6 +97,7 @@ async function uploadFile(tempFile) {
             };
         }
     } catch (error) {
+
         return {
             ...response,
             status: responseStatus.failure,

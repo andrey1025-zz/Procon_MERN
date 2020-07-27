@@ -9,6 +9,7 @@ import { loadingSelector, errorSelector } from '../../store/selectors';
 import { Form, SubmitButton, FormField, ErrorMessage, FormTextarea } from '../../components/form';
 import CoverUpload from '../../components/CoverUpload';
 import ModelUpload from '../../components/ModelUpload';
+import $ from 'jquery'; 
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().max(255).required().label("name"),
@@ -33,8 +34,6 @@ const validationSchema = Yup.object().shape({
 const initialValues = {
     name: "",
     location : ""
-    // model: "",
-    // coverImage: ""
 };
 
 const ManagerWelcome = () => {
@@ -45,7 +44,9 @@ const ManagerWelcome = () => {
     const model_path = useSelector(state => state.project.model_path);
     const errors = useSelector(state => errorSelector(['ADD_PROJECT'])(state));
     const loading = useSelector(state => loadingSelector(['ADD_PROJECT'])(state));
-
+    useEffect(() => {
+      $("#side-menu").hide();
+    });
     if(cover_path == null)
         errors['coverImage'] = "Cover Image is a required field";
     if(model_path == null)
