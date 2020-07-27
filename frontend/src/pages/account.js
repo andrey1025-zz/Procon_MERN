@@ -86,7 +86,7 @@ const Account = () => {
                             <div className="row">
                                 <div className="col-sm-4 col-xl-4 col-md-6">
                                     {/* <img className="pic" src={require('../images/users/user.jpg')} /> */}
-                                    <PhotoUpload url={photo ? photo : null} />
+                                    <PhotoUpload url={ photo ? photo : null } />
                                 </div>
                                 <div className="col-sm-8 col-xl-8 col-md-6">
                                     <p className="c-pic"> Change Picture </p>

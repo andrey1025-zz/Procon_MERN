@@ -12,19 +12,28 @@ const mailService = require('../services/mailService');
 const responseStatus = require("../enums/responseStatus");
 const RefreshToken = require("../models/refreshTokenModel");
 const { basicDetails, projectDetails } = require('../services/helperService');
-const { SupervisorRole, ProjectManagerRole, TeamLeadRole, TeamMemberRole } = require('../enums/roles');
+const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
 const { Console } = require('console');
 const saltRounds = 10;
 
 // Add New Project
+<<<<<<< HEAD
+async function addProject({ name, location, model, coverImage, userId, ipAddress }) {
+=======
 async function addProject({ name, location, model, coverImage, user, ipAddress }) {
+>>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
         // Check if name already add
+<<<<<<< HEAD
+        const user = await User.findById(userId);
+        // console.log(user);
+=======
         const user = await User.findById(user.id);
+>>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
         if (user.role != ProjectManagerRole) {
             return {
                 ...response,
@@ -43,6 +52,7 @@ async function addProject({ name, location, model, coverImage, user, ipAddress }
                 model,
                 userId
             });
+
             const session = await mongoose.startSession();
             try {
                 const opts = { session, returnOriginal: false };
@@ -76,6 +86,37 @@ async function addProject({ name, location, model, coverImage, user, ipAddress }
     }
 };
 
+// upload file
+async function uploadFile(tempFile) {
+    const response = {
+        status: responseStatus.failure
+    };
+    try {
+        if (Array.isArray(tempFile)) {
+            return {
+                ...response,
+                status: responseStatus.success,
+                // tempPhotoId: newTempFiles.insertedIds
+            }
+        }
+        else if (typeof tempFile === "object") {
+            return {
+                ...response,
+                status: responseStatus.success
+            };
+        }
+    } catch (error) {
+        return {
+            ...response,
+            status: responseStatus.failure,
+            errorMessage: {
+                fatalError: error
+            }
+        };
+    }
+};
+
+// Get Projects
 async function getProjects(userId) {
     var response = {
         status: responseStatus.failure,
@@ -83,7 +124,7 @@ async function getProjects(userId) {
     };
     try {
         const user = await User.findById(userId);
-        if(user.role == SupervisorRole){
+        if(user.role == ProjectManagerRole){
             const projects = await Project.find({ userId: userId });
             try {
                 return {
@@ -159,5 +200,6 @@ function randomTokenString() {
 module.exports = {
     addProject,
     getProjects,
-    getProjectDetail
+    getProjectDetail,
+    uploadFile
 };

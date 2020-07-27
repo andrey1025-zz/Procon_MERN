@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import authenticationRoutes from '../routes/authenticationRoutes';
-import { TeamLeadRole, TeamMemberRole, SupervisorRole, ProjectManagerRole } from '../enums/roles';
+import { EngineerRole, MemberRole, SupervisorRole, ProjectManagerRole } from '../enums/roles';
 
 const switchRoutes = (
     <Switch>
@@ -25,9 +25,9 @@ const AuthenticationContainer = () => {
     const token = useSelector(state => state.auth.token);
     const user = useSelector(state => state.auth.user);
     const renderRoutes = () => {
-        if (token && user && user.role === TeamLeadRole)
+        if (token && user && user.role === EngineerRole)
             return <Redirect to={`/lead/home`} />
-        else if (token && user && user.role === TeamMemberRole)
+        else if (token && user && user.role === MemberRole)
             return <Redirect to={`/member/home`} />
         else if (token && user && user.role === SupervisorRole)
             return <Redirect to={`/supervisor/welcome`} />

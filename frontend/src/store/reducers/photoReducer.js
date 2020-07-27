@@ -3,7 +3,7 @@ import {
     PHOTO_UPLOAD_PROGRESS,
     PHOTO_UPLOAD_SUCCESS,
     PHOTO_UPLOAD_FAILURE,
-    REMOVE_UPLOADED_PHOTO
+    REMOVE_UPLOADED_PHOTO,
 } from "../types";
 const initialState = {
     tempPhotoId: null,

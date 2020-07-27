@@ -22,7 +22,29 @@ const projectSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
+    }, // Project Manger Id
+    supintendent: {
+        type: Array,
+        default: []
+    }, // Superintendent Id
+    engineers: {
+        type: Array,
+        default: []
+    }, 
+    // {  
+    //      [
+    //            userIds
+    //      ]   
+    // }
+    members: {
+        type: Array,
+        default: []
+    }, 
+    // {  
+    //      [
+    //            userIds
+    //      ]   
+    // }
     coverImage: {
         type: String,
         maxlength: 255

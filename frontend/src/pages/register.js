@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 
 import { loadingSelector, errorSelector } from '../store/selectors';
-import { TeamLeadRole, TeamMemberRole, SupervisorRole, ProjectManagerRole } from '../enums/roles';
+import { EngineerRole, MemberRole, SupervisorRole, ProjectManagerRole } from '../enums/roles';
 import { Form, SubmitButton, FormField, FormSelect, ErrorMessage } from '../components/form';
 import { register } from '../store/actions/authActions';
 
@@ -62,8 +62,8 @@ const Register = () => {
                         <FormSelect name="role">
                             <option value={SupervisorRole}>{SupervisorRole}</option>
                             <option value={ProjectManagerRole}>{ProjectManagerRole}</option>
-                            <option value={TeamLeadRole}>{TeamLeadRole}</option>
-                            <option value={TeamMemberRole}>{TeamMemberRole}</option>
+                            <option value={EngineerRole}>{EngineerRole}</option>
+                            <option value={MemberRole}>{MemberRole}</option>
                         </FormSelect>
                     </div>
                 </div>

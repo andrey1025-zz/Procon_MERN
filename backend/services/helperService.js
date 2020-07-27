@@ -27,8 +27,15 @@ function basicDetails(user) {
     return { id, firstName, lastName, role, photo: completePath };
 }
 
+function projectDetails(project) {
+    const { id, name, location, model, coverImage } = project;
+    const completePath = coverImage ? `${config.assetsBaseUrl}/${coverImage}` : null
+    return { id, name, location, model, coverImage: completePath };
+}
+
 module.exports = {
     setTokenCookie,
     parseCookies,
-    basicDetails
+    basicDetails,
+    projectDetails
 };
