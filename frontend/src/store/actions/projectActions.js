@@ -74,20 +74,12 @@ export const uploadCoverImage = (coverImage, url) => async dispatch => {
         onUploadProgress: (progressEvent) => {
             let progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total));
             dispatch({
-<<<<<<< HEAD
-                type: ADD_PROJECT_REQUEST,
-                progress: progress
-            })
-        }
-    });    
-=======
                 type: COVER_UPLOAD_PROGRESS,
                 progress: progress
             })
         }
     });
 
->>>>>>> 33abfb81a4bb52bfe38eaf8d2eb88f7d7433a66f
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: COVER_UPLOAD_SUCCESS,
