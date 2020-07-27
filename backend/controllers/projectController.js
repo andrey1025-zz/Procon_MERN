@@ -6,6 +6,7 @@ const { setTokenCookie, parseCookies } = require('../services/helperService');
 
 // Add New Project
 addProject = (req, res, next) => {
+    console.log(req.body);
     const { name, location } = req.body;
     const { sub: userId } = req.user;
 
