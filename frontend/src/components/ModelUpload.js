@@ -5,7 +5,6 @@ import { uploadModel } from '../store/actions/projectActions';
 import { ErrorMessage } from './form';
 
 const ModelUpload = (props) => {
-    console.log(props);
     const dispatch = useDispatch();
     const [url, setUrl] = useState(props.url);
     const [errors, setErrors] = useState()
@@ -33,8 +32,8 @@ const ModelUpload = (props) => {
                 fileInputRef.current.value = "";
                 return;
             }
-            else if (newFile.size > 1000000) {
-                setErrors({ fatalError: 'Images with size more than 1MB are not acceptable' });
+            else if (newFile.size > 3000000) {
+                setErrors({ fatalError: 'Images with size more than 3MB are not acceptable' });
                 fileInputRef.current.value = "";
                 return;
             } else {

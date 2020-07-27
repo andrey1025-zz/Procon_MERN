@@ -7,7 +7,7 @@ const { setTokenCookie, parseCookies } = require('../services/helperService');
 // Add New Project
 addProject = (req, res, next) => {
     const { name, location } = req.body;
-    const { sub: userId } = req.user.id;
+    const { sub: userId } = req.user;
 
     const ipAddress = req.ip;
     const coverImage = req.body.coverImage;
@@ -37,6 +37,7 @@ uploadCoverImage = (req, res, next) => {
 uploadModel = (req, res, next) => {
     const file = req.file
     const { sub: userId } = req.user;
+
     if (!file)
         throw 'Please choose model to upload';
     const { path } = file;

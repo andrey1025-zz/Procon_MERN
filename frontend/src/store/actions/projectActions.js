@@ -20,11 +20,9 @@ export const addProject = (project, setErrors, setSubmitting) => async dispatch 
         type: ADD_PROJECT_REQUEST
     });
     setSubmitting(false);
-    console.log(project);
     const data = new FormData();
     data.append('project', project);
-    console.log(data);
-
+    
     const response = await api.post('/project/add-new-project', data, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -50,10 +48,42 @@ export const addProject = (project, setErrors, setSubmitting) => async dispatch 
     }
 };
 
+export const uploadCoverImage = (coverImage, url) => async dispatch => {
+    dispatch({
+        type: COVER_UPLOAD_REQUEST
+    });
+    const data = new FormData();
+    data.append('cover_file', coverImage);
+    const response = await api.post(url, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+            let progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+            dispatch({
+                type: COVER_UPLOAD_PROGRESS,
+                progress: progress
+            })
+        }
+    });
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: COVER_UPLOAD_SUCCESS,
+            payload: response.data.path
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: COVER_UPLOAD_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
 export const uploadModel = (model, url) => async dispatch => {
     dispatch({
         type: MODEL_UPLOAD_REQUEST
     });
+
     const data = new FormData();
     data.append('model_file', model);
     const response = await api.post(url, data, {
@@ -68,6 +98,7 @@ export const uploadModel = (model, url) => async dispatch => {
             })
         }
     });
+
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: MODEL_UPLOAD_SUCCESS,

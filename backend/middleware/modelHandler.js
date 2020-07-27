@@ -9,18 +9,18 @@ const storageEngine = multer.diskStorage({
     }
 });
 
-const uploadMedia = multer({
+const uploadModel = multer({
     storage: storageEngine,
     limits: {
-        fileSize: 1000000
+        fileSize: 3000000
     },
     fileFilter: (req, file, cb) => {
-        validateMedia(file, cb)
+        validateModel(file, cb)
     }
 });
 
 
-const validateMedia = function (file, cb) {
+const validateModel = function (file, cb) {
     allowedFileTypes = /jpeg|jpg|png|gif/;
     const extension = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
     const mimeType = allowedFileTypes.test(file.mimetype);
@@ -31,4 +31,4 @@ const validateMedia = function (file, cb) {
     }
 };
 
-module.exports = uploadMedia;
+module.exports = uploadModel;
