@@ -20,7 +20,7 @@ export const addProject = (project, setErrors, setSubmitting) => async dispatch 
         type: ADD_PROJECT_REQUEST
     });
 
-    const response = await api.post('/project/add-new-project', data);
+    const response = await api.post('/project/add-new-project', project);
     if (response.data.status === "success") {
         const { profile } = response.data;
         dispatch({
