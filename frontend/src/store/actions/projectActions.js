@@ -5,15 +5,29 @@ import {
 } from '../types';
 import api from '../../api';
 
-export const addProject = (data, setErrors, setSubmitting) => async dispatch => {
+export const addProject = (project, setErrors, setSubmitting) => async dispatch => {
     setSubmitting(true);
     dispatch({
         type: ADD_PROJECT_REQUEST
     });
     setSubmitting(false);
+    console.log(project);
+    const data = new FormData();
+    data.append('project', project);
     console.log(data);
 
-    const response = await api.post('/project/add-new-project', data);
+    const response = await api.post('/project/add-new-project', data, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+            let progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+            dispatch({
+                type: ADD_PROJECT_REQUEST,
+                progress: progress
+            })
+        }
+    });    
     if (response.data && response.data.status === 'success') {
         // dispatch({
         //     type: ADD_PROJECT_SUCCESS,
