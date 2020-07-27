@@ -18,8 +18,6 @@ const saltRounds = 10;
 
 // Add New Project
 async function addProject({ name, location, model, coverImage, userId, ipAddress }) {
-    console.log(userId);
-    console.log("========");
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
@@ -27,6 +25,7 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
     try {
         // Check if name already add
         const user = await User.findById(userId);
+        // console.log(user);
         if (user.role != ProjectManagerRole) {
             return {
                 ...response,
@@ -44,6 +43,7 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
                 model,
                 userId
             });
+
             const session = await mongoose.startSession();
             try {
                 const opts = { session, returnOriginal: false };
@@ -77,6 +77,37 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
     }
 };
 
+// upload file
+async function uploadFile(tempFile) {
+    const response = {
+        status: responseStatus.failure
+    };
+    try {
+        if (Array.isArray(tempFile)) {
+            return {
+                ...response,
+                status: responseStatus.success,
+                // tempPhotoId: newTempFiles.insertedIds
+            }
+        }
+        else if (typeof tempFile === "object") {
+            return {
+                ...response,
+                status: responseStatus.success
+            };
+        }
+    } catch (error) {
+        return {
+            ...response,
+            status: responseStatus.failure,
+            errorMessage: {
+                fatalError: error
+            }
+        };
+    }
+};
+
+// Get Projects
 async function getProjects(userId) {
     var response = {
         status: responseStatus.failure,
@@ -84,9 +115,8 @@ async function getProjects(userId) {
     };
     try {
         const user = await User.findById(userId);
-        if(user.role == SupervisorRole){
+        if(user.role == ProjectManagerRole){
             const projects = await Project.find({ userId: userId });
-            console.log(projects);
             try {
                 return {
                     ...response,
@@ -161,5 +191,6 @@ function randomTokenString() {
 module.exports = {
     addProject,
     getProjects,
-    getProjectDetail
+    getProjectDetail,
+    uploadFile
 };

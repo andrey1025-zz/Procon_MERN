@@ -9,20 +9,40 @@ addProject = (req, res, next) => {
     const { name, location } = req.body;
     const { sub: userId } = req.user;
     const ipAddress = req.ip;
-    const coverFile = req.body.coverImage;
-    const modelFile = req.body.model;
-    if (!modelFile)
-        throw 'Please choose model file to upload';
-    if (!coverFile)
-        throw 'Please choose cover image to upload';
-    const { coverImage } = coverFile;
-    const { model } = modelFile;
+    const coverImage = req.body.coverImage;
+    const model = req.body.model;
     projectService.addProject({ name, location, model, coverImage, userId, ipAddress })
         .then(response => {
             if (response.status === responseStatus.success)
                 setTokenCookie(res, response.refreshToken);
             res.json(_.omit(response, 'refreshToken'));
         }).catch(next);
+};
+
+// Upload Cover Image
+uploadCoverImage = (req, res, next) => {
+    const file = req.file
+    const { sub: userId } = req.user;
+    if (!file)
+        throw 'Please choose cover image to upload';
+    const { path } = file;
+    projectService.uploadFile({ path, userId }).then((data) => {
+        data.path = path;
+        res.json(data);
+    }).catch(next)
+};
+
+// Upload Project Model
+uploadModel = (req, res, next) => {
+    const file = req.file
+    const { sub: userId } = req.user;
+    if (!file)
+        throw 'Please choose model to upload';
+    const { path } = file;
+    projectService.uploadFile({ path, userId }).then((data) => {
+        data.path = path;
+        res.json(data);
+    }).catch(next)
 };
 
 // Get Projects
@@ -50,5 +70,7 @@ getProjectDetail = (req, res, next) => {
 module.exports = {
     addProject,
     getProjects,
-    getProjectDetail
+    getProjectDetail,
+    uploadCoverImage,
+    uploadModel
 };

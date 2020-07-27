@@ -23,10 +23,9 @@ const projectSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }, // Project Manger Id
-    supId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        default: ""
+    supintendent: {
+        type: Array,
+        default: []
     }, // Superintendent Id
     engineers: {
         type: Array,
