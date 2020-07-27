@@ -12,20 +12,8 @@ addProject = (req, res, next) => {
     console.log("========");
 
     const ipAddress = req.ip;
-<<<<<<< HEAD
     const coverImage = req.body.coverImage;
     const model = req.body.model;
-=======
-    const coverFile = req.body.coverImage;
-    const modelFile = req.body.model;
-
-    if (!modelFile)
-        throw 'Please choose model file to upload';
-    if (!coverFile)
-        throw 'Please choose cover image to upload';
-    const { coverImage } = coverFile;
-    const { model } = modelFile;
->>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
     projectService.addProject({ name, location, model, coverImage, userId, ipAddress })
         .then(response => {
             if (response.status === responseStatus.success)

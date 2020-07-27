@@ -1,6 +1,6 @@
 import {
     ADD_PROJECT_REQUEST,
-    ADD_PROJECT_PROGRESS,
+      ADD_PROJECT_PROGRESS,
     ADD_PROJECT_SUCCESS,
     ADD_PROJECT_FAILURE,
     COVER_UPLOAD_PROGRESS,
@@ -19,67 +19,24 @@ export const addProject = (project, setErrors, setSubmitting) => async dispatch 
     dispatch({
         type: ADD_PROJECT_REQUEST
     });
-
-    const response = await api.post('/project/add-new-project', project);
-    if (response.data.status === "success") {
-        const { profile } = response.data;
-        dispatch({
-            type: ADD_PROJECT_SUCCESS,
-            payload: profile
-        });
-    } else {
-        dispatch({
-            type: ADD_PROJECT_FAILURE,
-            payload: response.data
-        });
-    }
-    // const response = await api.post('/project/add-new-project', data, {
-    //     headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //     },
-    //     onUploadProgress: (progressEvent) => {
-    //         let progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total));
-    //         dispatch({
-    //             type: ADD_PROJECT_PROGRESS,
-    //             progress: progress
-    //         })
-    //     }
-    // });
-    // if (response.data && response.data.status === 'success') {
-    //     // dispatch({
-    //     //     type: ADD_PROJECT_SUCCESS,
-    //     //     payload: response.data.tempPhotoId
-    //     // });
-    //     // setSubmitting(false);
-    // } else if (response.data && response.data.status === 'failure') {
-    //     // dispatch({
-    //     //     type: ADD_PROJECT_FAILURE,
-    //     //     payload: response.data
-    //     // })
-    //     // setSubmitting(false);
-
-    // }
-};
-
-export const uploadCoverImage = (coverImage, url) => async dispatch => {
-    dispatch({
-        type: COVER_UPLOAD_REQUEST
-    });
+    setSubmitting(false);
+    console.log(project);
     const data = new FormData();
-    data.append('cover_file', coverImage);
-    const response = await api.post(url, data, {
+    data.append('project', project);
+    console.log(data);
+
+    const response = await api.post('/project/add-new-project', data, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
         onUploadProgress: (progressEvent) => {
             let progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total));
             dispatch({
-                type: COVER_UPLOAD_PROGRESS,
+                type: ADD_PROJECT_REQUEST,
                 progress: progress
             })
         }
-    });
-
+    });    
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: COVER_UPLOAD_SUCCESS,
@@ -122,4 +79,4 @@ export const uploadModel = (model, url) => async dispatch => {
             payload: response.data
         })
     }
-};
+}
