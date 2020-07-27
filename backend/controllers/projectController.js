@@ -8,8 +8,6 @@ const { setTokenCookie, parseCookies } = require('../services/helperService');
 addProject = (req, res, next) => {
     const { name, location } = req.body;
     const { sub: userId } = req.user.id;
-    console.log(req);
-    console.log("========");
 
     const ipAddress = req.ip;
     const coverImage = req.body.coverImage;
