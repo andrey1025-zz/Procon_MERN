@@ -4,6 +4,8 @@ const router = express.Router();
 const validate = require('../middleware/validator');
 const authorize = require('../middleware/authorize');
 const projectController = require('../controllers/projectController');
+const uploadPhoto = require('../middleware/photoHandler');
+const uploadModel = require('../middleware/modelHandler');
 const { 
     addValidation,
 } = require('../validations/projectValidations');
