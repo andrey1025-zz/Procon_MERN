@@ -1,9 +1,6 @@
 import {
     ADD_PROJECT_REQUEST,
-<<<<<<< HEAD
     ADD_PROJECT_PROGRESS,
-=======
->>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
     ADD_PROJECT_SUCCESS,
     ADD_PROJECT_FAILURE,
     COVER_UPLOAD_PROGRESS,
@@ -21,7 +18,6 @@ export const addProject = (data, setErrors, setSubmitting) => async dispatch => 
     setSubmitting(true);
     dispatch({
         type: ADD_PROJECT_REQUEST
-<<<<<<< HEAD
     });
 
     const response = await api.post('/project/add-new-project', data);
@@ -82,13 +78,8 @@ export const uploadCoverImage = (coverImage, url) => async dispatch => {
                 progress: progress
             })
         }
-=======
->>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
     });
-    setSubmitting(false);
-    console.log(data);
 
-    const response = await api.post('/project/add-new-project', data);
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: COVER_UPLOAD_SUCCESS,

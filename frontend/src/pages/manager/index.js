@@ -32,13 +32,12 @@ const validationSchema = Yup.object().shape({
 });
 const initialValues = {
     name: "",
-    location : "",
+    location : ""
     // model: "",
     // coverImage: ""
 };
 
 const ManagerWelcome = () => {
-<<<<<<< HEAD
     const files = {};
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
@@ -51,24 +50,6 @@ const ManagerWelcome = () => {
         errors['coverImage'] = "Cover Image is a required field";
     if(model_path == null)
         errors['model'] = "Model is a required field";
-=======
-  
-    const user = useSelector(state => state.auth.user);
-    const loading = useSelector(state => loadingSelector(['LOGIN'])(state));
-
-    useEffect(() => {
-        $("#side-menu").hide();
-    });
-    const dispatch = useDispatch();
-
-    const uploadModel = (e) => {
-      files.model = e.target.files[0];
-    }
-    
-    const uploadCoverImage = (e) => {
-      files.coverImage = e.target.files[0];
-    }
->>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
 
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.coverImage = cover_path;
