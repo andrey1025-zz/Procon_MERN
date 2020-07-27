@@ -17,15 +17,23 @@ const { Console } = require('console');
 const saltRounds = 10;
 
 // Add New Project
+<<<<<<< HEAD
 async function addProject({ name, location, model, coverImage, userId, ipAddress }) {
+=======
+async function addProject({ name, location, model, coverImage, user, ipAddress }) {
+>>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
         // Check if name already add
+<<<<<<< HEAD
         const user = await User.findById(userId);
         // console.log(user);
+=======
+        const user = await User.findById(user.id);
+>>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
         if (user.role != ProjectManagerRole) {
             return {
                 ...response,
@@ -36,6 +44,7 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
             };
         } else {
             // Create new project
+            const userId = user.id;
             const project = new Project({
                 name,
                 location,

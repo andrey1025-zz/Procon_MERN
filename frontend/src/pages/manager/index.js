@@ -30,7 +30,6 @@ const validationSchema = Yup.object().shape({
     //     // )
     //     .label("model")
 });
-
 const initialValues = {
     name: "",
     location : "",
@@ -39,6 +38,7 @@ const initialValues = {
 };
 
 const ManagerWelcome = () => {
+<<<<<<< HEAD
     const files = {};
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
@@ -51,6 +51,24 @@ const ManagerWelcome = () => {
         errors['coverImage'] = "Cover Image is a required field";
     if(model_path == null)
         errors['model'] = "Model is a required field";
+=======
+  
+    const user = useSelector(state => state.auth.user);
+    const loading = useSelector(state => loadingSelector(['LOGIN'])(state));
+
+    useEffect(() => {
+        $("#side-menu").hide();
+    });
+    const dispatch = useDispatch();
+
+    const uploadModel = (e) => {
+      files.model = e.target.files[0];
+    }
+    
+    const uploadCoverImage = (e) => {
+      files.coverImage = e.target.files[0];
+    }
+>>>>>>> aa1facda977bc8f89d0f2583725507b5c6651ab0
 
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.coverImage = cover_path;
@@ -107,6 +125,7 @@ const ManagerWelcome = () => {
                           <Form className="form-horizontal m-t-30"
                             onSubmit={handleSubmit}
                             validationSchema={validationSchema}
+                            enableReinitialize={true}
                             initialValues={initialValues}
                             >
                             <div className="modal-header">
@@ -115,19 +134,19 @@ const ManagerWelcome = () => {
                             </div>
                             <div className="modal-body">
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project name</label>
+                                    <label className="col-sm-3 col-form-label">Project name</label>
                                     <div className="col-sm-9">
                                         <FormField name="name" type="text"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Project location</label>
+                                    <label className="col-sm-3 col-form-label">Project location</label>
                                     <div className="col-sm-9">
                                         <FormField name="location" type="text"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">3D model file</label>
+                                    <label className="col-sm-3 col-form-label">3D model file</label>
                                     <div className="col-sm-9">
                                         <ModelUpload url={ null } name="model_file"/>
                                         {errors && errors['model'] ? <ErrorMessage error={errors['model']} visible={errors && errors['model'] ? true: false} /> : null}
@@ -136,7 +155,7 @@ const ManagerWelcome = () => {
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label htmlFor="example-text-input" className="col-sm-3 col-form-label">Cover page</label>
+                                    <label className="col-sm-3 col-form-label">Cover page</label>
                                     <div className="col-sm-9">
                                         <CoverUpload url={ null } name="cover_file"/>
                                         {errors && errors['coverImage'] ? <ErrorMessage error={errors['coverImage']} visible={errors && errors['coverImage'] ? true: false} /> : null}
