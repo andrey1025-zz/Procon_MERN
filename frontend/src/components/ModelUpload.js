@@ -5,7 +5,6 @@ import { uploadModel } from '../store/actions/projectActions';
 import { ErrorMessage } from './form';
 
 const ModelUpload = (props) => {
-    console.log(props);
     const dispatch = useDispatch();
     const [url, setUrl] = useState(props.url);
     const [errors, setErrors] = useState()

@@ -12,7 +12,7 @@ const storageEngine = multer.diskStorage({
 const uploadPhoto = multer({
     storage: storageEngine,
     limits: {
-        fileSize: 1000000
+        fileSize: 3000000
     },
     fileFilter: (req, file, cb) => {
         validatePhoto(file, cb)
