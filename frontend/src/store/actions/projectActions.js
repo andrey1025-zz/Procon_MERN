@@ -14,35 +14,21 @@ import {
 } from '../types';
 import api from '../../api';
 
-export const addProject = (project, setErrors, setSubmitting) => async dispatch => {
+export const addProject = (data, setErrors, setSubmitting) => async dispatch => {
     setSubmitting(true);
     dispatch({
         type: ADD_PROJECT_REQUEST
     });
-    setSubmitting(false);
-    const data = new FormData();
-    data.append('project', project);
     
-    const response = await api.post('/project/add-new-project', data, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent) => {
-            let progress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total));
-            dispatch({
-                type: ADD_PROJECT_REQUEST,
-                progress: progress
-            })
-        }
-    });    
+    const response = await api.post('/project/add-new-project', data);    
     if (response.data && response.data.status === 'success') {
         dispatch({
-            type: COVER_UPLOAD_SUCCESS,
+            type: ADD_PROJECT_SUCCESS,
             payload: response.data.path
         });
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
-            type: COVER_UPLOAD_FAILURE,
+            type: ADD_PROJECT_FAILURE,
             payload: response.data
         })
     }
