@@ -19,13 +19,12 @@ export const addProject = (data, setErrors, setSubmitting) => async dispatch => 
     dispatch({
         type: ADD_PROJECT_REQUEST
     });
-
-    const response = await api.post('/project/add-new-project', data);
-    if (response.data.status === "success") {
-        const { profile } = response.data;
+    
+    const response = await api.post('/project/add-new-project', data);    
+    if (response.data && response.data.status === 'success') {
         dispatch({
             type: ADD_PROJECT_SUCCESS,
-            payload: profile
+            payload: response.data.path
         });
     } else {
         dispatch({
