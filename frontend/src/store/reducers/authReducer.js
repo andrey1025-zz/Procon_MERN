@@ -8,7 +8,6 @@ import {
     FETCH_USER_PROFILE_SUCCESS,
     FETCH_USER_PROFILE_FAILURE,
     UPDATE_PROFILE_SUCCESS,
-    ADD_PROJECT_REQUEST
 } from "../types";
 
 const initialState = {

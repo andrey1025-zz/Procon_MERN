@@ -1,8 +1,10 @@
 import {
     ADD_PROJECT_REQUEST,
-      ADD_PROJECT_PROGRESS,
     ADD_PROJECT_SUCCESS,
     ADD_PROJECT_FAILURE,
+    GET_PROJECT_REQUEST,
+    GET_PROJECT_SUCCESS,
+    GET_PROJECT_FAILURE,
     COVER_UPLOAD_PROGRESS,
     COVER_UPLOAD_FAILURE,
     COVER_UPLOAD_REQUEST,
@@ -29,6 +31,25 @@ export const addProject = (data, setErrors, setSubmitting) => async dispatch => 
     } else {
         dispatch({
             type: ADD_PROJECT_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const getProjects = () => async dispatch => {
+    dispatch({
+        type: GET_PROJECT_REQUEST
+    });
+    
+    const response = await api.post('/project/list');    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_PROJECT_SUCCESS,
+            payload: response.data.projects
+        });
+    } else {
+        dispatch({
+            type: GET_PROJECT_FAILURE,
             payload: response.data
         });
     }

@@ -119,6 +119,9 @@ async function getProjects(userId) {
         if(user.role == ProjectManagerRole){
             const projects = await Project.find({ userId: userId });
             try {
+                projects.forEach(project => {
+                    project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
+                });
                 return {
                     ...response,
                     status: responseStatus.success,
@@ -130,6 +133,9 @@ async function getProjects(userId) {
             }
         } else {
             const all_projects = await Project.find();
+            all_projects.forEach(project => {
+                project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
+            });
             try {
                 return {
                     ...response,

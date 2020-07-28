@@ -46,7 +46,6 @@ const CoverUpload = (props) => {
 
     return (
         <>
-            {/* <img ref={imgRef} src={!url ? null : url} width="100" style={{ marginBottom: '10px' }} /> */}
             <input ref={fileInputRef} type="file" onChange={onAddingImage} />
             {errors && errors.fatalError ? <ErrorMessage error={errors.fatalError} visible={true} /> : null}
         </>
