@@ -15,5 +15,6 @@ router.post("/upload-model", authorize(), uploadModel.single('model_file'), proj
 router.post("/add-new-project", authorize(), projectController.addProject);
 router.post("/list", authorize(), projectController.getProjects);
 router.post("/detail", authorize(), projectController.getProjectDetail);
+router.post("/add-new-task", authorize(), projectController.addTask);
 
 module.exports = router;

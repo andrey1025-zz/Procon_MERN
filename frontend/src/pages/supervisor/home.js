@@ -12,7 +12,7 @@ const validationSchema = Yup.object().shape({
     name: Yup.string().max(100).required().label("name"),
     startTime: Yup.string().max(100).required().label("startTime"),
     endTime: Yup.string().max(255).required().label("endTime"),
-    equip_tools: Yup.string().max(255).required().label("equip_tools"),
+    equipTools: Yup.string().max(255).required().label("equipTools"),
     components: Yup.string().max(255).required().label("components"),
     materials: Yup.string().max(255).required().label("materials"),
     workingArea: Yup.string().max(255).required().label("workingArea"),
@@ -28,7 +28,7 @@ const initialValues = {
     name: "",
     startTime: "",
     endTime: "",
-    equip_tools: "",
+    equipTools: "",
     components: "",
     materials: "",
     workingArea: "",
@@ -48,12 +48,11 @@ const SupervisorHome = (props) => {
     const projectId = props.match.params.id;
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
+        data.projectId = projectId;
         dispatch(addTask(data, setErrors, setSubmitting));
     }
     const show_newTaskForm = () => setShowAddTask(true);
     const hide_newTaskForm = () => setShowAddTask(false);
-
-    console.log(projectId);
 
     useEffect(() => {
         dispatch(getProjectDetail(projectId));
@@ -115,7 +114,7 @@ const SupervisorHome = (props) => {
                                                 <div className="form-group-task">
                                                     <label>Equipment and tools:</label>
                                                     <div>
-                                                        <FormField className="form-control-task" name="equip_tools"/>
+                                                        <FormField className="form-control-task" name="equipTools"/>
                                                     </div>
                                                 </div>
         

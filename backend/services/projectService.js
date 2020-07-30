@@ -179,6 +179,73 @@ async function getProjectDetail(projectId) {
     }
 };
 
+// Add New Project
+async function addTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, userId, ipAddress }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        // Check if name already add
+        const user = await User.findById(userId);
+        const project = await Project.findById(projectId);
+        if (user.role != SupervisorRole) {
+            return {
+                ...response,
+                errorMessage: {
+                    ...response.errorMessage,
+                    email: "Only Superintendent can add new Task"
+                }
+            };
+        } else {
+            // Create new project
+            const task = {
+                name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, userId: userId
+            };
+
+            console.log(task);
+            
+            await Project.update(
+                {_id: projectId},
+                {
+                    $push: {
+                        tasks: task
+                    }
+                }
+            )
+
+            const session = await mongoose.startSession();
+            try {
+                const opts = { session, returnOriginal: false };
+                //await session.startTransaction();
+                await RefreshToken.createCollection();
+                await Project.createCollection();
+                await project.save(opts);
+                const jwtToken = generateJwtToken(user);
+                const refreshToken = generateRefreshToken(user, ipAddress);
+                await refreshToken.save(opts);
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    errorMessage: {},
+                    token: jwtToken,
+                    refreshToken: refreshToken.token
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
+            }
+        }
+    }
+    catch (error) {
+        throw error
+    }
+};
+
+
 //#region helper functions
 function generateJwtToken(user) {
     return jwt.sign({ sub: user.id, id: user.id }, config.secret, { expiresIn: '15m' });
@@ -202,5 +269,6 @@ module.exports = {
     addProject,
     getProjects,
     getProjectDetail,
-    uploadFile
+    uploadFile,
+    addTask
 };

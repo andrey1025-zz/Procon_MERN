@@ -6,7 +6,6 @@ const { setTokenCookie, parseCookies } = require('../services/helperService');
 
 // Add New Project
 addProject = (req, res, next) => {
-    console.log(req.body);
     const { name, location } = req.body;
     const { sub: userId } = req.user;
 
@@ -66,10 +65,25 @@ getProjectDetail = (req, res, next) => {
     }).catch(next)
 };
 
+// Add New Task
+addTask = (req, res, next) => {
+    const { name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId } = req.body;
+    const { sub: userId } = req.user;
+
+    const ipAddress = req.ip;
+    projectService.addTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, userId, ipAddress })
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
 module.exports = {
     addProject,
     getProjects,
     getProjectDetail,
     uploadCoverImage,
-    uploadModel
+    uploadModel,
+    addTask
 };

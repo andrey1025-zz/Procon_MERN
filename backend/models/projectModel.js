@@ -39,6 +39,9 @@ const projectSchema = new Schema({
     members: {
         type: Array,
         default: []
+    },
+    tasks: {
+        type: Array
     }, 
     // {  
     //      [
