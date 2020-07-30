@@ -38,7 +38,6 @@ uploadCoverImage = (req, res, next) => {
 uploadModel = (req, res, next) => {
     const file = req.file
     const { sub: userId } = req.user;
-    
     if (!file)
         throw 'Please choose model to upload';
     const { path } = file;

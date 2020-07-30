@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
+import { addTask } from '../../store/actions/projectActions';
+
 import * as Yup from 'yup';
 import $ from 'jquery'; 
 
@@ -42,8 +44,9 @@ const SupervisorHome = () => {
     const user = useSelector(state => state.auth.user);
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
     const [showAddTask, setShowAddTask] = useState(false);
+    const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
-        // dispatch(register(data, setErrors, setSubmitting));
+        dispatch(addTask(data, setErrors, setSubmitting));
     }
     const show_newTaskForm = () => setShowAddTask(true);
     const hide_newTaskForm = () => setShowAddTask(false);

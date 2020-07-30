@@ -12,7 +12,10 @@ import {
     MODEL_UPLOAD_PROGRESS,
     MODEL_UPLOAD_FAILURE,
     MODEL_UPLOAD_REQUEST,
-    MODEL_UPLOAD_SUCCESS
+    MODEL_UPLOAD_SUCCESS,
+    ADD_TASK_REQUEST,
+    ADD_TASK_SUCCESS,
+    ADD_TASK_FAILURE,
 } from '../types';
 import api from '../../api';
 
@@ -31,6 +34,29 @@ export const addProject = (data, setErrors, setSubmitting) => async dispatch => 
     } else {
         dispatch({
             type: ADD_PROJECT_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const addTask = (data, setErrors, setSubmitting) => async dispatch => {
+    setSubmitting(true);
+    dispatch({
+        type: ADD_TASK_REQUEST
+    });
+   
+    const response = await api.post('/project/add-new-task', data);    
+    setSubmitting(false);
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: ADD_TASK_SUCCESS,
+            payload: response.data.tasks
+        });
+
+    } else {
+        dispatch({
+            type: ADD_TASK_FAILURE,
             payload: response.data
         });
     }
