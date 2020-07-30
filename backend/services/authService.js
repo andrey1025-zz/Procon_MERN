@@ -46,14 +46,14 @@ async function register({ firstName, lastName, email, password, role, ipAddress 
             const session = await mongoose.startSession();
             try {
                 const opts = { session, returnOriginal: false };
-                await session.startTransaction();
+                //await session.startTransaction();
                 await RefreshToken.createCollection();
                 await User.createCollection();
                 await user.save(opts);
                 const jwtToken = generateJwtToken(user);
                 const refreshToken = generateRefreshToken(user, ipAddress);
                 await refreshToken.save(opts);
-                await session.commitTransaction();
+                //await session.commitTransaction();
                 await session.endSession();
                 return {
                     ...response,

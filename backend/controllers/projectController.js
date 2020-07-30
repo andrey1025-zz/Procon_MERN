@@ -61,12 +61,9 @@ getProjects = (req, res, next) => {
 // Get Project Detail
 getProjectDetail = (req, res, next) => {
     const { projectId: projectId } = req.body;
-    projectService.getProjectDetail({ projectId })
-        .then(response => {
-            if (response.status === responseStatus.success)
-                setTokenCookie(res, response.refreshToken);
-            res.json(_.omit(response, 'refreshToken'));
-        }).catch(next);
+    projectService.getProjectDetail(projectId).then((data) => {
+        res.json(data);
+    }).catch(next)
 };
 
 module.exports = {

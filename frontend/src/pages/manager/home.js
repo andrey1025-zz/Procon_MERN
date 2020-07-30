@@ -8,8 +8,6 @@ import $ from 'jquery';
 const ManagerHome = (props) => {
     const user = useSelector(state => state.auth.user);
 
-    console.log(props);
-
     useEffect(() => {
         $(".Forhome").hide();
         $("#side-menu").show();
@@ -27,7 +25,7 @@ const ManagerHome = (props) => {
                             <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         <div className="endTask">
-                            <p>Project End Time : 2020.06.27</p>
+                            <p>Cut Off Task : 2020.06.27</p>
                             <div className="endTaskBrief">
                                 <p></p>
                                 <div></div>

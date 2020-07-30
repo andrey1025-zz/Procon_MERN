@@ -9,7 +9,7 @@ const supervisorRoutes = [
         component: SupervisorWelcome
     },
     {
-        path: '/supervisor/home',
+        path: '/supervisor/home/:id',
         component: SupervisorHome
     },
     {

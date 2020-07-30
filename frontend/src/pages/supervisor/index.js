@@ -56,7 +56,7 @@ const SupervisorWelcome = () => {
                               <p>{value.location}</p>
                           </div>
                           <div className="pro-image">
-                              <Link to={`/${getSimpleRoleName(user.role)}/home`}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
+                              <Link to={`/${getSimpleRoleName(user.role)}/home/` + value._id}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
                           </div>
                       </div>
                   </div>

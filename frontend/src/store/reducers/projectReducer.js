@@ -2,7 +2,9 @@ import {
     MODEL_UPLOAD_SUCCESS,
     COVER_UPLOAD_SUCCESS,
     GET_PROJECT_SUCCESS,
-    GET_PROJECT_REQUEST
+    GET_PROJECT_REQUEST,
+    GET_PROJECT_DETAIL_SUCCESS,
+    GET_PROJECT_DETAIL_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -35,6 +37,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 projects: [],
+            };
+        case GET_PROJECT_DETAIL_SUCCESS:
+            return {
+                ...state,
+                project: action.payload,
+            };
+        case GET_PROJECT_DETAIL_FAILURE:
+            return {
+                ...state,
+                project: [],
             };                
         default:
             return state;

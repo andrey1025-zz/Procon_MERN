@@ -50,7 +50,6 @@ const Account = () => {
 
     useEffect(() => {
         dispatch(getUserProfile());
-
     }, []);
 
     useEffect(() => {

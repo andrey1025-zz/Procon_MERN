@@ -85,17 +85,16 @@ export const getProjects = () => async dispatch => {
 };
 
 export const getProjectDetail = (projectId) => async dispatch => {
+
+    let data = {
+        projectId: projectId
+    };
     dispatch({
         type: GET_PROJECT_DETAIL_REQUEST
     });
+
+    const response = await api.post('/project/detail', data);
     
-    const data = new FormData();
-    data.append('projectId', projectId);
-    const response = await api.post('/project/detail', data, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        }
-    });
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: GET_PROJECT_DETAIL_SUCCESS,

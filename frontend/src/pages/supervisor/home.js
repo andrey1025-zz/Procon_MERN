@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
-import { addTask } from '../../store/actions/projectActions';
+import { addTask, getProjectDetail } from '../../store/actions/projectActions';
 
 import * as Yup from 'yup';
 import $ from 'jquery'; 
@@ -40,16 +40,26 @@ const initialValues = {
     publicRelationRequirements:""
 };
 
-const SupervisorHome = () => {
+const SupervisorHome = (props) => {
     const user = useSelector(state => state.auth.user);
+    const project = useSelector(state => state.project);
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
     const [showAddTask, setShowAddTask] = useState(false);
+    const projectId = props.match.params.id;
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         dispatch(addTask(data, setErrors, setSubmitting));
     }
     const show_newTaskForm = () => setShowAddTask(true);
     const hide_newTaskForm = () => setShowAddTask(false);
+
+    console.log(projectId);
+
+    useEffect(() => {
+        dispatch(getProjectDetail(projectId));
+
+    }, []);
+
     useEffect(() => {
         $(".Forhome").hide();
         $("#side-menu").show();

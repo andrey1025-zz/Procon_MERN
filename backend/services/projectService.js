@@ -153,13 +153,16 @@ async function getProjects(userId) {
     }
 };
 
-async function getProjectDetail({ projectId }) {
+async function getProjectDetail(projectId) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
-        const project = await Project.findById({ _id: projectId });
+        const project = await Project.findById(projectId);
+        if (project === null) {
+            throw `Project with id ${id} doesn't exist`
+        }
         try {
             return {
                 ...response,
