@@ -5,8 +5,10 @@ import { ProjectManagerRole } from '../../enums/roles';
 
 import $ from 'jquery'; 
 
-const ManagerHome = () => {
+const ManagerHome = (props) => {
     const user = useSelector(state => state.auth.user);
+
+    console.log(props);
 
     useEffect(() => {
         $(".Forhome").hide();

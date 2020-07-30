@@ -3,7 +3,7 @@ import ManagerHome from '../pages/manager/home';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 
-const supervisorRoutes = [
+const mangerRoutes = [
     {
         path: '/manager/welcome',
         component: ManagerWelcome
@@ -21,4 +21,4 @@ const supervisorRoutes = [
         component: Account
     }
 ];
-export default supervisorRoutes;
+export default mangerRoutes;

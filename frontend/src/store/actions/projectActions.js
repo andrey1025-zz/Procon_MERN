@@ -12,7 +12,10 @@ import {
     MODEL_UPLOAD_PROGRESS,
     MODEL_UPLOAD_FAILURE,
     MODEL_UPLOAD_REQUEST,
-    MODEL_UPLOAD_SUCCESS
+    MODEL_UPLOAD_SUCCESS,
+    GET_PROJECT_DETAIL_REQUEST,
+    GET_PROJECT_DETAIL_SUCCESS,
+    GET_PROJECT_DETAIL_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -52,6 +55,31 @@ export const getProjects = () => async dispatch => {
             type: GET_PROJECT_FAILURE,
             payload: response.data
         });
+    }
+};
+
+export const getProjectDetail = (projectId) => async dispatch => {
+    dispatch({
+        type: GET_PROJECT_DETAIL_REQUEST
+    });
+    
+    const data = new FormData();
+    data.append('projectId', projectId);
+    const response = await api.post('/project/detail', data, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        }
+    });
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_PROJECT_DETAIL_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_PROJECT_DETAIL_FAILURE,
+            payload: response.data
+        })
     }
 };
 
