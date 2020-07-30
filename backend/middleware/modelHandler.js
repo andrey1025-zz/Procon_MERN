@@ -21,13 +21,14 @@ const uploadModel = multer({
 
 
 const validateModel = function (file, cb) {
-    allowedFileTypes = /jpeg|jpg|png|gif/;
+    allowedFileTypes = /3dm|svf/;
     const extension = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimeType = allowedFileTypes.test(file.mimetype);
+    // const mimeType = allowedFileTypes.test(file.mimetype);
+    const mimeType = true;
     if (extension && mimeType) {
         return cb(null, true);
     } else {
-        cb("Invalid file type. Only JPEG, PNG and GIF file are allowed.")
+        cb("Invalid file type. Only 3DM, SVF and GIF file are allowed.")
     }
 };
 

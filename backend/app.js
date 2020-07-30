@@ -52,4 +52,38 @@ app.use('/api/project', project);
 app.use(errorHandler);
 //#endregion API Routes
 
+// var FORGE_CLIENT_ID = "inAurtYxDjVvKvtYEG43viKA5IXAtHGi";
+// var FORGE_CLIENT_SECRET = "28pInoNjHXlQT8oT";
+// var access_token = '';
+// var scopes = 'data:read data:write data:create bucket:create bucket:read';
+// const querystring = require('querystring');
+
+// // // Route /api/forge/oauth
+// app.get('/api/forge/oauth', function (req, res) {
+//     Axios({
+//         method: 'POST',
+//         url: 'https://developer.api.autodesk.com/authentication/v1/authenticate',
+//         headers: {
+//             'content-type': 'application/x-www-form-urlencoded',
+//         },
+//         data: querystring.stringify({
+//             client_id: FORGE_CLIENT_ID,
+//             client_secret: FORGE_CLIENT_SECRET,
+//             grant_type: 'client_credentials',
+//             scope: scopes
+//         })
+//     })
+//         .then(function (response) {
+//             // Success
+//             access_token = response.data.access_token;
+//             console.log(response);
+//             // res.redirect('/api/forge/datamanagement/bucket/create');
+//         })
+//         .catch(function (error) {
+//             // Failed
+//             console.log(error);
+//             res.send('Failed to authenticate');
+//         });
+// });
+
 module.exports = app;

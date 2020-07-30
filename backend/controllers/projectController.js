@@ -1,5 +1,8 @@
 const _ = require('lodash');
 
+
+var Axios = require('axios');               // A Promised base http client
+
 const projectService = require('../services/projectService');
 const responseStatus = require('../enums/responseStatus');
 const { setTokenCookie, parseCookies } = require('../services/helperService');
@@ -35,6 +38,37 @@ uploadCoverImage = (req, res, next) => {
 
 // Upload Project Model
 uploadModel = (req, res, next) => {
+    var FORGE_CLIENT_ID = "inAurtYxDjVvKvtYEG43viKA5IXAtHGi";
+    var FORGE_CLIENT_SECRET = "28pInoNjHXlQT8oT";
+    var access_token = '';
+    var scopes = 'data:read data:write data:create bucket:create bucket:read';
+    const querystring = require('querystring');
+    Axios({
+        method: 'POST',
+        url: 'https://developer.api.autodesk.com/authentication/v1/authenticate',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+        },
+        data: querystring.stringify({
+            client_id: FORGE_CLIENT_ID,
+            client_secret: FORGE_CLIENT_SECRET,
+            grant_type: 'client_credentials',
+            scope: scopes
+        })
+    })
+        .then(function (response) {
+            // Success
+            access_token = response.data.access_token;
+            console.log(response);
+            console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
+            // res.redirect('/api/forge/datamanagement/bucket/create');
+        })
+        .catch(function (error) {
+            // Failed
+            console.log(error);
+            res.send('Failed to authenticate');
+        });
+
     const file = req.file
     const { sub: userId } = req.user;
     if (!file)

@@ -27,13 +27,13 @@ const ModelUpload = (props) => {
         if (event.target.files[0]) {
             let newFile = event.target.files[0];
             let ext = newFile.name.split('.')[1].toLowerCase();
-            if (ext !== 'png' && ext !== 'jpg' && ext !== 'jpeg') {
-                setErrors({ fatalError: 'Images with only .jpg, .jpeg and .png are acceptable' });
+            if (ext !== '3dm') {
+                setErrors({ fatalError: 'Models with only .3dm are acceptable' });
                 fileInputRef.current.value = "";
                 return;
             }
             else if (newFile.size > 3000000) {
-                setErrors({ fatalError: 'Images with size more than 3MB are not acceptable' });
+                setErrors({ fatalError: 'Models with size more than 3MB are not acceptable' });
                 fileInputRef.current.value = "";
                 return;
             } else {
