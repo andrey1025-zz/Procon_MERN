@@ -21,7 +21,6 @@ const initialValues = {
 };
 
 const ManagerWelcome = () => {
-    const files = {};
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
     const cover_path = useSelector(state => state.project.cover_path);
