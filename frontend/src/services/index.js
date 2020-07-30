@@ -2,7 +2,7 @@ import { EngineerRole, MemberRole, SupervisorRole, ProjectManagerRole } from '..
 
 export const getSimpleRoleName = (role) => {
     if (role === SupervisorRole)
-        return 'superintendent';
+        return 'supervisor';
     else if (role === EngineerRole)
         return 'engineer'
     else if (role === MemberRole)
