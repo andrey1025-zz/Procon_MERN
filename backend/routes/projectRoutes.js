@@ -16,5 +16,8 @@ router.post("/add-new-project", authorize(), projectController.addProject);
 router.post("/list", authorize(), projectController.getProjects);
 router.post("/detail", authorize(), projectController.getProjectDetail);
 router.post("/add-new-task", authorize(), projectController.addTask);
+router.post("/tasks", authorize(), projectController.getTasks);
+router.post("/invite-superintendent", authorize(), projectController.inviteSuperintendent);
+router.post("/get-forge-token", authorize(), projectController.getForgeAccessToken);
 
 module.exports = router;

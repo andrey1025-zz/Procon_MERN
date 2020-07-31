@@ -13,6 +13,7 @@ const responseStatus = require("../enums/responseStatus");
 const RefreshToken = require("../models/refreshTokenModel");
 const { basicDetails, projectDetails } = require('../services/helperService');
 const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
+const { Created, NotStart, Inprogress, Completed } = require('../enums/taskStatus');
 const { Console } = require('console');
 const saltRounds = 10;
 
@@ -200,10 +201,8 @@ async function addTask({ name, startTime, endTime, equipTools, components, mater
         } else {
             // Create new project
             const task = {
-                name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, userId: userId
+                name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, memberId: null
             };
-
-            console.log(task);
             
             await Project.update(
                 {_id: projectId},
@@ -245,6 +244,40 @@ async function addTask({ name, startTime, endTime, equipTools, components, mater
     }
 };
 
+// Get Projects
+async function getTasks(projectId) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const project = await Project.findById(projectId);
+        var notStartedTasks = [];
+        var inprogressTasks = [];
+        var completedTasks = [];
+        try {
+            project.tasks.forEach(task => {
+                if(task.status == Inprogress && task.memberId != null)
+                    inprogressTasks.push(task);
+                if(task.status == Completed && task.memberId != null )
+                    completedTasks.push(task);
+            });
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                inprogressTasks: inprogressTasks,
+                completedTasks: completedTasks
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 
 //#region helper functions
 function generateJwtToken(user) {
@@ -270,5 +303,6 @@ module.exports = {
     getProjects,
     getProjectDetail,
     uploadFile,
-    addTask
+    addTask,
+    getTasks
 };

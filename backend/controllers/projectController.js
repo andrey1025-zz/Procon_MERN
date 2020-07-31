@@ -117,6 +117,51 @@ addTask = (req, res, next) => {
         }).catch(next);
 };
 
+// Get Tasks
+getTasks = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.getTasks(projectId)
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
+// Invite Superintendent to Project
+inviteSuperintendent = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.getProjectDetail(projectId).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
+getForgeAccessToken = (req, res, next) => {
+    Axios({
+        method: 'POST',
+        url: 'https://developer.api.autodesk.com/authentication/v1/authenticate',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+        },
+        data: querystring.stringify({
+            client_id: FORGE_CLIENT_ID,
+            client_secret: FORGE_CLIENT_SECRET,
+            grant_type: 'client_credentials',
+            scope: 'viewables:read'
+        })
+    })
+        .then(function (response) {
+            // Success
+            // console.log(response);
+            res.json({ access_token: response.data.access_token, expires_in: response.data.expires_in });
+        })
+        .catch(function (error) {
+            // Failed
+            console.log(error);
+            res.status(500).json(error);
+        });
+}
+
 function createBucket(req, res, next) {
     Axios({
         method: 'POST',
@@ -248,6 +293,9 @@ module.exports = {
     uploadCoverImage,
     uploadModel,
     addTask,
+    getTasks,
+    getForgeAccessToken,
+    inviteSuperintendent,
     createBucket,
     getBucketDetail,
     uploadToBucket,
