@@ -27,7 +27,7 @@ const SideMenu = () => {
                             </ul>
                         </li>
                         <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/home`} className={getClassName('home')}  >
+                            <NavLink to={`/${getSimpleRoleName(user.role)}/home/:id`} className={getClassName('home')}  >
                                 <img src={require('../../images/home.png')} /> <span> Homepage </span>
                             </NavLink>
                         </li>
@@ -37,12 +37,12 @@ const SideMenu = () => {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/home`} className={getClassName('notification')}  >
+                            <NavLink to={`/${getSimpleRoleName(user.role)}/task_manage`} className={getClassName('task_manage')}  >
                                 <img src={require('../../images/tm.png')} /> <span> Task Management </span>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/home`} className={getClassName('notification')}  >
+                            <NavLink to={`/${getSimpleRoleName(user.role)}/task_history`} className={getClassName('notification')}  >
                                 <img src={require('../../images/th.png')} /> <span> Task History </span>
                             </NavLink>
                         </li>

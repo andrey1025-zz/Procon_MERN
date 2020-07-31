@@ -1,5 +1,6 @@
 import SupervisorWelcome from '../pages/supervisor';
 import SupervisorHome from '../pages/supervisor/home';
+import SupervisorTaskManage from '../pages/supervisor/taskManage';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 
@@ -11,6 +12,10 @@ const supervisorRoutes = [
     {
         path: '/supervisor/home/:id',
         component: SupervisorHome
+    },
+    {
+        path: '/supervisor/task_manage',
+        component: SupervisorTaskManage
     },
     {
         path: '/supervisor/change-password',

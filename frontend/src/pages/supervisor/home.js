@@ -56,7 +56,6 @@ const SupervisorHome = (props) => {
 
     useEffect(() => {
         dispatch(getProjectDetail(projectId));
-
     }, []);
 
     useEffect(() => {

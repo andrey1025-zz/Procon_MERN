@@ -126,3 +126,14 @@
 .mr-20{
   margin-right: 20px;
 }
+.progress-tasks > div, .completed-tasks > div{
+  padding: 20px 40px;
+  background: #141519;
+}
+.progress-tasks{
+  margin-bottom: 20px;
+}
+.tasks-title{
+  font-size: 30px;
+  color: #5a5757;
+}
