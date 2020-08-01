@@ -19,6 +19,9 @@ import {
     ADD_TASK_REQUEST,
     ADD_TASK_SUCCESS,
     ADD_TASK_FAILURE,
+    GET_FORGE_TOKEN_REQUEST,
+    GET_FORGE_TOKEN_SUCCESS,
+    GET_FORGE_TOKEN_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -103,6 +106,26 @@ export const getProjectDetail = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_PROJECT_DETAIL_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getViewerForgeToken = () => async dispatch => {
+
+    dispatch({
+        type: GET_FORGE_TOKEN_REQUEST
+    });
+
+    const response = await api.post('/project/get-forge-token');
+    if (response.data && response.status === 200) {
+        dispatch({
+            type: GET_FORGE_TOKEN_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_FORGE_TOKEN_FAILURE,
             payload: response.data
         })
     }

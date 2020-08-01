@@ -4,7 +4,8 @@ import {
     GET_PROJECT_SUCCESS,
     GET_PROJECT_REQUEST,
     GET_PROJECT_DETAIL_SUCCESS,
-    GET_PROJECT_DETAIL_FAILURE
+    GET_PROJECT_DETAIL_FAILURE,
+    GET_FORGE_TOKEN_SUCCESS
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -41,13 +42,18 @@ export default (state = initialState, action) => {
         case GET_PROJECT_DETAIL_SUCCESS:
             return {
                 ...state,
-                project: action.payload,
+                project: action.payload.data,
             };
         case GET_PROJECT_DETAIL_FAILURE:
             return {
                 ...state,
                 project: [],
             };                
+        case GET_FORGE_TOKEN_SUCCESS:
+            return {
+                ...state,
+                forgeToken: action.payload,
+            };
         default:
             return state;
     }

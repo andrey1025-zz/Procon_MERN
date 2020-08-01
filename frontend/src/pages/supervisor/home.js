@@ -3,7 +3,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
-import { addTask, getProjectDetail } from '../../store/actions/projectActions';
+import { addTask, getProjectDetail, getViewerForgeToken } from '../../store/actions/projectActions';
+import ForgeViewer from 'react-forge-viewer';
 
 import * as Yup from 'yup';
 import $ from 'jquery'; 
@@ -42,9 +43,10 @@ const initialValues = {
 
 const SupervisorHome = (props) => {
     const user = useSelector(state => state.auth.user);
-    const project = useSelector(state => state.project);
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
     const [showAddTask, setShowAddTask] = useState(false);
+    const [fToken, setForgeToken] = useState(null);
+
     const projectId = props.match.params.id;
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
@@ -53,27 +55,108 @@ const SupervisorHome = (props) => {
     }
     const show_newTaskForm = () => setShowAddTask(true);
     const hide_newTaskForm = () => setShowAddTask(false);
+    
+    const project = useSelector(state => state.project.project);
+    const forgeToken = useSelector(state => state.project.forgeToken);
+
+    const [urn, setUrn] = useState("");
+    const [view, setView] = useState(null);
+
+    useEffect(() => {
+        if(project){
+            setUrn(project.model);
+        }
+    }, [project]);
+
+    // useEffect(() => {
+    //     if(forgeToken){
+    //         console.log(forgeToken);
+    //         setForgeToken(forgeToken);
+    //     }
+    // }, forgeToken);         
+    useEffect(() => {
+        dispatch(getViewerForgeToken());
+    }, []);
 
     useEffect(() => {
         dispatch(getProjectDetail(projectId));
     }, []);
-
+   
+    
     useEffect(() => {
         $(".Forhome").hide();
         $("#side-menu").show();
     });
 
+    const handleViewerError = (error) => {
+        console.log('Error loading viewer.');
+    }
+
+    const handleTokenRequested = (onAccessToken) => {
+        console.log('Token requested by the viewer.');
+        
+        if(onAccessToken){
+          let token = getForgeToken();
+          if(token){
+            onAccessToken(token.access_token, token.expires_in);
+          }
+        }
+    }
+    const getForgeToken = () => {
+
+        return {
+          access_token:"eyJhbGciOiJIUzI1NiIsImtpZCI6Imp3dF9zeW1tZXRyaWNfa2V5In0.eyJzY29wZSI6WyJ2aWV3YWJsZXM6cmVhZCJdLCJjbGllbnRfaWQiOiJpbkF1cnRZeERqVnZLdnRZRUc0M3ZpS0E1SVhBdEhHaSIsImF1ZCI6Imh0dHBzOi8vYXV0b2Rlc2suY29tL2F1ZC9qd3RleHA2MCIsImp0aSI6Imh0REh4M010WHN0MDZ3WjRWVGVhcFJjUFVpZkJIVmVxRnd6V2FhUXpoOUl5c0pwRmI0cXdHRzRvcXVna2J6TkciLCJleHAiOjE1OTYyNjEwMzF9.2sBdTY0kSNnr-VNcVtKtfxDpJ6BTy4zsTDDCVL_he6Q",
+          expires_in: 3599,
+          token_type: "Bearer"
+        };
+    }
+    const handleDocumentError = (viewer, error) => {
+        console.log('Error loading a document');
+    }
+    
+    const handleDocumentLoaded = (doc, viewables) => {
+        if (viewables.length === 0) {
+          console.error('Document contains no viewables.');
+        }
+        else{
+          //Select the first viewable in the list to use in our viewer component
+          setView(viewables[0]);
+        }
+    }
+    
+    const handleModelLoaded = (viewer, model) => {
+        console.log('Loaded model:', model);
+    }
+    
+    const handleModelError = (viewer, error) => {
+        console.log('Error loading the model.');
+    }
+       
     return (
         <React.Fragment>
-            <div className="col-sm-9 col-xl-9 col-md-9">
-                <div className="card">
-                    <div className="card-heading p-4">
+            <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
+                <div className="card viewer-wrapper">
+                    <div className="card-heading">
                         <div className="threed-effect">
-                            <img src={require('../../images/3d.jpg')}/>
+                            <ForgeViewer
+                                version="6.0"
+                                urn={urn}
+                                view={view}
+                                headless={false}
+                                onViewerError={handleViewerError}
+                                // onTokenRequest={fToken}
+                                onTokenRequest={handleTokenRequested}
+                                onDocumentLoad={handleDocumentLoaded}
+                                onDocumentError={handleDocumentError}
+                                onModelLoad={handleModelLoaded}
+                                onModelError={handleModelError}
+                            />                            
                             <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={show_newTaskForm}>Add a new task</button>
                         </div>
-                        <div className="progress mt-4 mb-4" style={{height: '8px'}}>
-                            <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div className="progress mt-4 mb-4">
+                    <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         <div className="endTask">
                             <p>Project End Time : 2020.06.27</p>
@@ -183,11 +266,8 @@ const SupervisorHome = (props) => {
                                     </div>
                                 </div>  
                             ) : null
-                        }
-                      
-                    </div>
+                        }                
                 </div>
-            </div>
             <div className="col-sm-3 col-xl-3 col-md-3">
                 <div className="card" style={{marginBottom:"20px"}}>
                     <div className="card-body">
