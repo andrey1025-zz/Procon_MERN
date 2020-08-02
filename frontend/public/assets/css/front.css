@@ -147,3 +147,34 @@
 .project-detail .progress{
   height:8px;
 }
+.tasks-wrapper{
+  background: #252529;
+}
+#addMemberModal span.text-black{
+  color: black;
+  font-weight: 400;
+}
+#addMemberModal .nav-user{
+  display: inline-block;
+  color: black;
+}
+#addMemberModal .nav-user i{
+  font-size: 20px;
+  color: #5331C2;
+}
+#addMemberModal .profile-dropdown{
+  min-width: 100px;
+  border: none !important;
+  background: #101010 !important;
+  box-shadow: 2px 2px 4px #272727 !important;
+}
+#addMemberModal .profile-dropdown .dropdown-item{
+  background: none !important;
+}
+#addMemberModal .profile-dropdown .dropdown-item:hover{
+  color:white !important;
+  cursor: pointer;
+}
+#addMemberModal .task-status div{
+  display: inline-block;
+}

@@ -86,7 +86,6 @@ const SupervisorHome = (props) => {
 
     const handleTokenRequested = (onAccessToken) => {
         console.log('Token requested by the viewer.');
-        console.log('000000000000000000');
         if(forgeToken){
             if(onAccessToken){
                 onAccessToken(forgeToken.access_token, forgeToken.expires_in);
@@ -127,7 +126,6 @@ const SupervisorHome = (props) => {
                                 view={view}
                                 headless={false}
                                 onViewerError={handleViewerError}
-                                // onTokenRequest={fToken}
                                 onTokenRequest={handleTokenRequested}
                                 onDocumentLoad={handleDocumentLoaded}
                                 onDocumentError={handleDocumentError}
@@ -252,9 +250,8 @@ const SupervisorHome = (props) => {
                         }                
                 </div>
             <div className="col-sm-3 col-xl-3 col-md-3">
-                <div className="card" style={{marginBottom:"20px"}}>
+                <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
-                        <h4 className="mt-0 header-title mb-4"></h4>
                         <div className="friends-suggestions">
                             <a href="#" className="friends-suggestions-list">
                                 <div className="border-bottom position-relative">
@@ -324,15 +321,33 @@ const SupervisorHome = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="text-center add-member custom-rounded">
+                <div className="row text-center add-member custom-rounded">
                     <a className="md-plus" data-toggle="modal" data-target="#addMemberModal"><i className="fas fa-plus"></i></a>
                 </div>
                 <div className="col-sm-12 col-xl-12 col-md-12">
                     <div className="modal fade" id="addMemberModal" role="dialog">
                         <div className="modal-dialog">
                             <div className="modal-content">
-                                <div className="modal-header">
-                                    <p></p>
+                                <div className="modal-header row">
+                                    <div className="col-md-6 col-sm-6 text-left">
+                                        <span className="text-black">Select members</span>
+                                        <a className="dropdown-toggle ml-3 arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                            Supervisor <i className="fa fa-sort-down"></i>                                        
+                                        </a>
+                                        <div className="dropdown-menu dropdown-menu-right profile-dropdown">
+                                            <a className="dropdown-item"> Supervisor</a>
+                                            <a className="dropdown-item d-block"> Engineer</a>
+                                            <a className="dropdown-item " href="#"> Member</a>
+                                        </div>                                    
+                                    </div>
+                                    <div className="col-md-6 col-sm-6 text-right task-status">
+                                        <span className="text-black mr-2">Complete</span>
+                                        <div className="circle-light light-green mr-3"></div>
+                                        <span className="text-black mr-2">In progress</span>
+                                        <div className="circle-light light-red mr-3"></div>
+                                        <span className="text-black mr-2">Not start</span>
+                                        <div className="circle-light light-yellow"></div>
+                                    </div>
                                 </div>
                                 <div className="modal-body row">
                                     <div className="col-sm-3 col-xl-3 col-md-3">
@@ -341,8 +356,7 @@ const SupervisorHome = (props) => {
                                                 <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
                                             </div>
                                             <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
+                                            <div className="circle-light float-right light-green mt-3"></div>
                                         </div>
                                         <div className="member-status custom-rounded mb-2">
                                             <div className="float-left mb-0 mr-3">
