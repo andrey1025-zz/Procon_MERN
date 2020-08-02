@@ -178,3 +178,21 @@
 #addMemberModal .task-status div{
   display: inline-block;
 }
+.history-tasks{
+  padding: 15px;
+  background: #141519;
+}
+.each-task-history{
+  padding:15px;
+  background:#1d1e24;
+  border-radius: 5px;
+}
+.no-margin{
+  margin:0px !important;
+}
+.middle-font{
+  font-size: 18px;
+}
+.padding10{
+  padding:10px;
+}
