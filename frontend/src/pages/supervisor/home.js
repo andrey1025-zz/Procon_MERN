@@ -45,7 +45,6 @@ const SupervisorHome = (props) => {
     const user = useSelector(state => state.auth.user);
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
     const [showAddTask, setShowAddTask] = useState(false);
-    const [fToken, setForgeToken] = useState(null);
 
     const projectId = props.match.params.id;
     const dispatch = useDispatch();
@@ -58,7 +57,6 @@ const SupervisorHome = (props) => {
     
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
-
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
 
@@ -67,13 +65,7 @@ const SupervisorHome = (props) => {
             setUrn(project.model);
         }
     }, [project]);
-
-    // useEffect(() => {
-    //     if(forgeToken){
-    //         console.log(forgeToken);
-    //         setForgeToken(forgeToken);
-    //     }
-    // }, forgeToken);         
+     
     useEffect(() => {
         dispatch(getViewerForgeToken());
     }, []);
@@ -97,21 +89,12 @@ const SupervisorHome = (props) => {
 
     const handleTokenRequested = (onAccessToken) => {
         console.log('Token requested by the viewer.');
-        
-        if(onAccessToken){
-          let token = getForgeToken();
-          if(token){
-            onAccessToken(token.access_token, token.expires_in);
-          }
-        }
-    }
-    const getForgeToken = () => {
-
-        return {
-          access_token:"eyJhbGciOiJIUzI1NiIsImtpZCI6Imp3dF9zeW1tZXRyaWNfa2V5In0.eyJzY29wZSI6WyJ2aWV3YWJsZXM6cmVhZCJdLCJjbGllbnRfaWQiOiJpbkF1cnRZeERqVnZLdnRZRUc0M3ZpS0E1SVhBdEhHaSIsImF1ZCI6Imh0dHBzOi8vYXV0b2Rlc2suY29tL2F1ZC9qd3RleHA2MCIsImp0aSI6Imh0REh4M010WHN0MDZ3WjRWVGVhcFJjUFVpZkJIVmVxRnd6V2FhUXpoOUl5c0pwRmI0cXdHRzRvcXVna2J6TkciLCJleHAiOjE1OTYyNjEwMzF9.2sBdTY0kSNnr-VNcVtKtfxDpJ6BTy4zsTDDCVL_he6Q",
-          expires_in: 3599,
-          token_type: "Bearer"
-        };
+        console.log('000000000000000000');
+        if(forgeToken){
+            if(onAccessToken){
+                onAccessToken(forgeToken.access_token, forgeToken.expires_in);
+            }
+        }    
     }
     const handleDocumentError = (viewer, error) => {
         console.log('Error loading a document');
