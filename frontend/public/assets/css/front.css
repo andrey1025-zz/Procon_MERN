@@ -129,6 +129,9 @@
 .mr-20{
   margin-right: 20px;
 }
+.mr-5{
+  margin-right: 5px !important;
+}
 .progress-tasks > div, .completed-tasks > div{
   padding: 20px 40px;
   background: #141519;
@@ -195,4 +198,34 @@
 }
 .padding10{
   padding:10px;
+}
+.padding15{
+  padding:10px;
+}
+.task-history-dropdown{
+  min-width: 100px;
+  border: none !important;
+  background: #1d1e24 !important;
+  box-shadow: 2px 2px 4px #060606;
+}
+.task-history-dropdown .dropdown-item{
+  background: none !important;
+}
+.task-history-dropdown .dropdown-item:hover{
+  color:white !important;
+  cursor: pointer;
+}
+.mb-30{
+  margin-bottom: 30px;
+}
+.team-members-history-task{
+  padding-top:10px;
+  padding-bottom:15px;
+}
+.team-members-history-task .member-status{
+  padding:5px 0px;
+  background: none;
+}
+.team-members-history-task > .row > div{
+  padding:0px 10px;
 }
