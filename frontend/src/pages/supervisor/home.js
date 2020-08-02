@@ -82,6 +82,9 @@ const SupervisorHome = (props) => {
         dispatch(getProjectDetail(projectId));
     }, []);
    
+    console.log("aaaaaaaaaaaaa", forgeToken);
+
+    // if
     
     useEffect(() => {
         $(".Forhome").hide();
@@ -144,7 +147,7 @@ const SupervisorHome = (props) => {
                                 view={view}
                                 headless={false}
                                 onViewerError={handleViewerError}
-                                // onTokenRequest={fToken}
+                                // onTokenRequest={forgeToken}
                                 onTokenRequest={handleTokenRequested}
                                 onDocumentLoad={handleDocumentLoaded}
                                 onDocumentError={handleDocumentError}

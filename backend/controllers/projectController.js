@@ -130,8 +130,9 @@ getTasks = (req, res, next) => {
 
 // Invite Superintendent to Project
 inviteSuperintendent = (req, res, next) => {
-    const { projectId: projectId } = req.body;
-    projectService.getProjectDetail(projectId).then((data) => {
+    const { projectId: projectId, superintendentId: superintendentId } = req.body;
+    const { sub: userId } = req.user;
+    projectService.inviteSuperintendent(projectId).then((data) => {
         res.json(data);
     }).catch(next)
 };

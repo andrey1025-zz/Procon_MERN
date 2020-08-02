@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const config = require('config');
 const User = require('../models/userModel');
 const Project = require('../models/projectModel');
+const Notification = require('../models/notificationModel');
 const TempFiles = require('../models/tempFilesModel');
 const mailService = require('../services/mailService');
 const responseStatus = require("../enums/responseStatus");
@@ -278,6 +279,58 @@ async function getTasks(projectId) {
     }
 };
 
+// Invite Superintendent
+async function inviteSuperintendent({ projectId, superintendentId, userId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const superintendent = await User.findById(superintendentId);
+        await Project.update(
+            {_id: projectId},
+            {
+                $push: {
+                    superintendent: superintendent
+                }
+            }
+        )
+        const notification = new Notification({
+            from: userId,
+            to: superintendentId,
+            message: "The project manager invited you to the project as superintendent."
+        });
+
+        const session = await mongoose.startSession();
+        try {
+            const opts = { session, returnOriginal: false };
+            //await session.startTransaction();
+            await RefreshToken.createCollection();
+            await Notification.createCollection();
+            await notification.save(opts);
+            const jwtToken = generateJwtToken(user);
+            const refreshToken = generateRefreshToken(user, ipAddress);
+            await refreshToken.save(opts);
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                token: jwtToken,
+                refreshToken: refreshToken.token
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 
 //#region helper functions
 function generateJwtToken(user) {
@@ -304,5 +357,6 @@ module.exports = {
     getProjectDetail,
     uploadFile,
     addTask,
-    getTasks
+    getTasks,
+    inviteSuperintendent
 };
