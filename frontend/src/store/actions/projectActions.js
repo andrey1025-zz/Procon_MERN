@@ -144,7 +144,7 @@ export const getTasks = (projectId) => async dispatch => {
         dispatch({
             type: GET_TASKS_SUCCESS,
         });
-    } else (response.data && response.data.status === 'failure') {
+    } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_TASKS_FAILURE,
             payload: response.data
@@ -163,8 +163,8 @@ export const inviteSuperintendent = (data) => async dispatch => {
         dispatch({
             type: INVITE_SUPERINTENDENT_SUCCESS,
             payload: response.data
-        });
-    } else (response.data && response.data.status === 'failure' ){
+        })
+    } else if (response.data && response.data.status === 'failure' ){
         dispatch({
             type: INVITE_SUPERINTENDENT_FAILURE,
             payload: response.data
