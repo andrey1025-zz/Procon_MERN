@@ -42,7 +42,7 @@ const SideMenu = () => {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/task_history`} className={getClassName('notification')}  >
+                            <NavLink to={`/${getSimpleRoleName(user.role)}/task_history`} className={getClassName('task_history')}  >
                                 <img src={require('../../images/th.png')} /> <span> Task History </span>
                             </NavLink>
                         </li>

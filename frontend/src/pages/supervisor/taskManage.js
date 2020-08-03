@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { getProjects } from '../../store/actions/projectActions';
 
-import { getSimpleRoleName } from '../../services';
 
 import $ from 'jquery';
 
