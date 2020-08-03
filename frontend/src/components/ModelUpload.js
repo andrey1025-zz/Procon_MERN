@@ -8,7 +8,6 @@ const ModelUpload = (props) => {
     const dispatch = useDispatch();
     const [url, setUrl] = useState(props.url);
     const [errors, setErrors] = useState()
-    const imgRef = useRef();
     const fileInputRef = useRef();
 
     const readUrl = (event) => {

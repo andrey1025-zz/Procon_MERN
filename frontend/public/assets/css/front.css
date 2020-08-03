@@ -233,3 +233,11 @@
 .member-link{
   cursor: pointer;
 }
+
+.member-link.clicked{
+  background-color: #5331C2;
+}
+
+.btn-invite{
+  width: auto;
+}
