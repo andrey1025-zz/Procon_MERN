@@ -23,5 +23,6 @@ router.post("/users", authorize(), projectController.getUsers);
 router.post("/superintendents", authorize(), projectController.getSuperintendents);
 router.post("/engineers", authorize(), projectController.getEngineers);
 router.post("/members", authorize(), projectController.getMembers);
+router.post("/task-detail", authorize(), projectController.getTaskDetail);
 
 module.exports = router;

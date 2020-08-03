@@ -280,6 +280,32 @@ async function getTasks(projectId) {
     }
 };
 
+async function getTaskDetail(taskId) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const task = await Project.find({ "tasks": { _id: taskId } });
+        if (task === null) {
+            throw `Task with id ${id} doesn't exist`
+        }
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: task
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 // Get Users
 async function getUsers() {
     var response = {
@@ -459,6 +485,7 @@ module.exports = {
     uploadFile,
     addTask,
     getTasks,
+    getTaskDetail,
     getSuperintendents,
     getEngineers,
     getMembers,

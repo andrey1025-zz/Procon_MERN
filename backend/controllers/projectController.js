@@ -104,6 +104,14 @@ getProjectDetail = (req, res, next) => {
     }).catch(next)
 };
 
+// Get Task Detail
+getTaskDetail = (req, res, next) => {
+    const { taskId: taskId } = req.body;
+    projectService.getTaskDetail(taskId).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 // Add New Task
 addTask = (req, res, next) => {
     const { name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId } = req.body;
@@ -344,6 +352,7 @@ module.exports = {
     getSuperintendents,
     getEngineers,
     getMembers,
+    getTaskDetail,
     inviteSuperintendent,
     createBucket,
     getBucketDetail,
