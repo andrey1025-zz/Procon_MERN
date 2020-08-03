@@ -184,7 +184,8 @@ getMembers = (req, res, next) => {
 inviteSuperintendent = (req, res, next) => {
     const { projectId: projectId, superintendentId: superintendentId } = req.body;
     const { sub: userId } = req.user;
-    projectService.inviteSuperintendent({ projectId, superintendentId, userId }).then((data) => {
+    const ipAddress = req.ip;
+    projectService.inviteSuperintendent({ projectId, superintendentId, userId, ipAddress }).then((data) => {
         res.json(data);
     }).catch(next)
 };
@@ -193,7 +194,8 @@ inviteSuperintendent = (req, res, next) => {
 inviteMember = (req, res, next) => {
     const { projectId: projectId, taskId: taskId, memberId: memberId } = req.body;
     const { sub: userId } = req.user;
-    projectService.inviteMember({ projectId, taskId, memberId, userId }).then((data) => {
+    const ipAddress = req.ip;
+    projectService.inviteMember({ projectId, taskId, memberId, userId, ipAddress }).then((data) => {
         res.json(data);
     }).catch(next)
 };

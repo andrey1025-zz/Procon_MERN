@@ -9,7 +9,7 @@ const mangerRoutes = [
         component: ManagerWelcome
     },
     {
-        path: '/manager/home',
+        path: '/manager/home/:id',
         component: ManagerHome
     },
     {

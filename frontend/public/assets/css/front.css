@@ -16,6 +16,7 @@
 }
 .dropdown-item{
   color: #a5a6ad !important;
+  cursor: pointer;
 }
 .roundedImg{
   border-radius: 5px;
@@ -228,4 +229,7 @@
 }
 .team-members-history-task > .row > div{
   padding:0px 10px;
+}
+.member-link{
+  cursor: pointer;
 }

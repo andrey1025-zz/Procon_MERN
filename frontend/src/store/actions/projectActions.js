@@ -33,7 +33,10 @@ import {
     GET_ENGINEERS_FAILURE,
     GET_MEMBERS_REQUEST,
     GET_MEMBERS_SUCCESS,
-    GET_MEMBERS_FAILURE
+    GET_MEMBERS_FAILURE,
+    INVITE_SUPERINTENDENT_REQUEST,
+    INVITE_SUPERINTENDENT_SUCCESS,
+    INVITE_SUPERINTENDENT_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -118,6 +121,26 @@ export const getProjectDetail = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_PROJECT_DETAIL_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const inviteSuperintendent = (data) => async dispatch => {
+    dispatch({
+        type: INVITE_SUPERINTENDENT_REQUEST
+    });
+
+    const response = await api.post('/project/invite-superintendent', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: INVITE_SUPERINTENDENT_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: INVITE_SUPERINTENDENT_FAILURE,
             payload: response.data
         })
     }
