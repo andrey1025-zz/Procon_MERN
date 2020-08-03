@@ -21,7 +21,19 @@ import {
     ADD_TASK_FAILURE,
     GET_FORGE_TOKEN_REQUEST,
     GET_FORGE_TOKEN_SUCCESS,
-    GET_FORGE_TOKEN_FAILURE
+    GET_FORGE_TOKEN_FAILURE,
+    GET_USERS_REQUEST,
+    GET_USERS_SUCCESS,
+    GET_USERS_FAILURE,
+    GET_SUPERINTENDENTS_REQUEST,
+    GET_SUPERINTENDENTS_SUCCESS,
+    GET_SUPERINTENDENTS_FAILURE,
+    GET_ENGINEERS_REQUEST,
+    GET_ENGINEERS_SUCCESS,
+    GET_ENGINEERS_FAILURE,
+    GET_MEMBERS_REQUEST,
+    GET_MEMBERS_SUCCESS,
+    GET_MEMBERS_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -106,6 +118,90 @@ export const getProjectDetail = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_PROJECT_DETAIL_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getUsers = () => async dispatch => {
+
+    dispatch({
+        type: GET_USERS_REQUEST
+    });
+
+    const response = await api.post('/project/users');
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_USERS_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_USERS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getSuperintendents = () => async dispatch => {
+
+    dispatch({
+        type: GET_SUPERINTENDENTS_REQUEST
+    });
+
+    const response = await api.post('/project/superintendents');
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_SUPERINTENDENTS_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_SUPERINTENDENTS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getEngineers = () => async dispatch => {
+
+    dispatch({
+        type: GET_ENGINEERS_REQUEST
+    });
+
+    const response = await api.post('/project/engineers');
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_ENGINEERS_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_ENGINEERS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getMembers = () => async dispatch => {
+
+    dispatch({
+        type: GET_MEMBERS_REQUEST
+    });
+
+    const response = await api.post('/project/members');
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_MEMBERS_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_MEMBERS_FAILURE,
             payload: response.data
         })
     }

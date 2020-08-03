@@ -5,7 +5,16 @@ import {
     GET_PROJECT_REQUEST,
     GET_PROJECT_DETAIL_SUCCESS,
     GET_PROJECT_DETAIL_FAILURE,
-    GET_FORGE_TOKEN_SUCCESS
+    GET_FORGE_TOKEN_SUCCESS,
+    GET_USERS_SUCCESS,
+    GET_FORGE_TOKEN_FAILURE,
+    GET_USERS_FAILURE,
+    GET_SUPERINTENDENTS_SUCCESS,
+    GET_SUPERINTENDENTS_FAILURE,
+    GET_ENGINEERS_SUCCESS,
+    GET_ENGINEERS_FAILURE,
+    GET_MEMBERS_SUCCESS,
+    GET_MEMBERS_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -53,6 +62,51 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 forgeToken: action.payload,
+            };
+        case GET_FORGE_TOKEN_FAILURE:
+            return {
+                ...state,
+                forgeToken: action.payload,
+            };
+        case GET_USERS_SUCCESS:
+            return {
+                ...state,
+                users: action.payload,
+            };
+        case GET_USERS_FAILURE:
+            return {
+                ...state,
+                users: [],
+            };
+        case GET_ENGINEERS_SUCCESS:
+            return {
+                ...state,
+                engineers: action.payload,
+            };
+        case GET_ENGINEERS_FAILURE:
+            return {
+                ...state,
+                engineers: [],
+            };
+        case GET_SUPERINTENDENTS_SUCCESS:
+            return {
+                ...state,
+                superintendents: action.payload,
+            };
+        case GET_SUPERINTENDENTS_FAILURE:
+            return {
+                ...state,
+                superintendents: [],
+            };
+        case GET_MEMBERS_SUCCESS:
+            return {
+                ...state,
+                members: action.payload,
+            };
+        case GET_MEMBERS_FAILURE:
+            return {
+                ...state,
+                members: [],
             };
         default:
             return state;

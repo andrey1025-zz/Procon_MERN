@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
-import { addTask, getProjectDetail, getViewerForgeToken } from '../../store/actions/projectActions';
+import { addTask, getProjectDetail, getViewerForgeToken, getUsers, getSuperintendents, getEngineers, getMembers } from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
 
 import * as Yup from 'yup';
@@ -57,6 +57,9 @@ const SupervisorHome = (props) => {
     
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
+    const superintendents = useSelector(state => state.project.superintendents);
+    const engineers = useSelector(state => state.project.engineers);
+    const members = useSelector(state => state.project.members);
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
 
@@ -73,11 +76,20 @@ const SupervisorHome = (props) => {
     useEffect(() => {
         dispatch(getProjectDetail(projectId));
     }, []);
-   
-    console.log("aaaaaaaaaaaaa", forgeToken);
 
-    // if
-    
+    // 
+    useEffect(() => {
+        dispatch(getSuperintendents());
+    }, []);
+
+    useEffect(() => {
+        dispatch(getEngineers());
+    }, []);
+
+    useEffect(() => {
+        dispatch(getMembers());
+    }, []);
+
     useEffect(() => {
         $(".Forhome").hide();
         $("#side-menu").show();
@@ -335,10 +347,10 @@ const SupervisorHome = (props) => {
                                     <div className="col-md-6 col-sm-6 text-left">
                                         <span className="text-black">Select members</span>
                                         <a className="dropdown-toggle ml-3 arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                            Supervisor <i className="fa fa-sort-down"></i>                                        
+                                        Superintendent <i className="fa fa-sort-down"></i>                                        
                                         </a>
                                         <div className="dropdown-menu dropdown-menu-right profile-dropdown">
-                                            <a className="dropdown-item"> Supervisor</a>
+                                            <a className="dropdown-item"> Superintendent</a>
                                             <a className="dropdown-item d-block"> Engineer</a>
                                             <a className="dropdown-item " href="#"> Member</a>
                                         </div>                                    

@@ -14,6 +14,7 @@ var FORGE_CLIENT_SECRET = "28pInoNjHXlQT8oT";
 var access_token = '';
 var scopes = 'data:read data:write data:create bucket:create bucket:read';
 const querystring = require('querystring');
+const { ObjectID } = require('mongodb');
 const bucketKey = FORGE_CLIENT_ID.toLowerCase() + '_tutorial_bucket'; // Prefix with your ID so the bucket key is unique across all buckets on all other accounts
 const policyKey = 'transient'; // Expires in 24hr
 
@@ -119,8 +120,51 @@ addTask = (req, res, next) => {
 
 // Get Tasks
 getTasks = (req, res, next) => {
+    projectService.getTasks()
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
+// Get Users
+getUsers = (req, res, next) => {
     const { projectId: projectId } = req.body;
-    projectService.getTasks(projectId)
+    projectService.getUsers(projectId)
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
+// Get Superintendents
+getSuperintendents = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.getSuperintendents(projectId)
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
+// Get Engineers
+getEngineers = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.getEngineers(projectId)
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
+// Get Members
+getMembers = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.getMembers(projectId)
         .then(response => {
             if (response.status === responseStatus.success)
                 setTokenCookie(res, response.refreshToken);
@@ -132,7 +176,7 @@ getTasks = (req, res, next) => {
 inviteSuperintendent = (req, res, next) => {
     const { projectId: projectId, superintendentId: superintendentId } = req.body;
     const { sub: userId } = req.user;
-    projectService.inviteSuperintendent(projectId).then((data) => {
+    projectService.inviteSuperintendent({ projectId, superintendentId, userId }).then((data) => {
         res.json(data);
     }).catch(next)
 };
@@ -296,6 +340,10 @@ module.exports = {
     addTask,
     getTasks,
     getForgeAccessToken,
+    getUsers,
+    getSuperintendents,
+    getEngineers,
+    getMembers,
     inviteSuperintendent,
     createBucket,
     getBucketDetail,

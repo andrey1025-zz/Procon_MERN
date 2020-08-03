@@ -16,6 +16,7 @@ const { basicDetails, projectDetails } = require('../services/helperService');
 const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
 const { Created, NotStart, Inprogress, Completed } = require('../enums/taskStatus');
 const { Console } = require('console');
+const { ObjectID } = require('mongodb');
 const saltRounds = 10;
 
 // Add New Project
@@ -202,7 +203,7 @@ async function addTask({ name, startTime, endTime, equipTools, components, mater
         } else {
             // Create new project
             const task = {
-                name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, memberId: null
+                _id: new ObjectID(), name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, memberId: null
             };
             
             await Project.update(
@@ -245,7 +246,7 @@ async function addTask({ name, startTime, endTime, equipTools, components, mater
     }
 };
 
-// Get Projects
+// Get Tasks
 async function getTasks(projectId) {
     var response = {
         status: responseStatus.failure,
@@ -269,6 +270,106 @@ async function getTasks(projectId) {
                 errorMessage: {},
                 inprogressTasks: inprogressTasks,
                 completedTasks: completedTasks
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Users
+async function getUsers() {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const superintendents = await User.find({role: SupervisorRole});
+        const engineers = await User.find({role: EngineerRole});
+        const members = await User.find({role: MemberRole});
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                superintendents: superintendents,
+                engineers: engineers,
+                members: members
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Superintendents
+async function getSuperintendents() {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const superintendents = await User.find({role: SupervisorRole});
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                superintendents: superintendents
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Engineers
+async function getEngineers() {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const engineers = await User.find({role: EngineerRole});
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                engineers: engineers
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Members
+async function getMembers() {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const members = await User.find({role: MemberRole});
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                members: members
             };
         } catch (error) {
             throw error;
@@ -358,5 +459,9 @@ module.exports = {
     uploadFile,
     addTask,
     getTasks,
-    inviteSuperintendent
+    getSuperintendents,
+    getEngineers,
+    getMembers,
+    inviteSuperintendent,
+    getUsers
 };
