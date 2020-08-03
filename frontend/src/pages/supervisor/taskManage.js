@@ -1,30 +1,24 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProjects } from '../../store/actions/projectActions';
+import { getTasks } from '../../store/actions/projectActions';
 
 
 import $ from 'jquery';
 
 const SupervisorTaskManage = () => {
-    const user = useSelector(state => state.auth.user);
-
+    const projectId = window.localStorage.getItem("projectId");
+    const tasks = useSelector(state => state.project.tasks);
     useEffect(() => {
         $("#side-menu").show();
         $(".Forhome").hide();
     });
     useEffect(() => {
-        dispatch(getProjects());
+        dispatch(getTasks(projectId));
     }, []);
 
-    const projects = useSelector(state => state.project.projects);
     const dispatch = useDispatch();
 
-    // const projectId = useSelector(state => state.projectId);
-    // console.log("task management project id", projectId);
-
-    useEffect(() => {
-    }, [projects]);
     return (
         <React.Fragment>
             <div className="selected-task-info col-md-12 row">
@@ -144,294 +138,223 @@ const SupervisorTaskManage = () => {
                     </div>
                 </div>                
             </div>
-
-            <div className="progress-tasks col-md-12">
-                <div>
-                    <div className="row">
-                        <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
-                            Tasks in progress
-                        </div>
-                        <div className="col-sm-6 col-xl-6 col-md-6">
-                            <div className="mini-stat-icon float-right">
-                                <nav className="navbar-custom">
-                                    <ul className="navbar-right list-inline float-right mb-0">
-                                        <li className="dropdown notification-list list-inline-item">
-                                            <div className="dropdown notification-list nav-pro-img">
-                                                <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                    data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                                    aria-expanded="false">
-                                                    <i className="mdi mdi-menu"></i>
-                                                </a>
-                                                <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                    <a className="dropdown-item" href="supervisor-panel.html"> Create
-                                                        Task</a>
-                                                    <a className="dropdown-item d-block" href="addtask.html"> Task
-                                                        Management</a>
-                                                    <a className="dropdown-item " href="#"> Extend List</a>
-                                                </div>
-                                            </div>
-                                        </li>
-
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                        <div className="col-sm-4 col-xl-4 col-md-4">
-                            <div className="card">
-                                <div className="card-heading">
-                                    <div className="mini-stat-icon float-right">
-                                        <nav className="navbar-custom">
-                                            <ul className="navbar-right list-inline float-right mb-0">
-                                                <li className="dropdown notification-list list-inline-item">
-                                                    <div className="dropdown notification-list nav-pro-img">
-                                                        <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                                            <i className="mdi mdi-menu"></i>
-                                                        </a>
-                                                        <div
-                                                            className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="taskdata.html"> Display
-                                                                Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Edit
-                                                                Task</a>
-                                                            <a className="dropdown-item " href="#"> End Task</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                    <div className="p-20">
-                                        <h5 className="font-16">Project name</h5>
-                                        <p>Project location</p>
-                                    </div>
-                                    <div className="pro-image">
-                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
-                                    </div>
+            {tasks.completedTasks && tasks.completedTasks.length > 0 ? 
+                 (
+                    <div className="progress-tasks col-md-12">
+                        <div>
+                            <div className="row">
+                                <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
+                                    Completed Tasks
                                 </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-4 col-xl-4 col-md-4">
-                            <div className="card">
-                                <div className="card-heading">
+                                <div className="col-sm-6 col-xl-6 col-md-6">
                                     <div className="mini-stat-icon float-right">
                                         <nav className="navbar-custom">
                                             <ul className="navbar-right list-inline float-right mb-0">
                                                 <li className="dropdown notification-list list-inline-item">
                                                     <div className="dropdown notification-list nav-pro-img">
                                                         <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                            data-toggle="dropdown" href="#" role="button"
-                                                            aria-haspopup="false" aria-expanded="false">
+                                                            data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+                                                            aria-expanded="false">
                                                             <i className="mdi mdi-menu"></i>
                                                         </a>
                                                         <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="taskdata.html"> Display
-                                                                Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Edit
-                                                                Task</a>
-                                                            <a className="dropdown-item " href="#"> End Task</a>
+                                                            <a className="dropdown-item" href="supervisor-panel.html"> Create Task</a>
+                                                            <a className="dropdown-item d-block" href="addtask.html"> Task Management</a>
+                                                            <a className="dropdown-item " href="#"> Extend List</a>
                                                         </div>
                                                     </div>
                                                 </li>
                                             </ul>
                                         </nav>
                                     </div>
-                                    <div className="p-20">
-                                        <h5 className="font-16">Project name</h5>
-                                        <p>Project location</p>
-                                    </div>
-                                    <div className="pro-image">
-                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
-                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-4 col-xl-4 col-md-4">
-                            <div className="card">
-                                <div className="card-heading">
-                                    <div className="mini-stat-icon float-right">
-                                        <nav className="navbar-custom">
-                                            <ul className="navbar-right list-inline float-right mb-0">
-                                                <li className="dropdown notification-list list-inline-item">
-                                                    <div className="dropdown notification-list nav-pro-img">
-                                                        <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                            data-toggle="dropdown" href="#" role="button"
-                                                            aria-haspopup="false" aria-expanded="false">
-                                                            <i className="mdi mdi-menu"></i>
-                                                        </a>
-                                                        <div
-                                                            className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="taskdata.html"> Display
-                                                                Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Edit
-                                                                Task</a>
-                                                            <a className="dropdown-item " href="#"> End Task</a>
-                                                        </div>
+                                {tasks.completedTasks.map((value, index) => {
+                                    return (
+                                        <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                            <div className="card no-margin">
+                                                <div className="card-heading">
+                                                    <div className="float-left padding10">
+                                                        <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
+                                                        <span>Supervisor</span>
                                                     </div>
-                                                </li>
-
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                    <div className="p-20">
-                                        <h5 className="font-16">Project name</h5>
-                                        <p>Project location</p>
-                                    </div>
-                                    <div className="pro-image">
-                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="completed-tasks col-md-12">
-                <div>
-                    <div className="row">
-                        <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
-                            Completed Tasks
-                        </div>
-                        <div className="col-sm-6 col-xl-6 col-md-6">
-                            <div className="mini-stat-icon float-right">
-                                <nav className="navbar-custom">
-                                    <ul className="navbar-right list-inline float-right mb-0">
-                                        <li className="dropdown notification-list list-inline-item">
-                                            <div className="dropdown notification-list nav-pro-img">
-                                                <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                    data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
-                                                    aria-expanded="false">
-                                                    <i className="mdi mdi-menu"></i>
-                                                </a>
-                                                <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                    <a className="dropdown-item" href="supervisor-panel.html"> Create
-                                                        Task</a>
-                                                    <a className="dropdown-item d-block" href="addtask.html"> Task
-                                                        Management</a>
-                                                    <a className="dropdown-item " href="#"> Extend List</a>
+                                                    <div className="float-right padding10">
+                                                        <p className="text-white no-margin middle-font">
+                                                            {value.name}
+                                                            <div className="dropdown nav-pro-img inline">
+                                                                <a className="dropdown-toggle arrow-none nav-user padding10"
+                                                                    data-toggle="dropdown" role="button"
+                                                                    aria-haspopup="false" aria-expanded="false">
+                                                                    <i className="mdi mdi-menu"></i>
+                                                                </a>
+                                                                <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
+                                                                    <a className="dropdown-item"> Display Task</a>
+                                                                    <a className="dropdown-item d-block"> Edit Task</a>
+                                                                    <a className="dropdown-item"> End Task</a>
+                                                                </div>
+                                                            </div>  
+                                                        </p>
+                                                     
+                                                        <div>DUE BY: {value.startTime}</div>
+                                                    </div>
+                                                    <div className="pro-image">
+                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </li>
-
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                        <div className="col-sm-4 col-xl-4 col-md-4">
-                            <div className="card">
-                                <div className="card-heading">
-                                    <div className="mini-stat-icon float-right">
-                                        <nav className="navbar-custom">
-                                            <ul className="navbar-right list-inline float-right mb-0">
-                                                <li className="dropdown notification-list list-inline-item">
-                                                    <div className="dropdown notification-list nav-pro-img">
-                                                        <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                            data-toggle="dropdown" href="#" role="button"
-                                                            aria-haspopup="false" aria-expanded="false">
-                                                            <i className="mdi mdi-menu"></i>
-                                                        </a>
-                                                        <div
-                                                            className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="taskdata.html"> Display
-                                                                Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Edit
-                                                                Task</a>
-                                                            <a className="dropdown-item " href="#"> End Task</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                    <div className="p-20">
-                                        <h5 className="font-16">Project name</h5>
-                                        <p>Project location</p>
-                                    </div>
-                                    <div className="pro-image">
-                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-4 col-xl-4 col-md-4">
-                            <div className="card">
-                                <div className="card-heading">
-                                    <div className="mini-stat-icon float-right">
-                                        <nav className="navbar-custom">
-                                            <ul className="navbar-right list-inline float-right mb-0">
-                                                <li className="dropdown notification-list list-inline-item">
-                                                    <div className="dropdown notification-list nav-pro-img">
-                                                        <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                            data-toggle="dropdown" href="#" role="button"
-                                                            aria-haspopup="false" aria-expanded="false">
-                                                            <i className="mdi mdi-menu"></i>
-                                                        </a>
-                                                        <div
-                                                            className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="taskdata.html"> Display
-                                                                Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Edit
-                                                                Task</a>
-                                                            <a className="dropdown-item " href="#"> End Task</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                    <div className="p-20">
-                                        <h5 className="font-16">Project name</h5>
-                                        <p>Project location</p>
-                                    </div>
-                                    <div className="pro-image">
-                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-sm-4 col-xl-4 col-md-4">
-                            <div className="card">
-                                <div className="card-heading">
-                                    <div className="mini-stat-icon float-right">
-                                        <nav className="navbar-custom">
-                                            <ul className="navbar-right list-inline float-right mb-0">
-                                                <li className="dropdown notification-list list-inline-item">
-                                                    <div className="dropdown notification-list nav-pro-img">
-                                                        <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                            data-toggle="dropdown" href="#" role="button"
-                                                            aria-haspopup="false" aria-expanded="false">
-                                                            <i className="mdi mdi-menu"></i>
-                                                        </a>
-                                                        <div
-                                                            className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="taskdata.html"> Display
-                                                                Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Edit
-                                                                Task</a>
-                                                            <a className="dropdown-item " href="#"> End Task</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                    <div className="p-20">
-                                        <h5 className="font-16">Project name</h5>
-                                        <p>Project location</p>
-                                    </div>
-                                    <div className="pro-image">
-                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
-                                    </div>
-                                </div>
+                                        </div>
+                                    )
+                                })}
                             </div>
                         </div>
                     </div>
-                </div>
-           </div>                                
+    
+                ) : null
+            }
+            {tasks.inprogressTasks && tasks.inprogressTasks.length > 0 ? 
+                 (
+                    <div className="progress-tasks col-md-12">
+                        <div>
+                            <div className="row">
+                                <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
+                                    In progress Tasks
+                                </div>
+                                <div className="col-sm-6 col-xl-6 col-md-6">
+                                    <div className="mini-stat-icon float-right">
+                                        <nav className="navbar-custom">
+                                            <ul className="navbar-right list-inline float-right mb-0">
+                                                <li className="dropdown notification-list list-inline-item">
+                                                    <div className="dropdown notification-list nav-pro-img">
+                                                        <a className="dropdown-toggle nav-link arrow-none nav-user"
+                                                            data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+                                                            aria-expanded="false">
+                                                            <i className="mdi mdi-menu"></i>
+                                                        </a>
+                                                        <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
+                                                            <a className="dropdown-item" href="supervisor-panel.html"> Create Task</a>
+                                                            <a className="dropdown-item d-block" href="addtask.html"> Task Management</a>
+                                                            <a className="dropdown-item " href="#"> Extend List</a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                {tasks.inprogressTasks.map((value, index) => {
+                                    return (
+                                        <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                            <div className="card no-margin">
+                                                <div className="card-heading">
+                                                    <div className="float-left padding10">
+                                                        <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
+                                                        <span>Supervisor</span>
+                                                    </div>
+                                                    <div className="float-right padding10">
+                                                        <p className="text-white no-margin middle-font">
+                                                            {value.name}
+                                                            <div className="dropdown nav-pro-img inline">
+                                                                <a className="dropdown-toggle arrow-none nav-user padding10"
+                                                                    data-toggle="dropdown" role="button"
+                                                                    aria-haspopup="false" aria-expanded="false">
+                                                                    <i className="mdi mdi-menu"></i>
+                                                                </a>
+                                                                <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
+                                                                    <a className="dropdown-item"> Display Task</a>
+                                                                    <a className="dropdown-item d-block"> Edit Task</a>
+                                                                    <a className="dropdown-item"> End Task</a>
+                                                                </div>
+                                                            </div>  
+                                                        </p>
+                                                     
+                                                        <div>DUE BY: {value.startTime}</div>
+                                                    </div>
+                                                    <div className="pro-image">
+                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+    
+                ) : null
+            }
+            {tasks.notStartedTasks && tasks.notStartedTasks.length > 0 ? 
+                 (
+                    <div className="progress-tasks col-md-12">
+                        <div>
+                            <div className="row">
+                                <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
+                                    Not started Tasks
+                                </div>
+                                <div className="col-sm-6 col-xl-6 col-md-6">
+                                    <div className="mini-stat-icon float-right">
+                                        <nav className="navbar-custom">
+                                            <ul className="navbar-right list-inline float-right mb-0">
+                                                <li className="dropdown notification-list list-inline-item">
+                                                    <div className="dropdown notification-list nav-pro-img">
+                                                        <a className="dropdown-toggle nav-link arrow-none nav-user"
+                                                            data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+                                                            aria-expanded="false">
+                                                            <i className="mdi mdi-menu"></i>
+                                                        </a>
+                                                        <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
+                                                            <a className="dropdown-item" href="supervisor-panel.html"> Create Task</a>
+                                                            <a className="dropdown-item d-block" href="addtask.html"> Task Management</a>
+                                                            <a className="dropdown-item " href="#"> Extend List</a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                {tasks.notStartedTasks.map((value, index) => {
+                                    return (
+                                        <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                            <div className="card no-margin">
+                                                <div className="card-heading">
+                                                    <div className="float-left padding10">
+                                                        <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
+                                                        <span>Supervisor</span>
+                                                    </div>
+                                                    <div className="float-right padding10">
+                                                        <p className="text-white no-margin middle-font">
+                                                            {value.name}
+                                                            <div className="dropdown nav-pro-img inline">
+                                                                <a className="dropdown-toggle arrow-none nav-user padding10"
+                                                                    data-toggle="dropdown" role="button"
+                                                                    aria-haspopup="false" aria-expanded="false">
+                                                                    <i className="mdi mdi-menu"></i>
+                                                                </a>
+                                                                <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
+                                                                    <a className="dropdown-item"> Display Task</a>
+                                                                    <a className="dropdown-item d-block"> Edit Task</a>
+                                                                    <a className="dropdown-item"> End Task</a>
+                                                                </div>
+                                                            </div>  
+                                                        </p>
+                                                     
+                                                        <div>DUE BY: {value.startTime}</div>
+                                                    </div>
+                                                    <div className="pro-image">
+                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+    
+                ) : null
+            }
+
         </React.Fragment>
     )
 }

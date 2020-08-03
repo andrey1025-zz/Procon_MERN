@@ -33,7 +33,10 @@ import {
     GET_ENGINEERS_FAILURE,
     GET_MEMBERS_REQUEST,
     GET_MEMBERS_SUCCESS,
-    GET_MEMBERS_FAILURE
+    GET_MEMBERS_FAILURE,
+    GET_TASKS_REQUEST,
+    GET_TASKS_SUCCESS,
+    GET_TASKS_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -118,6 +121,30 @@ export const getProjectDetail = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_PROJECT_DETAIL_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getTasks = (projectId) => async dispatch => {
+
+    let data = {
+        projectId: projectId
+    };
+    dispatch({
+        type: GET_TASKS_REQUEST
+    });
+
+    const response = await api.post('/project/tasks', data);
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_TASKS_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_TASKS_FAILURE,
             payload: response.data
         })
     }

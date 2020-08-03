@@ -48,11 +48,14 @@ const SupervisorHome = (props) => {
     const [showAddTask, setShowAddTask] = useState(false);
 
     const projectId = props.match.params.id;
+    localStorage.setItem("projectId", projectId);
+
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         dispatch(addTask(data, setErrors, setSubmitting));
     }
+
     const show_newTaskForm = () => setShowAddTask(true);
     const hide_newTaskForm = () => setShowAddTask(false);
     

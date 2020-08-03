@@ -14,7 +14,7 @@ const responseStatus = require("../enums/responseStatus");
 const RefreshToken = require("../models/refreshTokenModel");
 const { basicDetails, projectDetails } = require('../services/helperService');
 const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
-const { Created, NotStart, Inprogress, Completed } = require('../enums/taskStatus');
+const { NotStart, Inprogress, Completed } = require('../enums/taskStatus');
 const { Console } = require('console');
 const { ObjectID } = require('mongodb');
 const saltRounds = 10;
@@ -258,25 +258,26 @@ async function getTasks(projectId) {
     };
     try {
         const project = await Project.findById(projectId);
-        var notStartedTasks = [];
-        var inprogressTasks = [];
-        var completedTasks = [];
+
+        var tasks = {
+            notStartedTasks : [],
+            inprogressTasks : [],
+            completedTasks : []
+        }
         try {
             project.tasks.forEach(task => {
                 if(task.status == Inprogress && task.members != null)
-                    inprogressTasks.push(task);
+                    tasks.inprogressTasks.push(task);
                 if(task.status == Completed && task.members != null )
-                    completedTasks.push(task);
-                if(task.status == NotStart && task.members != null )
-                    notStartedTasks.push(task);
+                    tasks.completedTasks.push(task);
+                if(task.status == NotStart)
+                    tasks.notStartedTasks.push(task);
             });
             return {
                 ...response,
                 status: responseStatus.success,
                 errorMessage: {},
-                inprogressTasks: inprogressTasks,
-                completedTasks: completedTasks,
-                notStartedTasks: notStartedTasks
+                tasks: tasks
             };
         } catch (error) {
             throw error;

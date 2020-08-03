@@ -14,14 +14,17 @@ import {
     GET_ENGINEERS_SUCCESS,
     GET_ENGINEERS_FAILURE,
     GET_MEMBERS_SUCCESS,
-    GET_MEMBERS_FAILURE
+    GET_MEMBERS_FAILURE,
+    GET_TASKS_SUCCESS,
+    GET_TASKS_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
     model_path: null,
     projects : [],
     progress: 0,
-    superintendents: []
+    superintendents: [],
+    tasks:{}
 };
 
 export default (state = initialState, action) => {
@@ -108,6 +111,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 members: [],
+            };
+        case GET_TASKS_SUCCESS:
+            return {
+                ...state,
+                tasks: action.payload.tasks,
+            };
+        case GET_TASKS_FAILURE:
+            return {
+                ...state,
+                tasks: {},
             };
         default:
             return state;

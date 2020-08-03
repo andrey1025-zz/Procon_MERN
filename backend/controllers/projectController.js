@@ -128,7 +128,8 @@ addTask = (req, res, next) => {
 
 // Get Tasks
 getTasks = (req, res, next) => {
-    projectService.getTasks()
+    const { projectId: projectId } = req.body;
+    projectService.getTasks(projectId)
         .then(response => {
             if (response.status === responseStatus.success)
                 setTokenCookie(res, response.refreshToken);

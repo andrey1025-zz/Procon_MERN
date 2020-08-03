@@ -83,7 +83,7 @@ const ManagerWelcome = () => {
                           </div>
                           <div className="p-20">
                               <h5 className="font-16">{value.name}</h5>
-                              <p>{value.location}</p>
+                              <p className="text-overflow">{value.location}</p>
                           </div>
                           <div className="pro-image">
                               <Link to={`/${getSimpleRoleName(user.role)}/home`} params={{ projectInfo: value }}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
