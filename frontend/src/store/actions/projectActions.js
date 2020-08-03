@@ -155,12 +155,12 @@ export const getSuperintendents = () => async dispatch => {
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: GET_SUPERINTENDENTS_SUCCESS,
-            payload: response.data
+            payload: response.data.superintendents
         });
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_SUPERINTENDENTS_FAILURE,
-            payload: response.data
+            payload: response.data.superintendents
         })
     }
 };
@@ -176,12 +176,12 @@ export const getEngineers = () => async dispatch => {
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: GET_ENGINEERS_SUCCESS,
-            payload: response.data
+            payload: response.data.engnineers
         });
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_ENGINEERS_FAILURE,
-            payload: response.data
+            payload: response.data.engineers
         })
     }
 };
@@ -197,12 +197,12 @@ export const getMembers = () => async dispatch => {
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: GET_MEMBERS_SUCCESS,
-            payload: response.data
+            payload: response.data.members
         });
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_MEMBERS_FAILURE,
-            payload: response.data
+            payload: response.data.members
         })
     }
 };

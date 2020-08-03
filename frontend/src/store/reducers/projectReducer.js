@@ -21,6 +21,7 @@ const initialState = {
     model_path: null,
     projects : [],
     progress: 0,
+    superintendents: []
 };
 
 export default (state = initialState, action) => {

@@ -268,7 +268,7 @@ async function getTasks(projectId) {
                 if(task.status == Completed && task.members != null )
                     completedTasks.push(task);
                 if(task.status == NotStart && task.members != null )
-                    completedTasks.push(task);
+                    notStartedTasks.push(task);
             });
             return {
                 ...response,
@@ -349,12 +349,16 @@ async function getSuperintendents() {
     };
     try {
         const superintendents = await User.find({role: SupervisorRole});
+        let data = []
+        superintendents.forEach(item => {
+            data.push(basicDetails(item));
+        });
         try {
             return {
                 ...response,
                 status: responseStatus.success,
                 errorMessage: {},
-                superintendents: superintendents
+                superintendents: data
             };
         } catch (error) {
             throw error;

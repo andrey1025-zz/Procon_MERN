@@ -79,17 +79,17 @@ const SupervisorHome = (props) => {
     }, []);
 
     // 
-    useEffect(() => {
-        dispatch(getSuperintendents());
-    }, []);
+    // useEffect(() => {
+    //     dispatch(getSuperintendents());
+    // }, []);
 
-    useEffect(() => {
-        dispatch(getEngineers());
-    }, []);
+    // useEffect(() => {
+    //     dispatch(getEngineers());
+    // }, []);
 
-    useEffect(() => {
-        dispatch(getMembers());
-    }, []);
+    // useEffect(() => {
+    //     dispatch(getMembers());
+    // }, []);
 
     useEffect(() => {
         $(".Forhome").hide();
