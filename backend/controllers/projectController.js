@@ -189,6 +189,15 @@ inviteSuperintendent = (req, res, next) => {
     }).catch(next)
 };
 
+// Invite Superintendent to Project
+inviteMember = (req, res, next) => {
+    const { projectId: projectId, taskId: taskId, memberId: memberId } = req.body;
+    const { sub: userId } = req.user;
+    projectService.inviteMember({ projectId, taskId, memberId, userId }).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 getForgeAccessToken = (req, res, next) => {
     Axios({
         method: 'POST',
@@ -354,6 +363,7 @@ module.exports = {
     getMembers,
     getTaskDetail,
     inviteSuperintendent,
+    inviteMember,
     createBucket,
     getBucketDetail,
     uploadToBucket,

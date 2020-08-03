@@ -20,6 +20,9 @@ const SupervisorTaskManage = () => {
     const projects = useSelector(state => state.project.projects);
     const dispatch = useDispatch();
 
+    // const projectId = useSelector(state => state.projectId);
+    // console.log("task management project id", projectId);
+
     useEffect(() => {
     }, [projects]);
     return (

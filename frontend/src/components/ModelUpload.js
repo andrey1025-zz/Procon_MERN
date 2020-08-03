@@ -27,12 +27,12 @@ const ModelUpload = (props) => {
         if (event.target.files[0]) {
             let newFile = event.target.files[0];
             let ext = newFile.name.split('.')[1].toLowerCase();
-            if (ext !== '3dm') {
-                setErrors({ fatalError: 'Models with only .3dm are acceptable' });
+            if (ext !== '3dm' && ext !== 'obj' && ext !== 'zip' && ext !== 'fbx' && ext !== 'max' && ext !== 'dae') {
+                setErrors({ fatalError: 'Models with only .3dm, .obj, .zip, .fbx are acceptable' });
                 fileInputRef.current.value = "";
                 return;
             }
-            else if (newFile.size > 3000000) {
+            else if (newFile.size > 300000000) {
                 setErrors({ fatalError: 'Models with size more than 3MB are not acceptable' });
                 fileInputRef.current.value = "";
                 return;

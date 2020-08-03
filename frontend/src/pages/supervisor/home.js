@@ -8,6 +8,7 @@ import ForgeViewer from 'react-forge-viewer';
 
 import * as Yup from 'yup';
 import $ from 'jquery'; 
+import { setNestedObjectValues } from 'formik';
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().max(100).required().label("name"),

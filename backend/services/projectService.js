@@ -203,8 +203,12 @@ async function addTask({ name, startTime, endTime, equipTools, components, mater
         } else {
             // Create new project
             const task = {
-                _id: new ObjectID(), name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, memberId: null
+                _id: new ObjectID(), name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, members: null
             };
+
+            // const task = {
+            //     _id: new ObjectID(), name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, memberId: null, memberName: null
+            // };
             
             await Project.update(
                 {_id: projectId},
@@ -259,9 +263,11 @@ async function getTasks(projectId) {
         var completedTasks = [];
         try {
             project.tasks.forEach(task => {
-                if(task.status == Inprogress && task.memberId != null)
+                if(task.status == Inprogress && task.members != null)
                     inprogressTasks.push(task);
-                if(task.status == Completed && task.memberId != null )
+                if(task.status == Completed && task.members != null )
+                    completedTasks.push(task);
+                if(task.status == NotStart && task.members != null )
                     completedTasks.push(task);
             });
             return {
@@ -269,7 +275,8 @@ async function getTasks(projectId) {
                 status: responseStatus.success,
                 errorMessage: {},
                 inprogressTasks: inprogressTasks,
-                completedTasks: completedTasks
+                completedTasks: completedTasks,
+                notStartedTasks: notStartedTasks
             };
         } catch (error) {
             throw error;
@@ -458,6 +465,62 @@ async function inviteSuperintendent({ projectId, superintendentId, userId }) {
     }
 };
 
+// Invite Member
+async function inviteMember({ projectId, taskId, memberId, userId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const member = await User.findById(memberId);
+        await Project.update(
+            { _id: projectId, "tasks._id": taskId },
+            {
+                $push: {
+                    "tasks.$.members": {
+                        memberId: memberId,
+                        memberName: member.name
+                    },
+                    status: NotStart
+                },
+            }
+        )
+        const notification = new Notification({
+            from: userId,
+            to: memberId,
+            message: "The Superintendent invited you to the task as member."
+        });
+
+        const session = await mongoose.startSession();
+        try {
+            const opts = { session, returnOriginal: false };
+            //await session.startTransaction();
+            await RefreshToken.createCollection();
+            await Notification.createCollection();
+            await notification.save(opts);
+            const jwtToken = generateJwtToken(user);
+            const refreshToken = generateRefreshToken(user, ipAddress);
+            await refreshToken.save(opts);
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                token: jwtToken,
+                refreshToken: refreshToken.token
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 
 //#region helper functions
 function generateJwtToken(user) {
@@ -490,5 +553,6 @@ module.exports = {
     getEngineers,
     getMembers,
     inviteSuperintendent,
+    inviteMember,
     getUsers
 };
