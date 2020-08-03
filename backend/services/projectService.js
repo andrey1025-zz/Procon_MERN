@@ -419,18 +419,20 @@ async function getMembers() {
 };
 
 // Invite Superintendent
-async function inviteSuperintendent({ projectId, superintendentId, userId }) {
+async function inviteSuperintendent({ projectId, superintendentId, userId, ipAddress }) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
+        const user = User.findById(userId);
         const superintendent = await User.findById(superintendentId);
+
         await Project.update(
             {_id: projectId},
             {
-                $push: {
-                    superintendent: superintendent
+                $addToSet: {
+                    superintendent: basicDetails(superintendent)
                 }
             }
         )
@@ -477,6 +479,7 @@ async function inviteMember({ projectId, taskId, memberId, userId }) {
         errorMessage: {}
     };
     try {
+        const user =  User.findById(userId);
         const member = await User.findById(memberId);
         await Project.update(
             { _id: projectId, "tasks._id": taskId },

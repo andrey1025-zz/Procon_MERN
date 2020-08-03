@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ProjectManagerRole } from '../../enums/roles';
-import { getSuperintendents } from '../../store/actions/projectActions';
+import { getSuperintendents, inviteSuperintendent } from '../../store/actions/projectActions';
 
 import $ from 'jquery'; 
 
@@ -10,18 +10,26 @@ const ManagerHome = (props) => {
     const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
     const superintendents = useSelector(state => state.project.superintendents);
+    const projectId = props.match.params.id;
 
     useEffect(() => {
         $(".Forhome").hide();
         $("#side-menu").show();
     });
     
-    const handleInviteMember = () => {
+    const handleOpenMembersDialog = () => {
         dispatch(getSuperintendents());
     }
 
+    const handleIniviteSuperintendent = (index) => {
+        let data = {
+            projectId: projectId,
+            superintendentId: superintendents[index].id
+        }
+        dispatch(inviteSuperintendent(data));
+    }
+
     useEffect(() => {
-        console.log(superintendents);
     }, [superintendents]);
 
     return (
@@ -47,7 +55,7 @@ const ManagerHome = (props) => {
             </div>
             <div className="col-sm-3 col-xl-3 col-md-3">
                 <div className="text-center add-member custom-rounded">
-                    <a onClick={handleInviteMember} className="md-plus" data-toggle="modal" data-target="#addMemberModal"><i className="fas fa-plus"></i></a>
+                    <a onClick={handleOpenMembersDialog} className="md-plus" data-toggle="modal" data-target="#addMemberModal"><i className="fas fa-plus"></i></a>
                 </div>
                 <div className="col-sm-12 col-xl-12 col-md-12">
                     <div className="modal fade" id="addMemberModal" role="dialog">
@@ -71,7 +79,7 @@ const ManagerHome = (props) => {
                                         superintendents.map((value, index) => {
                                             return (
                                                 <div className="col-sm-3 col-xl-3 col-md-3" key={index}>
-                                                    <div className="member-status custom-rounded mb-2">
+                                                    <div key={index} className="member-status custom-rounded mb-2 member-link" onClick={() => handleIniviteSuperintendent(index)}>
                                                         <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} className="roundedImg    thumb-md" />
                                                         </div>

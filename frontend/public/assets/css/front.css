@@ -16,6 +16,7 @@
 }
 .dropdown-item{
   color: #a5a6ad !important;
+  cursor: pointer;
 }
 .roundedImg{
   border-radius: 5px;
@@ -236,4 +237,7 @@
 }
 .inline{
   display: inline-block;
+}
+.member-link{
+  cursor: pointer;
 }

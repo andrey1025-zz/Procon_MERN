@@ -40,7 +40,7 @@ const ManagerWelcome = () => {
         errors['coverImage'] = "Cover Image is a required field";
     if(model_path == null)
         errors['model'] = "Model is a required field";
-    console.log(model_path);
+
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
       data.coverImage = cover_path;
       data.model = model_path;
@@ -86,7 +86,7 @@ const ManagerWelcome = () => {
                               <p className="text-overflow">{value.location}</p>
                           </div>
                           <div className="pro-image">
-                              <Link to={`/${getSimpleRoleName(user.role)}/home`} params={{ projectInfo: value }}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
+                              <Link to={`/${getSimpleRoleName(user.role)}/home/` + value._id} params={{ projectInfo: value }}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
                           </div>
                       </div>
                   </div>
