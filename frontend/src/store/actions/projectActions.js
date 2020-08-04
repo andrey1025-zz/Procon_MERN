@@ -134,6 +134,7 @@ export const getTasks = (projectId) => async dispatch => {
     let data = {
         projectId: projectId
     };
+
     dispatch({
         type: GET_TASKS_REQUEST
     });
@@ -143,6 +144,7 @@ export const getTasks = (projectId) => async dispatch => {
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: GET_TASKS_SUCCESS,
+            payload:response.data
         });
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
