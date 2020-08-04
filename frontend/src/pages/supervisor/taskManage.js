@@ -178,7 +178,7 @@ const SupervisorTaskManage = () => {
                                                         <span>Supervisor</span>
                                                     </div>
                                                     <div className="float-right padding10">
-                                                        <p className="text-white no-margin middle-font">
+                                                        <div className="text-white no-margin middle-font">
                                                             {value.name}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
@@ -192,8 +192,7 @@ const SupervisorTaskManage = () => {
                                                                     <a className="dropdown-item"> End Task</a>
                                                                 </div>
                                                             </div>  
-                                                        </p>
-                                                     
+                                                        </div>
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
@@ -250,7 +249,7 @@ const SupervisorTaskManage = () => {
                                                         <span>Supervisor</span>
                                                     </div>
                                                     <div className="float-right padding10">
-                                                        <p className="text-white no-margin middle-font">
+                                                        <div className="text-white no-margin middle-font">
                                                             {value.name}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
@@ -264,8 +263,7 @@ const SupervisorTaskManage = () => {
                                                                     <a className="dropdown-item"> End Task</a>
                                                                 </div>
                                                             </div>  
-                                                        </p>
-                                                     
+                                                        </div>
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
@@ -322,7 +320,7 @@ const SupervisorTaskManage = () => {
                                                         <span>Supervisor</span>
                                                     </div>
                                                     <div className="float-right padding10">
-                                                        <p className="text-white no-margin middle-font">
+                                                        <div className="text-white no-margin middle-font">
                                                             {value.name}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
@@ -336,8 +334,7 @@ const SupervisorTaskManage = () => {
                                                                     <a className="dropdown-item"> End Task</a>
                                                                 </div>
                                                             </div>  
-                                                        </p>
-                                                     
+                                                        </div>
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">

@@ -48,6 +48,7 @@ const SupervisorHome = (props) => {
     const [showAddTask, setShowAddTask] = useState(false);
 
     const projectId = props.match.params.id;
+    window.localStorage.setItem("projectId", projectId);
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
@@ -297,8 +298,8 @@ const SupervisorHome = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="button" className="btn btn-info btn-lg task-btn mr-20" onClick={hide_newTaskForm}>Cancel</button>
-                                            <SubmitButton title='Publish' className="btn btn-info btn-lg task-btn mr-20" loading={loading} disabled={loading} />
+                                            <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={hide_newTaskForm}>Cancel</button>
+                                            <SubmitButton title='Publish' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
                                         </Form>
                                     </div>
                                 </div>  
