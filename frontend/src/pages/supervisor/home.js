@@ -393,8 +393,8 @@ const SupervisorHome = (props) => {
                                         </a>
                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
                                             <a className="dropdown-item"> Superintendent</a>
-                                            <a className="dropdown-item d-block"> Engineer</a>
-                                            <a className="dropdown-item " href="#"> Member</a>
+                                            <a className="dropdown-item"> Engineer</a>
+                                            <a className="dropdown-item"> Member</a>
                                         </div>                                    
                                     </div>
                                     <div className="col-md-6 col-sm-6 text-right task-status">
