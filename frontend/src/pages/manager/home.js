@@ -18,6 +18,7 @@ const ManagerHome = (props) => {
         $("#side-menu").show();
 
         $(".member-link").click(function(){
+            // alert("afdsfdsf");
             if($(this).hasClass('clicked')){
                 $(this).removeClass('clicked');
                 $(".btn-invite").parent().hide();

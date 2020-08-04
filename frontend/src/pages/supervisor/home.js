@@ -94,7 +94,7 @@ const SupervisorHome = (props) => {
             let inviteRole = $(this).text();
             setRole(inviteRole);
             $('.selected-role').html(inviteRole + "<i class='fa fa-sort-down'></i>");
-            switch(inviteRole){
+            switch(inviteRole.trim()){
                 case SupervisorRole:
                     dispatch(getSuperintendents());
                     inviteList = superintendents;
