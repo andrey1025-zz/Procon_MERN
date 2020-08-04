@@ -126,6 +126,10 @@
 }
 .task-info{
   margin-top: 20px;
+  display: none;
+}
+.visible{
+  display: block !important;
 }
 .mr-20{
   margin-right: 20px;

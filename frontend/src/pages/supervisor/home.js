@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
-import { ProjectManagerRole, SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
+import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
 import { addTask, getProjectDetail, getViewerForgeToken, getUsers, getSuperintendents, getEngineers, getMembers } from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
 
@@ -43,9 +43,7 @@ const initialValues = {
 };
 
 const SupervisorHome = (props) => {
-    const user = useSelector(state => state.auth.user);
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
-    const [showAddTask, setShowAddTask] = useState(false);
 
     const projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
@@ -54,18 +52,23 @@ const SupervisorHome = (props) => {
         data.projectId = projectId;
         dispatch(addTask(data, setErrors, setSubmitting));
     }
-    const show_newTaskForm = () => setShowAddTask(true);
-    const hide_newTaskForm = () => setShowAddTask(false);
+    const show_newTaskForm = () => {
+        $(".task-info").addClass("visible");
+    };
+    const hide_newTaskForm = () => {
+        $(".task-info").removeClass("visible");
+    };
     
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
-    const superintendents = useSelector(state => state.project.superintendents);
     const engineers = useSelector(state => state.project.engineers);
+    console.log("===============");
+
     const members = useSelector(state => state.project.members);
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
     const [role, setRole] = useState(null);
-    let inviteList = [];
+    // let inviteList = [];
 
     useEffect(() => {
         if(project){
@@ -82,51 +85,33 @@ const SupervisorHome = (props) => {
     }, []);
 
     const handleOpenMembersDialog = () => {
-        setRole(SupervisorRole);
-        dispatch(getSuperintendents());
-        inviteList = superintendents;
+        setRole(EngineerRole);
+        dispatch(getEngineers());
     }
 
     useEffect(() => {
         $(".Forhome").hide();
         $("#side-menu").show();
 
-        $(".role-dropdown > .dropdown-item").click(function(){
-            let inviteRole = $(this).text();
-            setRole(inviteRole);
-            $('.selected-role').html(inviteRole + "<i class='fa fa-sort-down'></i>");
-            switch(inviteRole){
-                case SupervisorRole:
-                    dispatch(getSuperintendents());
-                    inviteList = superintendents;
-                    break;
-                case EngineerRole:
-                    dispatch(getEngineers());
-                    inviteList = engineers;
-                    break;
-                case MemberRole:
-                    dispatch(getMembers());
-                    inviteList = members;
-            }
-        });
+        // $(".role-dropdown > .dropdown-item").click(function(){
+        //     let inviteRole = $(this).text();
+        //     setRole(inviteRole);
+        //     $('.selected-role').html(inviteRole + "<i class='fa fa-sort-down'></i>");
+        //     switch(inviteRole){
+        //         case SupervisorRole:
+        //             dispatch(getSuperintendents());
+        //             inviteList = superintendents;
+        //             break;
+        //         case EngineerRole:
+        //             dispatch(getEngineers());
+        //             inviteList = engineers;
+        //             break;
+        //         case MemberRole:
+        //             dispatch(getMembers());
+        //             inviteList = members;
+        //     }
+        // });
     });
-
-    useEffect(() => {
-        console.log("Effect changed", role);
-        // switch(role){
-        //     case SupervisorRole:
-        //         dispatch(getSuperintendents());
-        //         inviteList = superintendents;
-        //         break;
-        //     case EngineerRole:
-        //         dispatch(getEngineers());
-        //         inviteList = engineers;
-        //         break;
-        //     case MemberRole:
-        //         dispatch(getMembers());
-        //         inviteList = members;
-        // }
-    })
 
     const handleViewerError = (error) => {
         console.log('Error loading viewer.');
@@ -161,15 +146,6 @@ const SupervisorHome = (props) => {
     const handleModelError = (viewer, error) => {
         console.log('Error loading the model.');
     }
-       
-    // useEffect(() => {
-    // }, [superintendents]);
-
-    // useEffect(() => {
-    // }, [engineers]);
-
-    // useEffect(() => {
-    // }, [members]);
 
     return (
         <React.Fragment>
@@ -195,117 +171,115 @@ const SupervisorHome = (props) => {
                 </div>
                 <div className="progress mt-4 mb-4">
                     <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div className="endTask">
-                            <p>Project End Time : 2020.06.27</p>
-                            <div className="endTaskBrief">
-                                <p></p>
-                                <div></div>
-                            </div>
-                        </div>
-                        {
-                            showAddTask ? (
-                                <div className="task-info">
-                                    <div className="scrollbar" id="style-2">
-                                        <Form
-                                            onSubmit={handleSubmit}
-                                            validationSchema={validationSchema}
-                                            initialValues={initialValues}
-                                        >
-                                            <div className="force-overflow">
-                                                <div className="form-group-task">
-                                                    <label>Task name:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="name"/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group-task">
-                                                    <label>Task expected start time:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" type="time" name="startTime"/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group-task">
-                                                    <label>Task expected end time:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" type="time" name="endTime"/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group-task">
-                                                    <label>Equipment and tools:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="equipTools"/>
-                                                    </div>
-                                                </div>
-        
-                                                <div className="form-group-task">
-                                                    <label>Components:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="components"/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group-task">
-                                                    <label>Materials:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="materials"/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group-task">
-                                                    <label>Working area:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="workingArea"/>
-                                                    </div>
-                                                </div>
-        
-                                                <div className="form-group-task">
-                                                    <label>Weather:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="weather"/>
-                                                    </div>
-                                                </div>
-        
-                                                <div className="form-group-task">
-                                                    <label>Site condition:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="siteCondition"/>
-                                                    </div>
-                                                </div>
-        
-                                                <div className="form-group-task">
-                                                    <label>Nearby irrelevant objects:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="nearbyIrrelevantObjects"/>
-                                                    </div>
-                                                </div>
-        
-                                                <div className="form-group-task">
-                                                    <label>Cultural and legal constraints:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="cultural_legal_constraints"/>
-                                                    </div>
-                                                </div>
-        
-                                                <div className="form-group-task">
-                                                    <label>Technical and safety specifications:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="technical_safety_specifications"/>
-                                                    </div>
-                                                </div>
-                                                <div className="form-group-task">
-                                                    <label>Public relation requirements:</label>
-                                                    <div>
-                                                        <FormField className="form-control-task" name="publicRelationRequirements"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={hide_newTaskForm}>Cancel</button>
-                                            <SubmitButton title='Publish' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
-                                        </Form>
-                                    </div>
-                                </div>  
-                            ) : null
-                        }                
                 </div>
+                <div className="endTask">
+                    <p>Project End Time : 2020.06.27</p>
+                    <div className="endTaskBrief">
+                        <p></p>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div className="task-info">
+                    <div className="scrollbar" id="style-2">
+                        <Form
+                            onSubmit={handleSubmit}
+                            validationSchema={validationSchema}
+                            initialValues={initialValues}
+                        >
+                            <div className="force-overflow">
+                                <div className="form-group-task">
+                                    <label>Task name:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="name"/>
+                                    </div>
+                                </div>
+                                <div className="form-group-task">
+                                    <label>Task expected start time:</label>
+                                    <div>
+                                        <FormField className="form-control-task" type="time" name="startTime"/>
+                                    </div>
+                                </div>
+                                <div className="form-group-task">
+                                    <label>Task expected end time:</label>
+                                    <div>
+                                        <FormField className="form-control-task" type="time" name="endTime"/>
+                                    </div>
+                                </div>
+                                <div className="form-group-task">
+                                    <label>Equipment and tools:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="equipTools"/>
+                                    </div>
+                                </div>
+
+                                <div className="form-group-task">
+                                    <label>Components:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="components"/>
+                                    </div>
+                                </div>
+                                <div className="form-group-task">
+                                    <label>Materials:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="materials"/>
+                                    </div>
+                                </div>
+                                <div className="form-group-task">
+                                    <label>Working area:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="workingArea"/>
+                                    </div>
+                                </div>
+
+                                <div className="form-group-task">
+                                    <label>Weather:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="weather"/>
+                                    </div>
+                                </div>
+
+                                <div className="form-group-task">
+                                    <label>Site condition:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="siteCondition"/>
+                                    </div>
+                                </div>
+
+                                <div className="form-group-task">
+                                    <label>Nearby irrelevant objects:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="nearbyIrrelevantObjects"/>
+                                    </div>
+                                </div>
+
+                                <div className="form-group-task">
+                                    <label>Cultural and legal constraints:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="cultural_legal_constraints"/>
+                                    </div>
+                                </div>
+
+                                <div className="form-group-task">
+                                    <label>Technical and safety specifications:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="technical_safety_specifications"/>
+                                    </div>
+                                </div>
+                                <div className="form-group-task">
+                                    <label>Public relation requirements:</label>
+                                    <div>
+                                        <FormField className="form-control-task" name="publicRelationRequirements"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={hide_newTaskForm}>Cancel</button>
+                            <SubmitButton title='Publish' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
+                        </Form>
+                    </div>
+                </div>  
+                                       
+            </div>
             <div className="col-sm-3 col-xl-3 col-md-3">
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
