@@ -278,7 +278,7 @@ const SupervisorHome = (props) => {
                                 <div className="form-group-task">
                                     <label>Task name:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="name"/>
+                                        <FormTextarea className="form-control-task" name="name"/>
                                     </div>
                                 </div>
                                 <div className="form-group-task">
@@ -296,67 +296,67 @@ const SupervisorHome = (props) => {
                                 <div className="form-group-task">
                                     <label>Equipment and tools:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="equipTools"/>
+                                        <FormTextarea className="form-control-task" name="equipTools"/>
                                     </div>
                                 </div>
 
                                 <div className="form-group-task">
                                     <label>Components:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="components"/>
+                                        <FormTextarea className="form-control-task" name="components"/>
                                     </div>
                                 </div>
                                 <div className="form-group-task">
                                     <label>Materials:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="materials"/>
+                                        <FormTextarea className="form-control-task" name="materials"/>
                                     </div>
                                 </div>
                                 <div className="form-group-task">
                                     <label>Working area:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="workingArea"/>
+                                        <FormTextarea className="form-control-task" name="workingArea"/>
                                     </div>
                                 </div>
 
                                 <div className="form-group-task">
                                     <label>Weather:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="weather"/>
+                                        <FormTextarea className="form-control-task" name="weather"/>
                                     </div>
                                 </div>
 
                                 <div className="form-group-task">
                                     <label>Site condition:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="siteCondition"/>
+                                        <FormTextarea className="form-control-task" name="siteCondition"/>
                                     </div>
                                 </div>
 
                                 <div className="form-group-task">
                                     <label>Nearby irrelevant objects:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="nearbyIrrelevantObjects"/>
+                                        <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects"/>
                                     </div>
                                 </div>
 
                                 <div className="form-group-task">
                                     <label>Cultural and legal constraints:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="cultural_legal_constraints"/>
+                                        <FormTextarea className="form-control-task" name="cultural_legal_constraints"/>
                                     </div>
                                 </div>
 
                                 <div className="form-group-task">
                                     <label>Technical and safety specifications:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="technical_safety_specifications"/>
+                                        <FormTextarea className="form-control-task" name="technical_safety_specifications"/>
                                     </div>
                                 </div>
                                 <div className="form-group-task">
                                     <label>Public relation requirements:</label>
                                     <div>
-                                        <FormField className="form-control-task" name="publicRelationRequirements"/>
+                                        <FormTextarea className="form-control-task" name="publicRelationRequirements"/>
                                     </div>
                                 </div>
                             </div>
