@@ -57,8 +57,10 @@ const initialValues = {
 const SupervisorHome = (props) => {
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
     var index = 0;
-    const projectId = props.match.params.id;
+    var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
+    if(projectId == '')
+        projectId = window.localStorage.getItem("projectId");
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
