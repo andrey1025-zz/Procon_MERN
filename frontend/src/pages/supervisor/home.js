@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, FormField, SubmitButton } from '../../components/form';
+import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
 import { 
@@ -66,9 +66,11 @@ const SupervisorHome = (props) => {
     }
     const show_newTaskForm = () => {
         $(".task-info").addClass("visible");
+        $(".member-panel").show();
     };
     const hide_newTaskForm = () => {
         $(".task-info").removeClass("visible");
+        $(".member-panel").hide();
     };
     
     const project = useSelector(state => state.project.project);
@@ -98,6 +100,7 @@ const SupervisorHome = (props) => {
 
     const handleOpenMembersDialog = () => {
         setRole(SupervisorRole);
+        $('.selected-role').html(SupervisorRole + "<i class='fa fa-sort-down'></i>");
         dispatch(getSuperintendents());
     }
 
@@ -166,12 +169,13 @@ const SupervisorHome = (props) => {
                         var selected_index = $(this).data('index');
                         data.memberIds.push(inviteList[selected_index]._id);
                     });
-                    data.taskId = "5f2914194897f7703c4f4118";
+                    data.taskId = "5f2a0a244897f7703c4f4121";
                     dispatch(inviteMember(data));
                 } else {
                     alert("You can only invite members in task.");
                 }
         }
+        $(".member-link").removeClass('clicked');
     }
 
     switch(role){
@@ -361,7 +365,7 @@ const SupervisorHome = (props) => {
                 </div>  
                                        
             </div>
-            <div className="col-sm-3 col-xl-3 col-md-3">
+            <div className="col-sm-3 col-xl-3 col-md-3 member-panel" style={{display: 'none'}}>
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
                         <div className="friends-suggestions">

@@ -14,7 +14,7 @@ const responseStatus = require("../enums/responseStatus");
 const RefreshToken = require("../models/refreshTokenModel");
 const { basicDetails, projectDetails } = require('../services/helperService');
 const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
-const { NotStart, Inprogress, Completed } = require('../enums/taskStatus');
+const { NotStart, Inprogress, Completed, Created } = require('../enums/taskStatus');
 const { Console } = require('console');
 const { ObjectID } = require('mongodb');
 const saltRounds = 10;
@@ -538,25 +538,26 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
     };
     try {
         const user =  User.findById(userId);
-        let members = []
+        let members = [];
         memberIds.forEach(id => {
-            let member_detail = {};
-            const member = User.findById(id);
-            member_detail = basicDetails(member);
-            members.push(member_detail);
+            members.push({id: id, status: NotStart});
         });
         await Project.update(
-            { _id: projectId, "tasks._id": taskId },
+            { _id: projectId },
             {
                 $push: {
-                    "tasks.$.members": {
-                        $each: members
-                    },
-                    status: NotStart
+                    "tasks.$[elem].members": { $each: members }
                 },
+                $set: {
+                    "tasks.$[elem].status": NotStart
+                }
+            },
+            {
+                multi: true,
+                arrayFilters: [ { "elem._id": { $ne: taskId } } ]
             }
         )
-
+        
         const session = await mongoose.startSession();
         try {
             const opts = { session, returnOriginal: false };
