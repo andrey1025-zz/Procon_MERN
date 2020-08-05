@@ -12,7 +12,7 @@ const storageEngine = multer.diskStorage({
 const uploadModel = multer({
     storage: storageEngine,
     limits: {
-        fileSize: 300000000
+        fileSize: 600000000
     },
     fileFilter: (req, file, cb) => {
         validateModel(file, cb)
@@ -21,7 +21,7 @@ const uploadModel = multer({
 
 
 const validateModel = function (file, cb) {
-    allowedFileTypes = /3dm|svf|zip|obj|fbx|max|dae/;
+    allowedFileTypes = /3dm|svf|zip|obj|fbx|max|dae|rvt/;
     const extension = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
     // const mimeType = allowedFileTypes.test(file.mimetype);
     const mimeType = true;
