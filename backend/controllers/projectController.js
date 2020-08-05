@@ -191,12 +191,22 @@ inviteSuperintendent = (req, res, next) => {
     }).catch(next)
 };
 
-// Invite Superintendent to Project
-inviteMember = (req, res, next) => {
-    const { projectId: projectId, taskId: taskId, memberId: memberId } = req.body;
+// Invite Engineer to Project
+inviteEngineer = (req, res, next) => {
+    const { projectId: projectId, engineerId: engineerId } = req.body;
     const { sub: userId } = req.user;
     const ipAddress = req.ip;
-    projectService.inviteMember({ projectId, taskId, memberId, userId, ipAddress }).then((data) => {
+    projectService.inviteEngineer({ projectId, engineerId, userId, ipAddress }).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
+// Invite Member to Project
+inviteMember = (req, res, next) => {
+    const { projectId: projectId, taskId: taskId, memberIds: memberIds } = req.body;
+    const { sub: userId } = req.user;
+    const ipAddress = req.ip;
+    projectService.inviteMember({ projectId, taskId, memberIds, userId, ipAddress }).then((data) => {
         res.json(data);
     }).catch(next)
 };
@@ -367,6 +377,7 @@ module.exports = {
     getTaskDetail,
     inviteSuperintendent,
     inviteMember,
+    inviteEngineer,
     createBucket,
     getBucketDetail,
     uploadToBucket,

@@ -378,12 +378,16 @@ async function getEngineers() {
     };
     try {
         const engineers = await User.find({role: EngineerRole});
+        let data = []
+        engineers.forEach(item => {
+            data.push(basicDetails(item));
+        });
         try {
             return {
                 ...response,
                 status: responseStatus.success,
                 errorMessage: {},
-                engineers: engineers
+                engineers: data
             };
         } catch (error) {
             throw error;
@@ -472,31 +476,28 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
     }
 };
 
-// Invite Member
-async function inviteMember({ projectId, taskId, memberId, userId }) {
+// Invite Engineer
+async function inviteEngineer({ projectId, engineerId, userId, ipAddress }) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
-        const user =  User.findById(userId);
-        const member = await User.findById(memberId);
+        const user = User.findById(userId);
+        const engineer = await User.findById(engineerId);
+
         await Project.update(
-            { _id: projectId, "tasks._id": taskId },
+            {_id: projectId},
             {
-                $push: {
-                    "tasks.$.members": {
-                        memberId: memberId,
-                        memberName: member.name
-                    },
-                    status: NotStart
-                },
+                $addToSet: {
+                    engineers: basicDetails(engineer)
+                }
             }
         )
         const notification = new Notification({
             from: userId,
-            to: memberId,
-            message: "The Superintendent invited you to the task as member."
+            to: engineerId,
+            message: "The Superintendent invited you to the project as engineer."
         });
 
         const session = await mongoose.startSession();
@@ -506,6 +507,70 @@ async function inviteMember({ projectId, taskId, memberId, userId }) {
             await RefreshToken.createCollection();
             await Notification.createCollection();
             await notification.save(opts);
+            const jwtToken = generateJwtToken(user);
+            const refreshToken = generateRefreshToken(user, ipAddress);
+            await refreshToken.save(opts);
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                token: jwtToken,
+                refreshToken: refreshToken.token
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Invite Member
+async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user =  User.findById(userId);
+        let members = []
+        memberIds.forEach(id => {
+            let member_detail = {};
+            const member = User.findById(id);
+            member_detail = basicDetails(member);
+            members.push(member_detail);
+        });
+        await Project.update(
+            { _id: projectId, "tasks._id": taskId },
+            {
+                $push: {
+                    "tasks.$.members": {
+                        $each: members
+                    },
+                    status: NotStart
+                },
+            }
+        )
+
+        const session = await mongoose.startSession();
+        try {
+            const opts = { session, returnOriginal: false };
+            //await session.startTransaction();
+            await RefreshToken.createCollection();
+            memberIds.forEach(id => {
+                const notification = new Notification({
+                    from: userId,
+                    to: id,
+                    message: "The Superintendent invited you to the task as member."
+                });
+                Notification.createCollection();
+                notification.save(opts);
+            });
             const jwtToken = generateJwtToken(user);
             const refreshToken = generateRefreshToken(user, ipAddress);
             await refreshToken.save(opts);
@@ -562,5 +627,6 @@ module.exports = {
     getMembers,
     inviteSuperintendent,
     inviteMember,
+    inviteEngineer,
     getUsers
 };

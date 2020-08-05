@@ -19,6 +19,7 @@ router.post("/add-new-task", authorize(), projectController.addTask);
 router.post("/tasks", authorize(), projectController.getTasks);
 router.post("/invite-superintendent", authorize(), projectController.inviteSuperintendent);
 router.post("/invite-member", authorize(), projectController.inviteMember);
+router.post("/invite-engineer", authorize(), projectController.inviteEngineer);
 router.post("/get-forge-token", authorize(), projectController.getForgeAccessToken);
 router.post("/users", authorize(), projectController.getUsers);
 router.post("/superintendents", authorize(), projectController.getSuperintendents);

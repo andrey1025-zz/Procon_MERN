@@ -4,7 +4,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
-import { addTask, getProjectDetail, getViewerForgeToken, getUsers, getSuperintendents, getEngineers, getMembers } from '../../store/actions/projectActions';
+import { 
+    addTask, 
+    getProjectDetail, 
+    getViewerForgeToken, 
+    getUsers, 
+    getSuperintendents, 
+    getEngineers, 
+    getMembers,
+    inviteSuperintendent,
+    inviteMember,
+    inviteEngineer
+} 
+from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
 
 import * as Yup from 'yup';
@@ -44,7 +56,7 @@ const initialValues = {
 
 const SupervisorHome = (props) => {
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
-
+    var index = 0;
     const projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
     const dispatch = useDispatch();
@@ -61,14 +73,14 @@ const SupervisorHome = (props) => {
     
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
+    const superintendents = useSelector(state => state.project.superintendents);
     const engineers = useSelector(state => state.project.engineers);
-    console.log("===============");
-
     const members = useSelector(state => state.project.members);
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
     const [role, setRole] = useState(null);
-    // let inviteList = [];
+    let inviteList = [];
+    let roleType = SupervisorRole;
 
     useEffect(() => {
         if(project){
@@ -85,33 +97,102 @@ const SupervisorHome = (props) => {
     }, []);
 
     const handleOpenMembersDialog = () => {
-        setRole(EngineerRole);
-        dispatch(getEngineers());
+        setRole(SupervisorRole);
+        dispatch(getSuperintendents());
     }
 
     useEffect(() => {
         $(".Forhome").hide();
         $("#side-menu").show();
 
-        // $(".role-dropdown > .dropdown-item").click(function(){
-        //     let inviteRole = $(this).text();
-        //     setRole(inviteRole);
-        //     $('.selected-role').html(inviteRole + "<i class='fa fa-sort-down'></i>");
-        //     switch(inviteRole){
-        //         case SupervisorRole:
-        //             dispatch(getSuperintendents());
-        //             inviteList = superintendents;
-        //             break;
-        //         case EngineerRole:
-        //             dispatch(getEngineers());
-        //             inviteList = engineers;
-        //             break;
-        //         case MemberRole:
-        //             dispatch(getMembers());
-        //             inviteList = members;
-        //     }
-        // });
+        $(".member-link").click(function(){
+            if($(this).hasClass('clicked')){
+                $(this).removeClass('clicked');
+            }
+            else{
+                if(role != MemberRole)
+                    $(".member-link").removeClass('clicked');
+                $(this).addClass('clicked');
+                $(".btn-invite").parent().show();
+            }
+            var count = 0;
+            $(".member-link.clicked").each(function(){
+                count++;
+            });
+            if(count == 0)
+                $(".btn-invite").parent().hide();
+        });
     });
+
+    const handleRoleSelected = (role_text) => {
+        roleType = role_text.trim();
+        setRole(roleType);
+        switch(roleType){
+            case SupervisorRole:
+                dispatch(getSuperintendents());
+                break;
+            case EngineerRole:
+                dispatch(getEngineers());
+                break;
+            case MemberRole:
+                dispatch(getMembers());
+        }
+        $('.selected-role').html(roleType + "<i class='fa fa-sort-down'></i>");
+        $(".btn-invite").parent().hide();
+    }
+
+    const handleUserClicked = (index) => {
+        index = index;
+    }
+
+    const handleInvite = () => {
+        let data = {};
+        switch(role){
+            case SupervisorRole:
+                data.projectId = projectId;
+                data.superintendentId = inviteList[index].id;
+                dispatch(inviteSuperintendent(data));
+                break;
+            case EngineerRole:
+                data.projectId = projectId;
+                data.engineerId = inviteList[index].id;
+                dispatch(inviteEngineer(data));
+                break;
+            case MemberRole:
+                if(data.taskId != 0){
+                    data.projectId = projectId;
+                    data.memberIds = [];
+                    $(".member-link.clicked[data-type="+role+"]").each(function(){
+                        var selected_index = $(this).data('index');
+                        data.memberIds.push(inviteList[selected_index]._id);
+                    });
+                    data.taskId = "5f2914194897f7703c4f4118";
+                    dispatch(inviteMember(data));
+                } else {
+                    alert("You can only invite members in task.");
+                }
+        }
+    }
+
+    switch(role){
+        case SupervisorRole:
+            if(superintendents && superintendents.length > 0)
+                inviteList = superintendents;
+            else
+                inviteList = [];
+            break;
+        case EngineerRole:
+            if(engineers && engineers.length > 0)
+                inviteList = engineers;
+            else
+                inviteList = [];
+            break;
+        case MemberRole:
+            if(members && members.length > 0)
+                inviteList = members;
+            else
+                inviteList = [];
+    }
 
     const handleViewerError = (error) => {
         console.log('Error loading viewer.');
@@ -366,9 +447,9 @@ const SupervisorHome = (props) => {
                                         Superintendent <i className="fa fa-sort-down"></i>                                        
                                         </a>
                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
-                                            <a className="dropdown-item"> Superintendent</a>
-                                            <a className="dropdown-item"> Engineer</a>
-                                            <a className="dropdown-item"> Member</a>
+                                            <a className="dropdown-item" onClick={() => handleRoleSelected(SupervisorRole)}> Superintendent</a>
+                                            <a className="dropdown-item" onClick={() => handleRoleSelected(EngineerRole)}> Engineer</a>
+                                            <a className="dropdown-item" onClick={() => handleRoleSelected(MemberRole)}> Member</a>
                                         </div>                                    
                                     </div>
                                     <div className="col-md-6 col-sm-6 text-right task-status">
@@ -381,6 +462,26 @@ const SupervisorHome = (props) => {
                                     </div>
                                 </div>
                                 <div className="modal-body row">
+                                    { 
+                                        inviteList.map((value, index) => {
+                                            return (
+                                                <div className="col-sm-3 col-xl-3 col-md-3" key={index}>
+                                                    <div data-index={index} className="member-status custom-rounded mb-2 member-link" data-type={role} onClick={() => handleUserClicked(index)}>
+                                                    {/* <div key={index} className="member-status custom-rounded mb-2 member-link"> */}
+                                                        <div className="float-left mb-0 mr-3">
+                                                        <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} className="roundedImg    thumb-md" />
+                                                        </div>
+                                                        <div className="suggestion-icon float-left mt-3"> {value.lastName} </div>
+                                                        <div className="circle-light float-right light-green mt-3">
+                                                        </div>
+                                                    </div>
+                                                </div>   
+                                            ) 
+                                        })
+                                    }
+                                    <div className="col-sm-12 col-xl-12 col-md-12" style={{textAlign: 'right', display: 'none'}}>
+                                <button className="btn btn-info btn-lg task-btn2 btn-invite" onClick={handleInvite}>Invite {role}</button>
+                                    </div>
                                     {/* <div className="col-sm-3 col-xl-3 col-md-3">
                                         <div className="member-status custom-rounded mb-2">
                                             <div className="float-left mb-0 mr-3">

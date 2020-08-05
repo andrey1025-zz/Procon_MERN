@@ -18,7 +18,6 @@ const ManagerHome = (props) => {
         $("#side-menu").show();
 
         $(".member-link").click(function(){
-            // alert("afdsfdsf");
             if($(this).hasClass('clicked')){
                 $(this).removeClass('clicked');
                 $(".btn-invite").parent().hide();
@@ -29,7 +28,6 @@ const ManagerHome = (props) => {
                 $(".btn-invite").parent().show();
             }
         });
-
 
     });
     

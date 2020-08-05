@@ -39,7 +39,13 @@ import {
     GET_TASKS_FAILURE,
     INVITE_SUPERINTENDENT_REQUEST,
     INVITE_SUPERINTENDENT_SUCCESS,
-    INVITE_SUPERINTENDENT_FAILURE
+    INVITE_SUPERINTENDENT_FAILURE,
+    INVITE_ENGINEER_REQUEST,
+    INVITE_ENGINEER_SUCCESS,
+    INVITE_ENGINEER_FAILURE,
+    INVITE_MEMBER_REQUEST,
+    INVITE_MEMBER_SUCCESS,
+    INVITE_MEMBER_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -174,6 +180,46 @@ export const inviteSuperintendent = (data) => async dispatch => {
     }
 };
 
+export const inviteEngineer = (data) => async dispatch => {
+    dispatch({
+        type: INVITE_ENGINEER_REQUEST
+    });
+
+    const response = await api.post('/project/invite-engineer', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: INVITE_ENGINEER_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: INVITE_ENGINEER_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const inviteMember = (data) => async dispatch => {
+    dispatch({
+        type: INVITE_MEMBER_REQUEST
+    });
+
+    const response = await api.post('/project/invite-member', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: INVITE_MEMBER_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: INVITE_MEMBER_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
 export const getUsers = () => async dispatch => {
 
     dispatch({
@@ -202,7 +248,7 @@ export const getSuperintendents = () => async dispatch => {
     });
 
     const response = await api.post('/project/superintendents');
-    
+
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: GET_SUPERINTENDENTS_SUCCESS,
@@ -227,7 +273,7 @@ export const getEngineers = () => async dispatch => {
     if (response.data && response.data.status === 'success') {
         dispatch({
             type: GET_ENGINEERS_SUCCESS,
-            payload: response.data.engnineers
+            payload: response.data.engineers
         });
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
