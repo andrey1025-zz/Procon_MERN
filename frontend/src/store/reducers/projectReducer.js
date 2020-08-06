@@ -16,7 +16,9 @@ import {
     GET_MEMBERS_SUCCESS,
     GET_MEMBERS_FAILURE,
     GET_TASKS_SUCCESS,
-    GET_TASKS_FAILURE
+    GET_TASKS_FAILURE,
+    ADD_TASK_SUCCESS,
+    ADD_TASK_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -26,7 +28,8 @@ const initialState = {
     superintendents: [],
     engineers: [],
     members: [],
-    tasks:{}
+    tasks:{},
+    taskId: null
 };
 
 export default (state = initialState, action) => {
@@ -123,6 +126,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 tasks: {},
+            };
+        case ADD_TASK_SUCCESS:
+            return {
+                ...state,
+                taskId: action.payload.taskId,
+            };
+        case ADD_TASK_FAILURE:
+            return {
+                ...state,
+                taskId: null,
             };
         default:
             return state;

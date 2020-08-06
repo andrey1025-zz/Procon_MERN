@@ -114,11 +114,25 @@ getTaskDetail = (req, res, next) => {
 
 // Add New Task
 addTask = (req, res, next) => {
+    const { components, componentId, projectId } = req.body;
+    const { sub: userId } = req.user;
+
+    const ipAddress = req.ip;
+    projectService.addTask({ components, componentId, projectId, userId, ipAddress })
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
+// Edit Task
+editTask = (req, res, next) => {
     const { name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId } = req.body;
     const { sub: userId } = req.user;
 
     const ipAddress = req.ip;
-    projectService.addTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, userId, ipAddress })
+    projectService.editTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, userId, ipAddress })
         .then(response => {
             if (response.status === responseStatus.success)
                 setTokenCookie(res, response.refreshToken);
@@ -368,6 +382,7 @@ module.exports = {
     uploadCoverImage,
     uploadModel,
     addTask,
+    editTask,
     getTasks,
     getForgeAccessToken,
     getUsers,

@@ -183,7 +183,72 @@ async function getProjectDetail(projectId) {
 };
 
 // Add New Project
-async function addTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, userId, ipAddress }) {
+async function addTask({ components, componentId, projectId, userId, ipAddress }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        // Check if name already add
+        const user = await User.findById(userId);
+        const project = await Project.findById(projectId);
+        if (user.role != SupervisorRole) {
+            return {
+                ...response,
+                errorMessage: {
+                    ...response.errorMessage,
+                    email: "Only Superintendent can add new Task"
+                }
+            };
+        } else {
+            // Create new project
+            const task = {
+                _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: NotStart, members: []
+            };
+            
+            await Project.update(
+                {_id: projectId},
+                {
+                    $push: {
+                        tasks: task
+                    }
+                }
+            )
+
+            const session = await mongoose.startSession();
+            try {
+                const opts = { session, returnOriginal: false };
+                //await session.startTransaction();
+                await RefreshToken.createCollection();
+                await Project.createCollection();
+                await project.save(opts);
+                const jwtToken = generateJwtToken(user);
+                const refreshToken = generateRefreshToken(user, ipAddress);
+                await refreshToken.save(opts);
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    errorMessage: {},
+                    token: jwtToken,
+                    refreshToken: refreshToken.token,
+                    taskId: task._id
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
+            }
+        }
+    }
+    catch (error) {
+        throw error
+    }
+};
+
+// Edit Task Info
+async function editTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, userId, ipAddress }) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
@@ -236,7 +301,8 @@ async function addTask({ name, startTime, endTime, equipTools, components, mater
                     status: responseStatus.success,
                     errorMessage: {},
                     token: jwtToken,
-                    refreshToken: refreshToken.token
+                    refreshToken: refreshToken.token,
+                    taskId: task._id
                 };
             } catch (error) {
                 //await session.abortTransaction();
@@ -485,13 +551,30 @@ async function inviteEngineer({ projectId, engineerId, userId, ipAddress }) {
     try {
         const user = User.findById(userId);
         const engineer = await User.findById(engineerId);
-
+        var engineers = [];
+        engineers.push({id: engineerId, status: NotStart});
         await Project.update(
             {_id: projectId},
             {
                 $addToSet: {
                     engineers: basicDetails(engineer)
                 }
+            }
+        )
+
+        await Project.updateOne(
+            { _id: projectId },
+            {
+                $push: {
+                    "tasks.$[elem].members": { $each: engineers }
+                },
+                $set: {
+                    "tasks.$[elem].status": NotStart
+                }
+            },
+            {
+                multi: true,
+                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
             }
         )
         const notification = new Notification({
@@ -538,11 +621,11 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
     };
     try {
         const user =  User.findById(userId);
-        let members = [];
+        var members = [];
         memberIds.forEach(id => {
             members.push({id: id, status: NotStart});
         });
-        await Project.update(
+        await Project.updateOne(
             { _id: projectId },
             {
                 $push: {
@@ -554,7 +637,7 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
             },
             {
                 multi: true,
-                arrayFilters: [ { "elem._id": { $ne: taskId } } ]
+                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
             }
         )
         
@@ -621,6 +704,7 @@ module.exports = {
     getProjectDetail,
     uploadFile,
     addTask,
+    editTask,
     getTasks,
     getTaskDetail,
     getSuperintendents,
