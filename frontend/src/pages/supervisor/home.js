@@ -216,24 +216,24 @@ const SupervisorHome = (props) => {
     
     const handleDocumentLoaded = (doc, viewables) => {
         if (viewables.length === 0) {
-          console.error('Document contains no viewables.');
         }
         else{
           //Select the first viewable in the list to use in our viewer component
-          console.log(viewables[0]);
-          console.log("======================");
           setView(viewables[0]);
         }
     }
     
     const handleModelLoaded = (viewer, model) => {
         console.log('Loaded model:', model);
+        console.log(viewer.listeners.selection);
     }
     
     const handleModelError = (viewer, error) => {
         console.log('Error loading the model.');
     }
-
+    const handleNodeSelected = (viewer, model) => {
+        console.log("============================");
+    }
     return (
         <React.Fragment>
             <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
@@ -251,6 +251,7 @@ const SupervisorHome = (props) => {
                                 onDocumentError={handleDocumentError}
                                 onModelLoad={handleModelLoaded}
                                 onModelError={handleModelError}
+                                onSelectionEvent={() => handleNodeSelected}
                             />
                             <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={show_newTaskForm}>Add a new task</button>
                         </div>
