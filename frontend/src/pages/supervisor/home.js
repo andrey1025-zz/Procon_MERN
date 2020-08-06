@@ -220,6 +220,8 @@ const SupervisorHome = (props) => {
         }
         else{
           //Select the first viewable in the list to use in our viewer component
+          console.log(viewables[0]);
+          console.log("======================");
           setView(viewables[0]);
         }
     }
