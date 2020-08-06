@@ -18,7 +18,9 @@ import {
     GET_TASKS_SUCCESS,
     GET_TASKS_FAILURE,
     ADD_TASK_SUCCESS,
-    ADD_TASK_FAILURE
+    ADD_TASK_FAILURE,
+    INVITE_ENGINEER_SUCCESS,
+    INVITE_ENGINEER_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -29,7 +31,9 @@ const initialState = {
     engineers: [],
     members: [],
     tasks:{},
-    taskId: null
+    taskId: null,
+    taskEngineers: [],
+    taskMembers: []
 };
 
 export default (state = initialState, action) => {
@@ -136,6 +140,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 taskId: null,
+            };
+        case INVITE_ENGINEER_SUCCESS:
+            return {
+                ...state,
+                taskEngineers: action.payload.data,
+            };
+        case INVITE_ENGINEER_FAILURE:
+            return {
+                ...state,
+                taskEngineers: [],
             };
         default:
             return state;

@@ -207,10 +207,10 @@ inviteSuperintendent = (req, res, next) => {
 
 // Invite Engineer to Project
 inviteEngineer = (req, res, next) => {
-    const { projectId: projectId, engineerId: engineerId } = req.body;
+    const { projectId: projectId, engineerId: engineerId, taskId: taskId } = req.body;
     const { sub: userId } = req.user;
     const ipAddress = req.ip;
-    projectService.inviteEngineer({ projectId, engineerId, userId, ipAddress }).then((data) => {
+    projectService.inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress }).then((data) => {
         res.json(data);
     }).catch(next)
 };

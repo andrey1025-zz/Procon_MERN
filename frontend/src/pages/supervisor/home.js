@@ -92,6 +92,10 @@ const SupervisorHome = (props) => {
     const engineers = useSelector(state => state.project.engineers);
     const members = useSelector(state => state.project.members);
     const taskId = useSelector(state => state.project.taskId);
+    const taskEngineers = useSelector(state => state.project.taskEngineers);
+
+    console.log("task Engineers", taskEngineers);
+
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
     const [role, setRole] = useState(null);
@@ -173,6 +177,7 @@ const SupervisorHome = (props) => {
             case EngineerRole:
                 data.projectId = projectId;
                 data.engineerId = inviteList[index].id;
+                data.taskId = taskId;
                 dispatch(inviteEngineer(data));
                 break;
             case MemberRole:
@@ -386,71 +391,24 @@ const SupervisorHome = (props) => {
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
                         <div className="friends-suggestions">
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">Ralph Ramirez</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">Patrick Beeler</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">Victor Zamora</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">vasuk@uk.mh</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-6.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Connor Silva</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Supervisor </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">seziz@razof.tl</h5>
-                                        <p className="text-muted mb-1">17667560574</p>
-                                    </div>
-                                </div>
-                            </a>
+                            { 
+                                taskEngineers != [] > 0 ? 
+                                    <a href="#" className="friends-suggestions-list" >
+                                        <div className="border-bottom position-relative">
+                                            <div className="float-left mb-0 mr-3">
+                                                <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
+                                                <p>{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                            </div>
+                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
+                                            <div className="desc">
+                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers.email}</h5>
+                                                <p className="text-muted">{!taskEngineers.mobile ? '' : taskEngineers.mobile}</p>
+                                            </div>
+                                        </div>
+                                    </a> 
+                                : ''
+                            }
+                            
                         </div>
                     </div>
                 </div>

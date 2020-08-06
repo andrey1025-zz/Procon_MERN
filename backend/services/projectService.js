@@ -543,7 +543,7 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
 };
 
 // Invite Engineer
-async function inviteEngineer({ projectId, engineerId, userId, ipAddress }) {
+async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress }) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
@@ -577,6 +577,7 @@ async function inviteEngineer({ projectId, engineerId, userId, ipAddress }) {
                 arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
             }
         )
+
         const notification = new Notification({
             from: userId,
             to: engineerId,
@@ -600,7 +601,8 @@ async function inviteEngineer({ projectId, engineerId, userId, ipAddress }) {
                 status: responseStatus.success,
                 errorMessage: {},
                 token: jwtToken,
-                refreshToken: refreshToken.token
+                refreshToken: refreshToken.token,
+                data: basicDetails(engineer)
             };
         } catch (error) {
             //await session.abortTransaction();
