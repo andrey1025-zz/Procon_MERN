@@ -5,7 +5,8 @@ import { Form, FormField, SubmitButton, FormTextarea } from '../../components/fo
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
 import { 
-    addTask, 
+    addTask,
+    editTask,
     getProjectDetail, 
     getViewerForgeToken, 
     getUsers, 
@@ -57,32 +58,49 @@ const initialValues = {
 const SupervisorHome = (props) => {
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
     var index = 0;
-    const projectId = props.match.params.id;
+    var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
+    if(projectId == '')
+        projectId = window.localStorage.getItem("projectId");
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         dispatch(addTask(data, setErrors, setSubmitting));
-    }
-    const show_newTaskForm = () => {
-        $(".task-info").addClass("visible");
         $(".member-panel").show();
-    };
-    const hide_newTaskForm = () => {
-        $(".task-info").removeClass("visible");
-        $(".member-panel").hide();
-    };
+    }
+
+    const handleAddTask = () => {
+        let data = {
+            projectId: projectId,
+            components: "Test Component",
+            componentId: "componet id"
+        }
+        dispatch(addTask(data));
+        $(".member-panel").show();
+    }
+    // const show_newTaskForm = () => {
+    //     $(".task-info").addClass("visible");
+    // };
+    // const hide_newTaskForm = () => {
+    //     $(".task-info").removeClass("visible");
+    //     $(".member-panel").hide();
+    // };
     
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
     const superintendents = useSelector(state => state.project.superintendents);
     const engineers = useSelector(state => state.project.engineers);
     const members = useSelector(state => state.project.members);
+    const taskId = useSelector(state => state.project.taskId);
+    const taskEngineers = useSelector(state => state.project.taskEngineers);
+
+    console.log("task Engineers", taskEngineers);
+
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
     const [role, setRole] = useState(null);
     let inviteList = [];
-    let roleType = SupervisorRole;
+    let roleType = EngineerRole;
 
     useEffect(() => {
         if(project){
@@ -99,9 +117,9 @@ const SupervisorHome = (props) => {
     }, []);
 
     const handleOpenMembersDialog = () => {
-        setRole(SupervisorRole);
-        $('.selected-role').html(SupervisorRole + "<i class='fa fa-sort-down'></i>");
-        dispatch(getSuperintendents());
+        setRole(EngineerRole);
+        $('.selected-role').html(EngineerRole + "<i class='fa fa-sort-down'></i>");
+        dispatch(getEngineers());
     }
 
     useEffect(() => {
@@ -159,6 +177,7 @@ const SupervisorHome = (props) => {
             case EngineerRole:
                 data.projectId = projectId;
                 data.engineerId = inviteList[index].id;
+                data.taskId = taskId;
                 dispatch(inviteEngineer(data));
                 break;
             case MemberRole:
@@ -169,7 +188,7 @@ const SupervisorHome = (props) => {
                         var selected_index = $(this).data('index');
                         data.memberIds.push(inviteList[selected_index]._id);
                     });
-                    data.taskId = "5f2a0a244897f7703c4f4121";
+                    data.taskId = taskId;
                     dispatch(inviteMember(data));
                 } else {
                     alert("You can only invite members in task.");
@@ -253,7 +272,8 @@ const SupervisorHome = (props) => {
                                 onModelError={handleModelError}
                                 onSelectionEvent={() => handleNodeSelected}
                             />
-                            <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={show_newTaskForm}>Add a new task</button>
+                            {/* <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={show_newTaskForm}>Add a new task</button> */}
+                            <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={handleAddTask}>Add a new task</button>
                         </div>
                     </div>
                 </div>
@@ -361,7 +381,7 @@ const SupervisorHome = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={hide_newTaskForm}>Cancel</button>
+                            <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
                             <SubmitButton title='Publish' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
                         </Form>
                     </div>
@@ -372,71 +392,24 @@ const SupervisorHome = (props) => {
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
                         <div className="friends-suggestions">
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">Ralph Ramirez</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">Patrick Beeler</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">Victor Zamora</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="border-bottom position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Josephine</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Engineer </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">vasuk@uk.mh</h5>
-                                        <p className="text-muted">14365748543</p>
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#" className="friends-suggestions-list">
-                                <div className="position-relative">
-                                    <div className="float-left mb-0 mr-3">
-                                        <img src={require('../../images/users/user-6.jpg')} alt="" className="roundedImg thumb-md"/>
-                                        <p>Connor Silva</p>
-                                    </div>
-                                    <div className="suggestion-icon float-right mt-2 pt-1"> Supervisor </div>
-                                    <div className="desc">
-                                        <h5 className="font-14 mb-1 pt-2">seziz@razof.tl</h5>
-                                        <p className="text-muted mb-1">17667560574</p>
-                                    </div>
-                                </div>
-                            </a>
+                            { 
+                                taskEngineers != [] > 0 ? 
+                                    <a href="#" className="friends-suggestions-list" >
+                                        <div className="border-bottom position-relative">
+                                            <div className="float-left mb-0 mr-3">
+                                                <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
+                                                <p>{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                            </div>
+                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
+                                            <div className="desc">
+                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers.email}</h5>
+                                                <p className="text-muted">{!taskEngineers.mobile ? '' : taskEngineers.mobile}</p>
+                                            </div>
+                                        </div>
+                                    </a> 
+                                : ''
+                            }
+                            
                         </div>
                     </div>
                 </div>
@@ -451,10 +424,10 @@ const SupervisorHome = (props) => {
                                     <div className="col-md-6 col-sm-6 text-left">
                                         <span className="text-black">Select members</span>
                                         <a className="dropdown-toggle ml-3 arrow-none nav-user selected-role" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                        Superintendent <i className="fa fa-sort-down"></i>                                        
+                                        Engineer <i className="fa fa-sort-down"></i>                                        
                                         </a>
                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
-                                            <a className="dropdown-item" onClick={() => handleRoleSelected(SupervisorRole)}> Superintendent</a>
+                                            {/* <a className="dropdown-item" onClick={() => handleRoleSelected(SupervisorRole)}> Superintendent</a> */}
                                             <a className="dropdown-item" onClick={() => handleRoleSelected(EngineerRole)}> Engineer</a>
                                             <a className="dropdown-item" onClick={() => handleRoleSelected(MemberRole)}> Member</a>
                                         </div>                                    

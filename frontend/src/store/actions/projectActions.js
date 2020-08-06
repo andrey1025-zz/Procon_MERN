@@ -19,6 +19,9 @@ import {
     ADD_TASK_REQUEST,
     ADD_TASK_SUCCESS,
     ADD_TASK_FAILURE,
+    EDIT_TASK_REQUEST,
+    EDIT_TASK_SUCCESS,
+    EDIT_TASK_FAILURE,
     GET_FORGE_TOKEN_REQUEST,
     GET_FORGE_TOKEN_SUCCESS,
     GET_FORGE_TOKEN_FAILURE,
@@ -69,19 +72,40 @@ export const addProject = (data, setErrors, setSubmitting) => async dispatch => 
     }
 };
 
-export const addTask = (data, setErrors, setSubmitting) => async dispatch => {
+export const editTask = (data, setErrors, setSubmitting) => async dispatch => {
     setSubmitting(true);
     dispatch({
-        type: ADD_TASK_REQUEST
+        type: EDIT_TASK_REQUEST
     });
    
-    const response = await api.post('/project/add-new-task', data);    
+    const response = await api.post('/project/edit-task', data);    
     setSubmitting(false);
 
     if (response.data && response.data.status === 'success') {
         dispatch({
+            type: EDIT_TASK_SUCCESS,
+            payload: response.data
+        });
+
+    } else {
+        dispatch({
+            type: EDIT_TASK_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const addTask = (data) => async dispatch => {
+    dispatch({
+        type: ADD_TASK_REQUEST
+    });
+   
+    const response = await api.post('/project/add-new-task', data);
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
             type: ADD_TASK_SUCCESS,
-            payload: response.data.tasks
+            payload: response.data
         });
 
     } else {
