@@ -542,67 +542,68 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
     }
 };
 
-// Invite Engineer
-async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress }) {
+// Get Task Engineers
+async function getTaskEngineers({ userId, projectId, taskId }) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
         const user = User.findById(userId);
-        const engineer = await User.findById(engineerId);
-        var engineers = [];
-        engineers.push({id: engineerId, status: NotStart});
-        await Project.update(
-            {_id: projectId},
-            {
-                $addToSet: {
-                    engineers: basicDetails(engineer)
-                }
-            }
-        )
-
-        await Project.updateOne(
-            { _id: projectId },
-            {
-                $push: {
-                    "tasks.$[elem].members": { $each: engineers }
-                },
-                $set: {
-                    "tasks.$[elem].status": NotStart
-                }
-            },
-            {
-                multi: true,
-                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
-            }
-        )
-
-        const notification = new Notification({
-            from: userId,
-            to: engineerId,
-            message: "The Superintendent invited you to the project as engineer."
-        });
-
+        var taskEngineers= [];
+        if(taskId != null){
+            taskEngineers = await Project.find(
+                {_id: projectId, "tasks._id": taskId}
+            );
+        }
         const session = await mongoose.startSession();
         try {
-            const opts = { session, returnOriginal: false };
             //await session.startTransaction();
-            await RefreshToken.createCollection();
-            await Notification.createCollection();
-            await notification.save(opts);
-            const jwtToken = generateJwtToken(user);
-            const refreshToken = generateRefreshToken(user, ipAddress);
-            await refreshToken.save(opts);
             //await session.commitTransaction();
             await session.endSession();
             return {
                 ...response,
                 status: responseStatus.success,
                 errorMessage: {},
-                token: jwtToken,
-                refreshToken: refreshToken.token,
-                data: basicDetails(engineer)
+                data: taskEngineers
+                // data: basicDetails(engineer)
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Task Members
+async function getTaskMembers({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = User.findById(userId);
+        var taskMembers = [];
+        if(taskId != null){
+            taskMembers = await Project.find(
+                {_id: projectId, "tasks._id": taskId}
+            );
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: taskMembers
+                // data: basicDetails(engineer)
             };
         } catch (error) {
             //await session.abortTransaction();
@@ -652,8 +653,11 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
                 const notification = new Notification({
                     from: userId,
                     to: id,
+                    taskId: taskId,
+                    projectId: projectId,
                     message: "The Superintendent invited you to the task as member."
                 });
+                console.log(notification);
                 Notification.createCollection();
                 notification.save(opts);
             });
@@ -672,6 +676,105 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
         } catch (error) {
             //await session.abortTransaction();
             await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Invite Engineer
+async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = User.findById(userId);
+        const engineer = await User.findById(engineerId);
+        var engineers = [];
+        engineers.push({id: engineerId, status: NotStart});
+        await Project.update(
+            {_id: projectId},
+            {
+                $addToSet: {
+                    engineers: basicDetails(engineer)
+                }
+            }
+        )
+
+        await Project.updateOne(
+            { _id: projectId },
+            {
+                $push: {
+                    "tasks.$[elem].engineers": { $each: engineers }
+                },
+                $set: {
+                    "tasks.$[elem].status": NotStart
+                }
+            },
+            {
+                multi: true,
+                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+            }
+        )
+
+        const notification = new Notification({
+            from: userId,
+            to: engineerId,
+            taskId: taskId,
+            projectId: projectId,
+            message: "The Superintendent invited you to the project as engineer."
+        });
+
+        const session = await mongoose.startSession();
+        try {
+            const opts = { session, returnOriginal: false };
+            //await session.startTransaction();
+            await RefreshToken.createCollection();
+            await Notification.createCollection();
+            await notification.save(opts);
+            const jwtToken = generateJwtToken(user);
+            const refreshToken = generateRefreshToken(user, ipAddress);
+            await refreshToken.save(opts);
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                token: jwtToken,
+                refreshToken: refreshToken.token,
+                data: basicDetails(engineer)
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Notification Count
+async function getNotificationCount({ userId, projectId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const notifications = await Notification.find({to: userId, projectId: projectId, isRead: false});
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: notifications.length
+            };
+        } catch (error) {
             throw error;
         }
     }
@@ -715,5 +818,8 @@ module.exports = {
     inviteSuperintendent,
     inviteMember,
     inviteEngineer,
-    getUsers
+    getUsers,
+    getNotificationCount,
+    getTaskEngineers,
+    getTaskMembers
 };

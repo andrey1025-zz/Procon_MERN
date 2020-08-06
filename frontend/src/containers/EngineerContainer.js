@@ -22,7 +22,7 @@ const switchRoutes = (
     </Switch>
 );
 
-const LeadContainer = () => {
+const EngineerContainer = () => {
     const token = useSelector(state => state.auth.token);
     const user = useSelector(state => state.auth.user);
     return (
@@ -40,4 +40,4 @@ const LeadContainer = () => {
         </div >
     );
 }
-export default LeadContainer;
+export default EngineerContainer;

@@ -11,6 +11,12 @@ const notificationSchema = new Schema({
     message: {
         type: String
     },
+    taskId:{
+        type:Schema.Types.ObjectId
+    },
+    projectId:{
+        type:Schema.Types.ObjectId
+    },
     createdOn: {
         type: Date,
         default: Date.now

@@ -225,6 +225,38 @@ inviteMember = (req, res, next) => {
     }).catch(next)
 };
 
+// Get Task Engineers
+getTaskEngineers = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.getTaskEngineers({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Get Task Members
+getTaskMembers = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.getTaskMembers({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Get Notification Count
+getNotificationCount = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId } = req.body;
+    projectService.getNotificationCount({ userId, projectId })
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
 getForgeAccessToken = (req, res, next) => {
     Axios({
         method: 'POST',
@@ -393,6 +425,9 @@ module.exports = {
     inviteSuperintendent,
     inviteMember,
     inviteEngineer,
+    getNotificationCount,
+    getTaskEngineers,
+    getTaskMembers,
     createBucket,
     getBucketDetail,
     uploadToBucket,

@@ -256,3 +256,20 @@
 .mb-20{
   margin-bottom: 20px;
 }
+.notific-badge{
+  position:absolute;
+  top:60px;
+  left:20px;
+  border-radius:50%;
+}
+.notific-text{
+  position:absolute;
+  background:#0000006b;
+  width:90%;
+  margin:auto;
+  bottom:15px;
+  left:5%;
+  padding:10px;
+  border-radius:3px;
+  color:white;
+}

@@ -26,7 +26,7 @@ const AuthenticationContainer = () => {
     const user = useSelector(state => state.auth.user);
     const renderRoutes = () => {
         if (token && user && user.role === EngineerRole)
-            return <Redirect to={`/lead/home`} />
+            return <Redirect to={`/engineer/welcome`} />
         else if (token && user && user.role === MemberRole)
             return <Redirect to={`/member/home`} />
         else if (token && user && user.role === SupervisorRole)

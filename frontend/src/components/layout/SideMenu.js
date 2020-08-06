@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
+import { getNotificationCount } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
-import { useSelector } from 'react-redux';
 
 const SideMenu = () => {
     const user = useSelector(state => state.auth.user);
+    const notificCount = useSelector(state => state.project.notificCount);
+    const dispatch = useDispatch();
     const getClassName = (path) => {
         return window.location.href.indexOf(path) > -1 ? "waves-effect mm-active" : "waves-effect";
     };
+    const projectId = window.localStorage.getItem("projectId");
+
+    useEffect(() => {
+        dispatch(getNotificationCount(projectId));
+    }, []);
+
+    console.log(notificCount);
     return (
         <div className="left side-menu">
             <div className="slimscroll-menu" id="remove-scroll">
@@ -27,13 +37,13 @@ const SideMenu = () => {
                             </ul>
                         </li>
                         <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/home/:id`} className={getClassName('home')}  >
+                            <NavLink to={`/${getSimpleRoleName(user.role)}/home/` + projectId} className={getClassName('home')}  >
                                 <img src={require('../../images/home.png')} /> <span> Homepage </span>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/home`} className={getClassName('notification')}  >
-                                <img src={require('../../images/notification.png')} /> <span> Notification </span>
+                            <NavLink to={`/${getSimpleRoleName(user.role)}/notification`} className={getClassName('notification')}  >
+    <img src={require('../../images/notification.png')} /> <span> Notification </span><span className="badge badge-danger" style={{borderRadius:'50%', float:'right'}}>{notificCount > 0 ? notificCount : null}</span>
                             </NavLink>
                         </li>
                         <li>

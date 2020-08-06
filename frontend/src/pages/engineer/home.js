@@ -15,9 +15,7 @@ import {
     getMembers,
     inviteSuperintendent,
     inviteMember,
-    inviteEngineer,
-    getTaskEngineers,
-    getTaskMembers
+    inviteEngineer
 } 
 from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
@@ -57,7 +55,7 @@ const initialValues = {
     publicRelationRequirements:""
 };
 
-const SupervisorHome = (props) => {
+const EngineerHome = (props) => {
     const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
     var index = 0;
     var projectId = props.match.params.id;
@@ -68,7 +66,7 @@ const SupervisorHome = (props) => {
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         dispatch(addTask(data, setErrors, setSubmitting));
-        $(".add-member").show();
+        $(".member-panel").show();
     }
 
     const handleAddTask = () => {
@@ -78,7 +76,7 @@ const SupervisorHome = (props) => {
             componentId: "componet id"
         }
         dispatch(addTask(data));
-        $(".add-member").show();
+        $(".member-panel").show();
     }
     // const show_newTaskForm = () => {
     //     $(".task-info").addClass("visible");
@@ -108,22 +106,6 @@ const SupervisorHome = (props) => {
         }
     }, [project]);
      
-    // useEffect(() => {
-    //     let data = {
-    //         projectId: projectId,
-    //         taskId: taskId
-    //     }
-    //     dispatch(getTaskEngineers(data));
-    // }, []);
-
-    // useEffect(() => {
-    //     let data = {
-    //         projectId: projectId,
-    //         taskId: taskId
-    //     }
-    //     dispatch(getTaskMembers(data));
-    // }, []);
-
     useEffect(() => {
         dispatch(getViewerForgeToken());
     }, []);
@@ -288,8 +270,6 @@ const SupervisorHome = (props) => {
                                 onModelError={handleModelError}
                                 onSelectionEvent={() => handleNodeSelected}
                             />
-                            {/* <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={show_newTaskForm}>Add a new task</button> */}
-                            <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={handleAddTask}>Add a new task</button>
                         </div>
                     </div>
                 </div>
@@ -404,7 +384,7 @@ const SupervisorHome = (props) => {
                 </div>  
                                        
             </div>
-            <div className="col-sm-3 col-xl-3 col-md-3 member-panel">
+            <div className="col-sm-3 col-xl-3 col-md-3 member-panel" style={{display: 'none'}}>
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
                         <div className="friends-suggestions">
@@ -429,7 +409,7 @@ const SupervisorHome = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="row text-center add-member custom-rounded"  style={{display: 'none'}}>
+                <div className="row text-center add-member custom-rounded">
                     <a onClick={handleOpenMembersDialog} className="md-plus" data-toggle="modal" data-target="#addMemberModal"><i className="fas fa-plus"></i></a>
                 </div>
                 <div className="col-sm-12 col-xl-12 col-md-12">
@@ -476,7 +456,7 @@ const SupervisorHome = (props) => {
                                         })
                                     }
                                     <div className="col-sm-12 col-xl-12 col-md-12" style={{textAlign: 'right', display: 'none'}}>
-                                        <button className="btn btn-info btn-lg task-btn2 btn-invite" onClick={handleInvite}>Invite {role}</button>
+                                <button className="btn btn-info btn-lg task-btn2 btn-invite" onClick={handleInvite}>Invite {role}</button>
                                     </div>
                                     {/* <div className="col-sm-3 col-xl-3 col-md-3">
                                         <div className="member-status custom-rounded mb-2">
@@ -703,4 +683,4 @@ const SupervisorHome = (props) => {
         </React.Fragment>
     )
 }
-export default SupervisorHome;
+export default EngineerHome;

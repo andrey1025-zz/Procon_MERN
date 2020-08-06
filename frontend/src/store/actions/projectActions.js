@@ -48,7 +48,16 @@ import {
     INVITE_ENGINEER_FAILURE,
     INVITE_MEMBER_REQUEST,
     INVITE_MEMBER_SUCCESS,
-    INVITE_MEMBER_FAILURE
+    INVITE_MEMBER_FAILURE,
+    GET_NOTIFICATION_COUNT_REQUEST,
+    GET_NOTIFICATION_COUNT_SUCCESS,
+    GET_NOTIFICATION_COUNT_FAILURE,
+    GET_TASK_ENGINEERS_REQUEST,
+    GET_TASK_ENGINEERS_SUCCESS,
+    GET_TASK_ENGINEERS_FAILURE,
+    GET_TASK_MEMBERS_REQUEST,
+    GET_TASK_MEMBERS_SUCCESS,
+    GET_TASK_MEMBERS_FAILURE,
 } from '../types';
 import api from '../../api';
 
@@ -244,6 +253,46 @@ export const inviteMember = (data) => async dispatch => {
     }
 };
 
+export const getTaskEngineers = (data) => async dispatch => {
+    dispatch({
+        type: GET_TASK_ENGINEERS_REQUEST
+    });
+
+    const response = await api.post('/project/get-task-engineers', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_TASK_ENGINEERS_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: GET_TASK_ENGINEERS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getTaskMembers = (data) => async dispatch => {
+    dispatch({
+        type: GET_TASK_MEMBERS_REQUEST
+    });
+
+    const response = await api.post('/project/get-task-members', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_TASK_MEMBERS_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: GET_TASK_MEMBERS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
 export const getUsers = () => async dispatch => {
 
     dispatch({
@@ -411,3 +460,26 @@ export const uploadModel = (model, url) => async dispatch => {
         })
     }
 }
+
+export const getNotificationCount = (projectId) => async dispatch => {
+    let data = {
+        projectId: projectId
+    }
+
+    dispatch({
+        type: GET_NOTIFICATION_COUNT_REQUEST
+    });
+
+    const response = await api.post('/project/get-notification-count', data);
+    if (response.data && response.status === 200) {
+        dispatch({
+            type: GET_NOTIFICATION_COUNT_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_NOTIFICATION_COUNT_FAILURE,
+            payload: response.data
+        })
+    }
+};
