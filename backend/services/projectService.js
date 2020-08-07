@@ -625,8 +625,10 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
     try {
         const user =  User.findById(userId);
         var members = [];
+        var taskMembers = [];
         memberIds.forEach(id => {
             members.push({id: id, status: NotStart});
+            // const user = User.findById
         });
         await Project.updateOne(
             { _id: projectId },
