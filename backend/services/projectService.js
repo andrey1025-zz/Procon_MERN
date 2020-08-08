@@ -626,10 +626,18 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
         const user =  User.findById(userId);
         var members = [];
         var taskMembers = [];
-        memberIds.forEach(id => {
-            members.push({id: id, status: NotStart});
-            // const user = User.findById
-        });
+        taskMembers = await processMemberIds(memberIds);
+        async function processMemberIds(memberIds){
+            const taskMembers = [] 
+            memberIds.forEach(id => {
+                members.push({id: id, status: NotStart});
+                const member = User.findById(id);
+                taskMembers.push(member);
+            });
+            return taskMembers;
+        }
+        console.log(taskMembers);
+        console.log("-------------------------");
         await Project.updateOne(
             { _id: projectId },
             {
@@ -659,7 +667,6 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
                     projectId: projectId,
                     message: "The Superintendent invited you to the task as member."
                 });
-                console.log(notification);
                 Notification.createCollection();
                 notification.save(opts);
             });

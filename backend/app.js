@@ -76,12 +76,10 @@ app.use(errorHandler);
 //         .then(function (response) {
 //             // Success
 //             access_token = response.data.access_token;
-//             console.log(response);
 //             // res.redirect('/api/forge/datamanagement/bucket/create');
 //         })
 //         .catch(function (error) {
 //             // Failed
-//             console.log(error);
 //             res.send('Failed to authenticate');
 //         });
 // });

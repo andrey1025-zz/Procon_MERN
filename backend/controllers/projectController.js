@@ -273,7 +273,6 @@ getForgeAccessToken = (req, res, next) => {
     })
         .then(function (response) {
             // Success
-            // console.log(response);
             res.json({ access_token: response.data.access_token, expires_in: response.data.expires_in });
         })
         .catch(function (error) {
@@ -322,14 +321,9 @@ function getBucketDetail(req, res, next) {
     })
         .then(function (response) {
             console.log("get bucket detail success");
-            // Success
-            // console.log(response);
-            // res.redirect('/upload.html');
             uploadToBucket(req, res, next);
         })
         .catch(function (error) {
-            // Failed
-            // console.log(error);
             res.send('Failed to verify the new bucket');
         });
 }
@@ -352,7 +346,6 @@ function uploadToBucket(req, res, next) {
                 var urn = Buffer.from(response.data.objectId).toString('base64')
                 // var urn = response.data.objectId.toBase64();
                 console.log("type of object id");
-                console.log(urn);
                 const file = req.file
                 derivativeModel(req, res, next, urn);
                 // res.redirect('/api/forge/modelderivative/' + urn);
