@@ -206,7 +206,7 @@ async function addTask({ components, componentId, projectId, userId, ipAddress }
                 _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: NotStart, members: []
             };
             
-            await Project.update(
+            await Project.updateOne(
                 {_id: projectId},
                 {
                     $push: {
@@ -275,7 +275,7 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
             //     _id: new ObjectID(), name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, memberId: null, memberName: null
             // };
             
-            await Project.update(
+            await Project.updateOne(
                 {_id: projectId},
                 {
                     $push: {
@@ -498,7 +498,7 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
         const user = User.findById(userId);
         const superintendent = await User.findById(superintendentId);
 
-        await Project.update(
+        await Project.updateOne(
             {_id: projectId},
             {
                 $addToSet: {
@@ -603,7 +603,6 @@ async function getTaskMembers({ userId, projectId, taskId }) {
                 status: responseStatus.success,
                 errorMessage: {},
                 data: taskMembers
-                // data: basicDetails(engineer)
             };
         } catch (error) {
             //await session.abortTransaction();
@@ -626,50 +625,63 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
         const user =  User.findById(userId);
         var members = [];
         var taskMembers = [];
-        taskMembers = await processMemberIds(memberIds);
-        async function processMemberIds(memberIds){
-            const taskMembers = [] 
-            memberIds.forEach(id => {
-                members.push({id: id, status: NotStart});
-                const member = User.findById(id);
-                taskMembers.push(member);
-            });
-            return taskMembers;
-        }
+        for (let i = 0; i < memberIds.length; i++) {
+            members.push({id: memberIds[0], status: NotStart});
+            let member = await User.findById(memberIds[0]);
+            taskMembers.push(basicDetails(member));
+        }            
         console.log(taskMembers);
-        console.log("-------------------------");
-        await Project.updateOne(
-            { _id: projectId },
-            {
-                $push: {
-                    "tasks.$[elem].members": { $each: members }
-                },
-                $set: {
-                    "tasks.$[elem].status": NotStart
-                }
-            },
-            {
-                multi: true,
-                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
-            }
-        )
+        console.log("--------------------");
+
+        // function asyncLoop( i, callback ) {
+        //     if( i < memberIds.length ) {
+        //         members.push({id: memberIds[i], status: NotStart});
+        //         let member = User.findById(memberIds[0]);
+        //         taskMembers.push(basicDetails(member));
+        //         asyncLoop( i+1, callback );
+        //     } else {
+        //         callback();
+        //     }
+        // }
+
+        // asyncLoop(0, function(){
+        //     console.log(taskMembers);
+        //     console.log("====================");
+        //     console.log(members);
+        // });
+        // console.log("-------------------------");
+        // await Project.updateOne(
+        //     { _id: projectId },
+        //     {
+        //         $push: {
+        //             "tasks.$[elem].members": { $each: members }
+        //         },
+        //         $set: {
+        //             "tasks.$[elem].status": NotStart
+        //         }
+        //     },
+        //     {
+        //         multi: true,
+        //         arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+        //     }
+        // )
         
         const session = await mongoose.startSession();
         try {
             const opts = { session, returnOriginal: false };
             //await session.startTransaction();
             await RefreshToken.createCollection();
-            memberIds.forEach(id => {
-                const notification = new Notification({
-                    from: userId,
-                    to: id,
-                    taskId: taskId,
-                    projectId: projectId,
-                    message: "The Superintendent invited you to the task as member."
-                });
-                Notification.createCollection();
-                notification.save(opts);
-            });
+            // memberIds.forEach(id => {
+            //     const notification = new Notification({
+            //         from: userId,
+            //         to: id,
+            //         taskId: taskId,
+            //         projectId: projectId,
+            //         message: "The Superintendent invited you to the task as member."
+            //     });
+            //     Notification.createCollection();
+            //     notification.save(opts);
+            // });
             const jwtToken = generateJwtToken(user);
             const refreshToken = generateRefreshToken(user, ipAddress);
             await refreshToken.save(opts);

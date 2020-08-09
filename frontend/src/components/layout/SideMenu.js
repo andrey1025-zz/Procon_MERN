@@ -18,7 +18,6 @@ const SideMenu = () => {
         dispatch(getNotificationCount(projectId));
     }, []);
 
-    console.log(notificCount);
     return (
         <div className="left side-menu">
             <div className="slimscroll-menu" id="remove-scroll">

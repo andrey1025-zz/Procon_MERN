@@ -216,7 +216,7 @@ inviteEngineer = (req, res, next) => {
 };
 
 // Invite Member to Project
-inviteMember = (req, res, next) => {
+inviteMember = async (req, res, next) => {
     const { projectId: projectId, taskId: taskId, memberIds: memberIds } = req.body;
     const { sub: userId } = req.user;
     const ipAddress = req.ip;
