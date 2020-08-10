@@ -257,10 +257,12 @@
   margin-bottom: 20px;
 }
 .notific-badge{
-  position:absolute;
-  top:60px;
-  left:20px;
-  border-radius:50%;
+  border-radius: 50%;
+  width: 25px;
+  position: absolute;
+  left: 50px;
+  bottom: -10px;
+  font-size: 15px;
 }
 .notific-text{
   position:absolute;

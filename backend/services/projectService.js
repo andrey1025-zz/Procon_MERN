@@ -626,62 +626,50 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
         var members = [];
         var taskMembers = [];
         for (let i = 0; i < memberIds.length; i++) {
-            members.push({id: memberIds[0], status: NotStart});
-            let member = await User.findById(memberIds[0]);
+            members.push({id: memberIds[i], status: NotStart});
+            let member = await User.findById(memberIds[i]);
             taskMembers.push(basicDetails(member));
-        }            
-        console.log(taskMembers);
-        console.log("--------------------");
+        }
 
-        // function asyncLoop( i, callback ) {
-        //     if( i < memberIds.length ) {
-        //         members.push({id: memberIds[i], status: NotStart});
-        //         let member = User.findById(memberIds[0]);
-        //         taskMembers.push(basicDetails(member));
-        //         asyncLoop( i+1, callback );
-        //     } else {
-        //         callback();
-        //     }
-        // }
-
-        // asyncLoop(0, function(){
-        //     console.log(taskMembers);
-        //     console.log("====================");
-        //     console.log(members);
-        // });
-        // console.log("-------------------------");
-        // await Project.updateOne(
-        //     { _id: projectId },
-        //     {
-        //         $push: {
-        //             "tasks.$[elem].members": { $each: members }
-        //         },
-        //         $set: {
-        //             "tasks.$[elem].status": NotStart
-        //         }
-        //     },
-        //     {
-        //         multi: true,
-        //         arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
-        //     }
-        // )
+        await Project.updateOne(
+            { _id: projectId },
+            {
+                $push: {
+                    "tasks.$[elem].members": { $each: members }
+                },
+                $set: {
+                    "tasks.$[elem].status": NotStart
+                }
+            },
+            {
+                multi: true,
+                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+            }
+        )
         
         const session = await mongoose.startSession();
         try {
             const opts = { session, returnOriginal: false };
             //await session.startTransaction();
             await RefreshToken.createCollection();
-            // memberIds.forEach(id => {
-            //     const notification = new Notification({
-            //         from: userId,
-            //         to: id,
-            //         taskId: taskId,
-            //         projectId: projectId,
-            //         message: "The Superintendent invited you to the task as member."
-            //     });
-            //     Notification.createCollection();
-            //     notification.save(opts);
-            // });
+            for (let i = 0; i < memberIds.length; i++) {
+                const old_notification = await Notification.findOne({to: memberIds[i], from: userId, taskId: taskId, projectId: projectId, isRead: false});
+                if(old_notification.length > 0){
+                    var count = old_notification.count + 1;
+                    old_notification.overwrite = ({count: count});
+                    await old_notification.save();
+                } else {
+                    const notification = new Notification({
+                        from: userId,
+                        to: memberIds[i],
+                        taskId: taskId,
+                        projectId: projectId,
+                        message: "The Superintendent invited you to the task as member."
+                    });
+                    Notification.createCollection();
+                    notification.save(opts);
+                }
+            }
             const jwtToken = generateJwtToken(user);
             const refreshToken = generateRefreshToken(user, ipAddress);
             await refreshToken.save(opts);
@@ -692,7 +680,8 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
                 status: responseStatus.success,
                 errorMessage: {},
                 token: jwtToken,
-                refreshToken: refreshToken.token
+                refreshToken: refreshToken.token,
+                data: taskMembers
             };
         } catch (error) {
             //await session.abortTransaction();
@@ -788,12 +777,64 @@ async function getNotificationCount({ userId, projectId }) {
     };
     try {
         const notifications = await Notification.find({to: userId, projectId: projectId, isRead: false});
+        var count = 0;
+        for (let i = 0; i < notifications.length; i++) {
+            count += notifications[i].count;
+        }
         try {
             return {
                 ...response,
                 status: responseStatus.success,
                 errorMessage: {},
-                data: notifications.length
+                data: count
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Notifications
+async function getNotifications({ userId, projectId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        var data = [];
+        const notifications = await Notification.find({to: userId, projectId: projectId, isRead: false});
+        for(i = 0 ; i < notifications.length; i++){
+            const from = await User.findById(notifications[i].from);
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: notifications[i].taskId } }
+                } 
+            );
+            const fromUserDetail = basicDetails(from);
+            var item = {
+                count: notifications[i].count,
+                createdOn: notifications[i].createdOn,
+                message: notifications[i].message,
+                firstName: fromUserDetail.firstName,
+                lastName: fromUserDetail.lastName,
+                photo: fromUserDetail.photo,
+                mobile: fromUserDetail.mobile,
+                role: fromUserDetail.role,
+                taskId: notifications[i].taskId,
+                taskName: task[0].tasks[0].name
+            }
+            data.push(item);
+        }
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: data
             };
         } catch (error) {
             throw error;
@@ -841,6 +882,7 @@ module.exports = {
     inviteEngineer,
     getUsers,
     getNotificationCount,
+    getNotifications,
     getTaskEngineers,
     getTaskMembers
 };

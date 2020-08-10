@@ -23,10 +23,14 @@ import {
     INVITE_ENGINEER_FAILURE,
     GET_NOTIFICATION_COUNT_SUCCESS,
     GET_NOTIFICATION_COUNT_FAILURE,
+    GET_NOTIFICATIONS_SUCCESS,
+    GET_NOTIFICATIONS_FAILURE,
     GET_TASK_ENGINEERS_SUCCESS,
     GET_TASK_ENGINEERS_FAILURE,
     GET_TASK_MEMBERS_SUCCESS,
-    GET_TASK_MEMBERS_FAILURE
+    GET_TASK_MEMBERS_FAILURE,
+    INVITE_MEMBER_SUCCESS,
+    INVITE_MEMBER_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -40,7 +44,8 @@ const initialState = {
     taskId: null,
     taskEngineers: [],
     taskMembers: [],
-    notificCount: 0
+    notificCount: 0,
+    notifications: []
 };
 
 export default (state = initialState, action) => {
@@ -168,6 +173,16 @@ export default (state = initialState, action) => {
                 ...state,
                 taskEngineers: [],
             };
+        case INVITE_MEMBER_SUCCESS:
+            return {
+                ...state,
+                taskMembers: action.payload.data,
+            };
+        case INVITE_MEMBER_FAILURE:
+            return {
+                ...state,
+                taskMembers: [],
+            };
         case GET_TASK_MEMBERS_SUCCESS:
             return {
                 ...state,
@@ -187,6 +202,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 notificCount: 0,
+            };
+        case GET_NOTIFICATIONS_SUCCESS:
+            return {
+                ...state,
+                notifications: action.payload.data,
+            };
+        case GET_NOTIFICATIONS_FAILURE:
+            return {
+                ...state,
+                notifications: 0,
             };
         default:
             return state;

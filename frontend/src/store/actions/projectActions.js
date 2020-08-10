@@ -52,6 +52,9 @@ import {
     GET_NOTIFICATION_COUNT_REQUEST,
     GET_NOTIFICATION_COUNT_SUCCESS,
     GET_NOTIFICATION_COUNT_FAILURE,
+    GET_NOTIFICATIONS_REQUEST,
+    GET_NOTIFICATIONS_SUCCESS,
+    GET_NOTIFICATIONS_FAILURE,
     GET_TASK_ENGINEERS_REQUEST,
     GET_TASK_ENGINEERS_SUCCESS,
     GET_TASK_ENGINEERS_FAILURE,
@@ -479,6 +482,29 @@ export const getNotificationCount = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_NOTIFICATION_COUNT_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getNotifications = (projectId) => async dispatch => {
+    let data = {
+        projectId: projectId
+    }
+
+    dispatch({
+        type: GET_NOTIFICATIONS_REQUEST
+    });
+
+    const response = await api.post('/project/get-notifications', data);
+    if (response.data && response.status === 200) {
+        dispatch({
+            type: GET_NOTIFICATIONS_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_NOTIFICATIONS_FAILURE,
             payload: response.data
         })
     }

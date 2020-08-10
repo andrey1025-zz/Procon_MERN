@@ -24,6 +24,10 @@ const notificationSchema = new Schema({
     isRead: {
         type: Boolean,
         default: false
+    },
+    count: {
+        type: Number,
+        default: 1
     }
 }, { versionKey: false });
 const notificationModel = mongoose.model("Notification", notificationSchema, "Notifications");

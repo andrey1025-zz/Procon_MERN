@@ -79,6 +79,7 @@ const SupervisorHome = (props) => {
         }
         dispatch(addTask(data));
         $(".add-member").show();
+        // $(".friends-suggestions").empty();
     }
     // const show_newTaskForm = () => {
     //     $(".task-info").addClass("visible");
@@ -95,6 +96,7 @@ const SupervisorHome = (props) => {
     const members = useSelector(state => state.project.members);
     const taskId = useSelector(state => state.project.taskId);
     const taskEngineers = useSelector(state => state.project.taskEngineers);
+    const taskMembers = useSelector(state => state.project.taskMembers);
 
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
@@ -108,21 +110,21 @@ const SupervisorHome = (props) => {
         }
     }, [project]);
      
-    // useEffect(() => {
-    //     let data = {
-    //         projectId: projectId,
-    //         taskId: taskId
-    //     }
-    //     dispatch(getTaskEngineers(data));
-    // }, []);
+    useEffect(() => {
+        let data = {
+            projectId: projectId,
+            taskId: taskId
+        }
+        dispatch(getTaskEngineers(data));
+    }, []);
 
-    // useEffect(() => {
-    //     let data = {
-    //         projectId: projectId,
-    //         taskId: taskId
-    //     }
-    //     dispatch(getTaskMembers(data));
-    // }, []);
+    useEffect(() => {
+        let data = {
+            projectId: projectId,
+            taskId: taskId
+        }
+        dispatch(getTaskMembers(data));
+    }, []);
 
     useEffect(() => {
         dispatch(getViewerForgeToken());
@@ -425,7 +427,27 @@ const SupervisorHome = (props) => {
                                     </a> 
                                 : ''
                             }
-                            
+                            { 
+                                taskMembers != [] > 0 ? 
+                                    taskMembers.map((value, index) => {
+                                        return (
+                                            <a href="#" className="friends-suggestions-list" key={index}>
+                                                <div className="border-bottom position-relative">
+                                                    <div className="float-left mb-0 mr-3">
+                                                        <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
+                                                        <p>{value.firstName} {value.lastName}</p>
+                                                    </div>
+                                                    <div className="suggestion-icon float-right mt-2 pt-1"> {value.role} </div>
+                                                    <div className="desc">
+                                                        <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
+                                                        <p className="text-muted">{!value.mobile ? '' : value.mobile}</p>
+                                                    </div>
+                                                </div>
+                                            </a> 
+                                        ) 
+                                    })
+                                : ''
+                            }
                         </div>
                     </div>
                 </div>

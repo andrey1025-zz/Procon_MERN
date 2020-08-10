@@ -257,6 +257,18 @@ getNotificationCount = (req, res, next) => {
         }).catch(next);
 };
 
+// Get Notifications
+getNotifications = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId } = req.body;
+    projectService.getNotifications({ userId, projectId })
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
 getForgeAccessToken = (req, res, next) => {
     Axios({
         method: 'POST',
@@ -419,6 +431,7 @@ module.exports = {
     inviteMember,
     inviteEngineer,
     getNotificationCount,
+    getNotifications,
     getTaskEngineers,
     getTaskMembers,
     createBucket,
