@@ -3,6 +3,7 @@ import SupervisorHome from '../pages/supervisor/home';
 import SupervisorTaskManage from '../pages/supervisor/taskManage';
 import SupervisorTaskHistory from '../pages/supervisor/taskHistory';
 import SupervisorTaskDetail from '../pages/supervisor/taskDetail';
+import SupervisorMembers from '../pages/supervisor/members';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 
@@ -26,6 +27,10 @@ const supervisorRoutes = [
     {
         path: '/supervisor/task_detail/:id',
         component: SupervisorTaskDetail
+    },
+    {
+        path: '/supervisor/members',
+        component: SupervisorMembers
     },
     {
         path: '/supervisor/change-password',

@@ -56,7 +56,7 @@ const SideMenu = () => {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/home`} className={getClassName('member')}  >
+                            <NavLink to={`/${getSimpleRoleName(user.role)}/members`} className={getClassName('members')}  >
                                 <img src={require('../../images/member.png')} /> <span> Member </span>
                             </NavLink>
                         </li>                                                

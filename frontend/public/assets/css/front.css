@@ -141,6 +141,10 @@
   padding: 20px 40px;
   background: #141519;
 }
+.members-wrapper > div{
+  padding: 20px;
+  background: #141519;
+}
 .progress-tasks{
   margin-bottom: 20px;
 }

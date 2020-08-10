@@ -470,7 +470,6 @@ const TaskDetail = (props) => {
                                             return (
                                                 <div className="col-sm-3 col-xl-3 col-md-3" key={index}>
                                                     <div data-index={index} className="member-status custom-rounded mb-2 member-link" data-type={role} onClick={() => handleUserClicked(index)}>
-                                                    {/* <div key={index} className="member-status custom-rounded mb-2 member-link"> */}
                                                         <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} className="roundedImg    thumb-md" />
                                                         </div>
