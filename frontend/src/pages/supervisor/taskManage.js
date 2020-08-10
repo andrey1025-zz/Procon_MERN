@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTasks } from '../../store/actions/projectActions';
-
+import { getSimpleRoleName } from '../../services';
 
 import $ from 'jquery';
 
 const SupervisorTaskManage = () => {
+    const user = useSelector(state => state.auth.user);
     const projectId = window.localStorage.getItem("projectId");
     const tasks = useSelector(state => state.project.tasks);
     useEffect(() => {
@@ -329,7 +330,7 @@ const SupervisorTaskManage = () => {
                                                                     <i className="mdi mdi-menu"></i>
                                                                 </a>
                                                                 <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
-                                                                    <a className="dropdown-item"> Display Task</a>
+                                                                    <a className="dropdown-item" href={`/${getSimpleRoleName(user.role)}/task_detail/` + value._id}> Display Task</a>
                                                                     <a className="dropdown-item d-block"> Edit Task</a>
                                                                     <a className="dropdown-item"> End Task</a>
                                                                 </div>

@@ -164,7 +164,7 @@ async function getProjectDetail(projectId) {
     try {
         const project = await Project.findById(projectId);
         if (project === null) {
-            throw `Project with id ${id} doesn't exist`
+            throw `Project with id ${projectId} doesn't exist`
         }
         try {
             return {
@@ -362,7 +362,7 @@ async function getTaskDetail(taskId) {
     try {
         const task = await Project.find({ "tasks": { _id: taskId } });
         if (task === null) {
-            throw `Task with id ${id} doesn't exist`
+            throw `Task with id ${taskId} doesn't exist`
         }
         try {
             return {
@@ -552,9 +552,21 @@ async function getTaskEngineers({ userId, projectId, taskId }) {
         const user = User.findById(userId);
         var taskEngineers= [];
         if(taskId != null){
-            taskEngineers = await Project.find(
-                {_id: projectId, "tasks._id": taskId}
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: taskId } }
+                } 
             );
+            if(task && task.length > 0){
+                if(task[0].tasks && task[0].tasks.length > 0){
+                    var task_detail = task[0].tasks[0];
+                    for(i = 0; i < task_detail.engineers.length; i++){
+                        const userInfo = await User.findById(task_detail.engineers[i].id);
+                        taskEngineers.push(basicDetails(userInfo));
+                    }
+                }
+            }
         }
         const session = await mongoose.startSession();
         try {
@@ -589,9 +601,21 @@ async function getTaskMembers({ userId, projectId, taskId }) {
         const user = User.findById(userId);
         var taskMembers = [];
         if(taskId != null){
-            taskMembers = await Project.find(
-                {_id: projectId, "tasks._id": taskId}
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } }
+                } 
             );
+            if(task && task.length > 0){
+                if(task[0].tasks && task[0].tasks.length > 0){
+                    var task_detail = task[0].tasks[0];
+                    for(i = 0; i < task_detail.members.length; i++){
+                        const userInfo = await User.findById(task_detail.members[i].id);
+                        taskMembers.push(basicDetails(userInfo));
+                    }
+                }
+            }
         }
         const session = await mongoose.startSession();
         try {
@@ -654,7 +678,7 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
             await RefreshToken.createCollection();
             for (let i = 0; i < memberIds.length; i++) {
                 const old_notification = await Notification.findOne({to: memberIds[i], from: userId, taskId: taskId, projectId: projectId, isRead: false});
-                if(old_notification.length > 0){
+                if(old_notification && old_notification.length > 0){
                     var count = old_notification.count + 1;
                     old_notification.overwrite = ({count: count});
                     await old_notification.save();
