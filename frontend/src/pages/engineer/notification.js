@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getNotifications } from '../../store/actions/projectActions';
-
+import { getSimpleRoleName } from '../../services';
 
 import $ from 'jquery';
 
 const EngineerNotification = () => {
+    const user = useSelector(state => state.auth.user);
     const projectId = window.localStorage.getItem("projectId");
     const notifications = useSelector(state => state.project.notifications);
     useEffect(() => {
@@ -17,6 +19,7 @@ const EngineerNotification = () => {
         dispatch(getNotifications(projectId));  
     }, []);
 
+    
     const dispatch = useDispatch();
 
     return (
@@ -61,7 +64,7 @@ const EngineerNotification = () => {
                                             <p>{value.message}</p>
                                             </div>
                                             <div className="pro-image">
-                                                <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                <Link to={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value.taskId}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
                                             </div>
                                         </div>
                                     </div>

@@ -839,11 +839,13 @@ async function getNotifications({ userId, projectId }) {
         for(i = 0 ; i < notifications.length; i++){
             const from = await User.findById(notifications[i].from);
             const task = await Project.find(
-                { _id: projectId }, 
+                { _id: projectId },
                 { 
-                    tasks: { $elemMatch: { _id: notifications[i].taskId } }
-                } 
-            );
+                    tasks: { $elemMatch: { _id: notifications[i].taskId } },
+                    coverImage : { $elemMatch: { _id: projectId } }
+                }
+                );
+
             const fromUserDetail = basicDetails(from);
             var item = {
                 count: notifications[i].count,
@@ -855,7 +857,8 @@ async function getNotifications({ userId, projectId }) {
                 mobile: fromUserDetail.mobile,
                 role: fromUserDetail.role,
                 taskId: notifications[i].taskId,
-                taskName: task[0].tasks[0].name
+                taskName: task[0].tasks[0].name,
+                coverImage: task[0].coverImage ? `${config.assetsBaseUrl}/${task[0].coverImage}` : null
             }
             data.push(item);
         }
