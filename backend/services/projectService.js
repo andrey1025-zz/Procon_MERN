@@ -248,7 +248,7 @@ async function addTask({ components, componentId, projectId, userId, ipAddress }
 };
 
 // Edit Task Info
-async function editTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, userId, ipAddress }) {
+async function editTask({ name, startTime, endTime, equipTools, components, materials, workingArea, weather, siteCondition, nearbyIrrelevantObjects, cultural_legal_constraints, technical_safety_specifications, publicRelationRequirements, projectId, taskId, userId, ipAddress }) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
@@ -257,33 +257,47 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
         // Check if name already add
         const user = await User.findById(userId);
         const project = await Project.findById(projectId);
-        if (user.role != SupervisorRole) {
+        if (user.role != EngineerRole) {
             return {
                 ...response,
                 errorMessage: {
                     ...response.errorMessage,
-                    email: "Only Superintendent can add new Task"
+                    email: "Only Engineer can add new Task"
                 }
             };
         } else {
             // Create new project
-            const task = {
-                _id: new ObjectID(), name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: NotStart, members: null
-            };
-
-            // const task = {
-            //     _id: new ObjectID(), name: name, startTime: startTime, endTime: endTime, equipTools: equipTools, components: components, materials: materials, workingArea: workingArea, weather: weather, siteCondition: siteCondition, nearbyIrrelevantObjects: nearbyIrrelevantObjects, cultural_legal_constraints: cultural_legal_constraints, technical_safety_specifications: technical_safety_specifications, publicRelationRequirements: publicRelationRequirements, createdBy: userId, status: Created, memberId: null, memberName: null
-            // };
-            
             await Project.updateOne(
                 {_id: projectId},
                 {
-                    $push: {
-                        tasks: task
+                    $set: {
+                        'tasks.$[elem].name': name,
+                        'tasks.$[elem].startTime': startTime,
+                        'tasks.$[elem].endTime': endTime,
+                        'tasks.$[elem].equipTools': equipTools,
+                        'tasks.$[elem].components': components,
+                        'tasks.$[elem].materials': materials,
+                        'tasks.$[elem].workingArea': workingArea,
+                        'tasks.$[elem].weather': weather,
+                        'tasks.$[elem].siteCondition': siteCondition,
+                        'tasks.$[elem].nearbyIrrelevantObjects': nearbyIrrelevantObjects,
+                        'tasks.$[elem].cultural_legal_constraints': cultural_legal_constraints,
+                        'tasks.$[elem].technical_safety_specifications': technical_safety_specifications,
+                        'tasks.$[elem].publicRelationRequirements': publicRelationRequirements,
+                        'tasks.$[elem].status': Reviewed
                     }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
                 }
             )
-
+            await Notification.updateOne(
+                {projectId: projectId, taskId:taskId},
+                {
+                    $set: {'isRead': true}
+                }
+            )
             const session = await mongoose.startSession();
             try {
                 const opts = { session, returnOriginal: false };
@@ -662,7 +676,7 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
                     "tasks.$[elem].members": { $each: members }
                 },
                 $set: {
-                    "tasks.$[elem].status": NotStart
+                    "tasks.$[elem].status": Created
                 }
             },
             {
@@ -751,7 +765,7 @@ async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress
                     "tasks.$[elem].engineers": { $each: engineers }
                 },
                 $set: {
-                    "tasks.$[elem].status": NotStart
+                    "tasks.$[elem].status": Created
                 }
             },
             {

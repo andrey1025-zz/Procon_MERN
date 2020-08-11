@@ -5,17 +5,9 @@ import { Form, FormField, SubmitButton, FormTextarea } from '../../components/fo
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
 import { 
-    addTask,
     editTask,
     getProjectDetail, 
     getViewerForgeToken, 
-    getUsers, 
-    getSuperintendents, 
-    getEngineers, 
-    getMembers,
-    inviteSuperintendent,
-    inviteMember,
-    inviteEngineer
 } 
 from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
@@ -57,7 +49,7 @@ const initialValues = {
 };
 
 const EngineerHome = (props) => {
-    const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
+    const loading = useSelector(state => loadingSelector(['EDIT_TASK'])(state));
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
     if(projectId == '')
@@ -67,7 +59,7 @@ const EngineerHome = (props) => {
         data.projectId = projectId;
         data.taskId = taskId;
         console.log(data);
-        // dispatch(addTask(data, setErrors, setSubmitting));
+        dispatch(editTask(data, setErrors, setSubmitting));
         $(".member-panel").show();
     }
     const values = queryString.parse(props.location.search)
