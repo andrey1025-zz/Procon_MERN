@@ -47,7 +47,7 @@ const EngineerNotification = () => {
                                                             </a>
                                                             <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
                                                                 <a className="dropdown-item"> Display Task</a>
-                                                                <a className="dropdown-item d-block"> Edit Task</a>
+                                                                <Link to={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value.taskId} className="dropdown-item d-block">Edit Task</Link>
                                                                 <a className="dropdown-item"> End Task</a>
                                                             </div>
                                                         </div>  

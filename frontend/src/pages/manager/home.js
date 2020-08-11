@@ -111,7 +111,7 @@ const ManagerHome = (props) => {
                                         })
                                     }
                                     <div className="col-sm-12 col-xl-12 col-md-12" style={{textAlign: 'right', display: 'none'}}>
-                                            <button className="btn btn-info btn-lg task-btn2 btn-invite" onClick={handleInviteSuperintendent}>Invite Superintendent</button>
+                                        <button className="btn btn-info btn-lg task-btn2 btn-invite" onClick={handleInviteSuperintendent}>Invite Superintendent</button>
                                     </div>
                                     {/* <div className="col-sm-3 col-xl-3 col-md-3">
                                         <div className="member-status custom-rounded mb-2">
