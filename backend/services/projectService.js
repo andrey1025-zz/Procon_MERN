@@ -14,7 +14,7 @@ const responseStatus = require("../enums/responseStatus");
 const RefreshToken = require("../models/refreshTokenModel");
 const { basicDetails, projectDetails } = require('../services/helperService');
 const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
-const { NotStart, Inprogress, Completed, Created } = require('../enums/taskStatus');
+const { NotStart, Inprogress, Completed, Created, Reviewed } = require('../enums/taskStatus');
 const { Console } = require('console');
 const { ObjectID } = require('mongodb');
 const saltRounds = 10;
@@ -203,7 +203,7 @@ async function addTask({ components, componentId, projectId, userId, ipAddress }
         } else {
             // Create new project
             const task = {
-                _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: NotStart, members: []
+                _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: Created, members: []
             };
             
             await Project.updateOne(
@@ -676,24 +676,30 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
             const opts = { session, returnOriginal: false };
             //await session.startTransaction();
             await RefreshToken.createCollection();
-            for (let i = 0; i < memberIds.length; i++) {
-                const old_notification = await Notification.findOne({to: memberIds[i], from: userId, taskId: taskId, projectId: projectId, isRead: false});
-                if(old_notification && old_notification.length > 0){
-                    var count = old_notification.count + 1;
-                    old_notification.overwrite = ({count: count});
-                    await old_notification.save();
-                } else {
-                    const notification = new Notification({
-                        from: userId,
-                        to: memberIds[i],
-                        taskId: taskId,
-                        projectId: projectId,
-                        message: "The Superintendent invited you to the task as member."
-                    });
-                    Notification.createCollection();
-                    notification.save(opts);
-                }
-            }
+            
+            // Send Notification after publishing task
+
+            // for (let i = 0; i < memberIds.length; i++) {
+            //     const old_notification = await Notification.findOne({to: memberIds[i], from: userId, taskId: taskId, projectId: projectId, isRead: false});
+            //     if(old_notification && old_notification.length > 0){
+            //         var count = old_notification.count + 1;
+            //         old_notification.overwrite = ({count: count});
+            //         await old_notification.save();
+            //     } else {
+            //         const notification = new Notification({
+            //             from: userId,
+            //             to: memberIds[i],
+            //             taskId: taskId,
+            //             projectId: projectId,
+            //             message: "The Superintendent invited you to the task as member."
+            //         });
+            //         Notification.createCollection();
+            //         notification.save(opts);
+            //     }
+            // }
+
+            // End Sending Notification after publishing Task
+
             const jwtToken = generateJwtToken(user);
             const refreshToken = generateRefreshToken(user, ipAddress);
             await refreshToken.save(opts);
