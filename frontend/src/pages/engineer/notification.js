@@ -21,16 +21,11 @@ const EngineerNotification = () => {
 
     return (
         <React.Fragment>
-            <div className="progress mt-4 mb-4">
-                <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div>
-                <div className="row">
                     {notifications && notifications.length > 0 ? 
                         (
                             notifications.map((value, index) => {
                                 return (
-                                <div className="col-sm-12 col-xl-4 col-md-6" key={index}>
+                                <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
                                     <div className="card no-margin">
                                         <div className="card-heading">
                                             <div className="row col-md-12">
@@ -75,8 +70,6 @@ const EngineerNotification = () => {
                             })
                         ) : null
                     }
-                </div>
-            </div>
         </React.Fragment>
     )
 }

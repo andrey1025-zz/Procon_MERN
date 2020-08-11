@@ -249,7 +249,6 @@ const EngineerHome = (props) => {
         console.log('Error loading the model.');
     }
     const handleNodeSelected = (viewer, model) => {
-        console.log("============================");
     }
     return (
         <React.Fragment>

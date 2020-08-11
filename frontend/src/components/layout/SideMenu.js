@@ -42,7 +42,7 @@ const SideMenu = () => {
                         </li>
                         <li>
                             <NavLink to={`/${getSimpleRoleName(user.role)}/notification`} className={getClassName('notification')}  >
-    <img src={require('../../images/notification.png')} /> <span> Notification </span><span className="badge badge-danger" style={{borderRadius:'50%', float:'right', width: '15px'}}>{notificCount > 0 ? notificCount : null}</span>
+                                <img src={require('../../images/notification.png')} /> <span> Notification </span><span className="badge badge-danger" style={{borderRadius:'50%', float:'right', width: '15px'}}>{notificCount > 0 ? notificCount : null}</span>
                             </NavLink>
                         </li>
                         <li>

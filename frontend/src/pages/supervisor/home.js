@@ -269,7 +269,6 @@ const SupervisorHome = (props) => {
         console.log('Error loading the model.');
     }
     const handleNodeSelected = (viewer, model) => {
-        console.log("============================");
     }
     return (
         <React.Fragment>
@@ -290,7 +289,6 @@ const SupervisorHome = (props) => {
                                 onModelError={handleModelError}
                                 onSelectionEvent={() => handleNodeSelected}
                             />
-                            {/* <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={show_newTaskForm}>Add a new task</button> */}
                             <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={handleAddTask}>Add a new task</button>
                         </div>
                     </div>
@@ -406,7 +404,10 @@ const SupervisorHome = (props) => {
                 </div>  
                                        
             </div>
+
             <div className="col-sm-3 col-xl-3 col-md-3 member-panel">
+            {
+                (taskEngineers != [] > 0 || taskMembers != [] > 0 ) ?
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
                         <div className="friends-suggestions">
@@ -451,6 +452,9 @@ const SupervisorHome = (props) => {
                         </div>
                     </div>
                 </div>
+                 : ''
+            }
+
                 <div className="row text-center add-member custom-rounded"  style={{display: 'none'}}>
                     <a onClick={handleOpenMembersDialog} className="md-plus" data-toggle="modal" data-target="#addMemberModal"><i className="fas fa-plus"></i></a>
                 </div>
@@ -465,7 +469,6 @@ const SupervisorHome = (props) => {
                                         Engineer <i className="fa fa-sort-down"></i>                                        
                                         </a>
                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
-                                            {/* <a className="dropdown-item" onClick={() => handleRoleSelected(SupervisorRole)}> Superintendent</a> */}
                                             <a className="dropdown-item" onClick={() => handleRoleSelected(EngineerRole)}> Engineer</a>
                                             <a className="dropdown-item" onClick={() => handleRoleSelected(MemberRole)}> Member</a>
                                         </div>                                    
@@ -485,7 +488,6 @@ const SupervisorHome = (props) => {
                                             return (
                                                 <div className="col-sm-3 col-xl-3 col-md-3" key={index}>
                                                     <div data-index={index} className="member-status custom-rounded mb-2 member-link" data-type={role} onClick={() => handleUserClicked(index)}>
-                                                    {/* <div key={index} className="member-status custom-rounded mb-2 member-link"> */}
                                                         <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} className="roundedImg    thumb-md" />
                                                         </div>
@@ -500,222 +502,6 @@ const SupervisorHome = (props) => {
                                     <div className="col-sm-12 col-xl-12 col-md-12" style={{textAlign: 'right', display: 'none'}}>
                                         <button className="btn btn-info btn-lg task-btn2 btn-invite" onClick={handleInvite}>Invite {role}</button>
                                     </div>
-                                    {/* <div className="col-sm-3 col-xl-3 col-md-3">
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3"></div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>  
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-yellow mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-yellow mt-3">
-                                            </div>
-                                        </div>  
-                                    </div>
-                                    <div className="col-sm-3 col-xl-3 col-md-3">
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>  
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-yellow mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-2.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-yellow mt-3">
-                                            </div>
-                                        </div>  
-                                    </div>
-                                    <div className="col-sm-3 col-xl-3 col-md-3">
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>  
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-yellow mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-3.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div className="col-sm-3 col-xl-3 col-md-3">
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-green mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-red mt-3">
-                                            </div>
-                                        </div>  
-                                        <div className="member-status custom-rounded mb-2">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user-4.jpg')} alt="" className="roundedImg thumb-md"/>
-                                            </div>
-                                            <div className="suggestion-icon float-left mt-3"> Belle Edwards </div>
-                                            <div className="circle-light float-right light-yellow mt-3">
-                                            </div>
-                                        </div>
-                                    </div>                                                                                                             */}
                                 </div>
                             </div>
                         </div>
