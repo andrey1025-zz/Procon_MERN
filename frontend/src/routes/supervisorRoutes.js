@@ -6,6 +6,7 @@ import SupervisorTaskDetail from '../pages/supervisor/taskDetail';
 import SupervisorMembers from '../pages/supervisor/members';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
+import SupervisorNotification from '../pages/supervisor/notification';
 
 const supervisorRoutes = [
     {
@@ -27,6 +28,10 @@ const supervisorRoutes = [
     {
         path: '/supervisor/task_detail/:id',
         component: SupervisorTaskDetail
+    },
+    {
+        path: '/supervisor/notification',
+        component: SupervisorNotification
     },
     {
         path: '/supervisor/members',

@@ -29,6 +29,8 @@ import {
     GET_TASK_ENGINEERS_FAILURE,
     GET_TASK_MEMBERS_SUCCESS,
     GET_TASK_MEMBERS_FAILURE,
+    GET_TASK_DETAIL_FAILURE,
+    GET_TASK_DETAIL_SUCCESS,
     INVITE_MEMBER_SUCCESS,
     INVITE_MEMBER_FAILURE
 } from "../types";
@@ -41,6 +43,7 @@ const initialState = {
     engineers: [],
     members: [],
     tasks:{},
+    task:[],
     taskId: null,
     taskEngineers: [],
     taskMembers: [],
@@ -162,6 +165,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 taskEngineers: [],
+            };
+        case GET_TASK_DETAIL_SUCCESS:
+            return {
+                ...state,
+                task: action.payload.data,
+            };
+        case GET_TASK_DETAIL_FAILURE:
+            return {
+                ...state,
+                task: [],
             };
         case INVITE_ENGINEER_SUCCESS:
             return {

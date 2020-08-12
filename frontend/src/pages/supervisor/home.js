@@ -6,10 +6,8 @@ import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
 import { 
     addTask,
-    editTask,
     getProjectDetail, 
     getViewerForgeToken, 
-    getUsers, 
     getSuperintendents, 
     getEngineers, 
     getMembers,
@@ -17,10 +15,12 @@ import {
     inviteMember,
     inviteEngineer,
     getTaskEngineers,
-    getTaskMembers
+    getTaskMembers,
+    getTaskDetail
 } 
 from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
+import queryString from 'query-string'
 
 import * as Yup from 'yup';
 import $ from 'jquery'; 
@@ -67,10 +67,11 @@ const SupervisorHome = (props) => {
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
-        dispatch(addTask(data, setErrors, setSubmitting));
+        // dispatch(reviewTask(data, setErrors, setSubmitting));
         $(".add-member").show();
     }
-
+    const values = queryString.parse(props.location.search)
+    const task_id = values.task_id;
     const handleAddTask = () => {
         let data = {
             projectId: projectId,
@@ -79,15 +80,7 @@ const SupervisorHome = (props) => {
         }
         dispatch(addTask(data));
         $(".add-member").show();
-        // $(".friends-suggestions").empty();
     }
-    // const show_newTaskForm = () => {
-    //     $(".task-info").addClass("visible");
-    // };
-    // const hide_newTaskForm = () => {
-    //     $(".task-info").removeClass("visible");
-    //     $(".member-panel").hide();
-    // };
     
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
@@ -95,6 +88,7 @@ const SupervisorHome = (props) => {
     const engineers = useSelector(state => state.project.engineers);
     const members = useSelector(state => state.project.members);
     const taskId = useSelector(state => state.project.taskId);
+    const task = useSelector(state => state.project.task);
     const taskEngineers = useSelector(state => state.project.taskEngineers);
     const taskMembers = useSelector(state => state.project.taskMembers);
 
@@ -125,7 +119,20 @@ const SupervisorHome = (props) => {
         }
         dispatch(getTaskMembers(data));
     }, []);
-
+    
+    useEffect(() => {
+        if(task_id){
+            let data = {
+                projectId: projectId,
+                taskId: task_id
+            }
+            dispatch(getTaskDetail(data));
+        }
+        if(task.length > 0){
+            $(".task-info").show();
+        }
+    }, []);
+    
     useEffect(() => {
         dispatch(getViewerForgeToken());
     }, []);
@@ -289,7 +296,7 @@ const SupervisorHome = (props) => {
                                 onModelError={handleModelError}
                                 onSelectionEvent={() => handleNodeSelected}
                             />
-                            <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={handleAddTask}>Add a new task</button>
+                            { !task_id ? <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={handleAddTask}>Add a new task</button> : ''}
                         </div>
                     </div>
                 </div>
@@ -303,106 +310,107 @@ const SupervisorHome = (props) => {
                         <div></div>
                     </div>
                 </div>
+                {
+                    task.length > 0 ? 
+                    <div className="task-info">
+                        <div className="scrollbar" id="style-2">
+                            <Form
+                                onSubmit={handleSubmit}
+                                validationSchema={validationSchema}
+                                initialValues={initialValues}
+                            >
+                                <div className="force-overflow">
+                                    <div className="form-group-task">
+                                        <label>Task name:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="name" value={task[0].tasks[0].name}/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group-task">
+                                        <label>Task expected start time:</label>
+                                        <div>
+                                            <FormField className="form-control-task" type="time" name="startTime" value={task[0].tasks[0].startTime}/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group-task">
+                                        <label>Task expected end time:</label>
+                                        <div>
+                                            <FormField className="form-control-task" type="time" name="endTime" value={task[0].tasks[0].endTime}/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group-task">
+                                        <label>Equipment and tools:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="equipTools" value={task[0].tasks[0].equipTools}/>
+                                        </div>
+                                    </div>
 
-                <div className="task-info">
-                    <div className="scrollbar" id="style-2">
-                        <Form
-                            onSubmit={handleSubmit}
-                            validationSchema={validationSchema}
-                            initialValues={initialValues}
-                        >
-                            <div className="force-overflow">
-                                <div className="form-group-task">
-                                    <label>Task name:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="name"/>
+                                    <div className="form-group-task">
+                                        <label>Components:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="components" value={task[0].tasks[0].components}/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="form-group-task">
-                                    <label>Task expected start time:</label>
-                                    <div>
-                                        <FormField className="form-control-task" type="time" name="startTime"/>
+                                    <div className="form-group-task">
+                                        <label>Materials:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="materials" value={task[0].tasks[0].materials}/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="form-group-task">
-                                    <label>Task expected end time:</label>
-                                    <div>
-                                        <FormField className="form-control-task" type="time" name="endTime"/>
+                                    <div className="form-group-task">
+                                        <label>Working area:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="workingArea" value={task[0].tasks[0].workingArea}/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="form-group-task">
-                                    <label>Equipment and tools:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="equipTools"/>
-                                    </div>
-                                </div>
 
-                                <div className="form-group-task">
-                                    <label>Components:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="components"/>
+                                    <div className="form-group-task">
+                                        <label>Weather:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="weather" value={task[0].tasks[0].weather}/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="form-group-task">
-                                    <label>Materials:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="materials"/>
-                                    </div>
-                                </div>
-                                <div className="form-group-task">
-                                    <label>Working area:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="workingArea"/>
-                                    </div>
-                                </div>
 
-                                <div className="form-group-task">
-                                    <label>Weather:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="weather"/>
+                                    <div className="form-group-task">
+                                        <label>Site condition:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="siteCondition" value={task[0].tasks[0].siteCondition}/>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="form-group-task">
-                                    <label>Site condition:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="siteCondition"/>
+                                    <div className="form-group-task">
+                                        <label>Nearby irrelevant objects:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects" value={task[0].tasks[0].nearbyIrrelevantObjects}/>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="form-group-task">
-                                    <label>Nearby irrelevant objects:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects"/>
+                                    <div className="form-group-task">
+                                        <label>Cultural and legal constraints:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="cultural_legal_constraints" value={task[0].tasks[0].cultural_legal_constraints}/>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="form-group-task">
-                                    <label>Cultural and legal constraints:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="cultural_legal_constraints"/>
+                                    <div className="form-group-task">
+                                        <label>Technical and safety specifications:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="technical_safety_specifications" value={task[0].tasks[0].technical_safety_specifications}/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group-task">
+                                        <label>Public relation requirements:</label>
+                                        <div>
+                                            <FormTextarea className="form-control-task" name="publicRelationRequirements" value={task[0].tasks[0].publicRelationRequirements}/>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className="form-group-task">
-                                    <label>Technical and safety specifications:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="technical_safety_specifications"/>
-                                    </div>
-                                </div>
-                                <div className="form-group-task">
-                                    <label>Public relation requirements:</label>
-                                    <div>
-                                        <FormTextarea className="form-control-task" name="publicRelationRequirements"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
-                            <SubmitButton title='Publish' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
-                        </Form>
-                    </div>
-                </div>  
-                                       
+                                <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
+                                <SubmitButton title='Review' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
+                            </Form>
+                        </div>
+                    </div> : ''  
+                }                                       
             </div>
 
             <div className="col-sm-3 col-xl-3 col-md-3 member-panel">

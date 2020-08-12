@@ -305,8 +305,6 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
                 projectId: projectId,
                 message: "The Engineer edited the project you created task."
             });
-            console.log(project.superintendent[0].id);
-            console.log("==============");
 
             const session = await mongoose.startSession();
             try {
@@ -380,13 +378,19 @@ async function getTasks(projectId) {
     }
 };
 
-async function getTaskDetail(taskId) {
+async function getTaskDetail(projectId, taskId) {
     var response = {
         status: responseStatus.failure,
         errorMessage: {}
     };
     try {
-        const task = await Project.find({ "tasks": { _id: taskId } });
+        const task = await Project.find(
+            { _id: projectId }, 
+            { 
+                tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+                coverImage : { $elemMatch: { _id: projectId } }            
+            } 
+        );
         if (task === null) {
             throw `Task with id ${taskId} doesn't exist`
         }
@@ -575,7 +579,6 @@ async function getTaskEngineers({ userId, projectId, taskId }) {
         errorMessage: {}
     };
     try {
-        const user = User.findById(userId);
         var taskEngineers= [];
         if(taskId != null){
             const task = await Project.find(

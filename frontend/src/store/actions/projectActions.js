@@ -61,6 +61,9 @@ import {
     GET_TASK_MEMBERS_REQUEST,
     GET_TASK_MEMBERS_SUCCESS,
     GET_TASK_MEMBERS_FAILURE,
+    GET_TASK_DETAIL_FAILURE,
+    GET_TASK_DETAIL_SUCCESS,
+    GET_TASK_DETAIL_REQUEST
 } from '../types';
 import api from '../../api';
 
@@ -291,6 +294,26 @@ export const getTaskMembers = (data) => async dispatch => {
     } else if (response.data && response.data.status === 'failure' ){
         dispatch({
             type: GET_TASK_MEMBERS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getTaskDetail = (data) => async dispatch => {
+    dispatch({
+        type: GET_TASK_DETAIL_REQUEST
+    });
+
+    const response = await api.post('/project/task-detail', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_TASK_DETAIL_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: GET_TASK_DETAIL_FAILURE,
             payload: response.data
         })
     }

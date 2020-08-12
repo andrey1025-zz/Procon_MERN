@@ -69,14 +69,6 @@ const TaskDetail = (props) => {
         $(".add-member").show();
     }
     $(".task-info").addClass("visible");
-    // const show_newTaskForm = () => {
-    //     $(".task-info").addClass("visible");
-    // };
-    // const hide_newTaskForm = () => {
-    //     $(".task-info").removeClass("visible");
-    //     $(".member-panel").hide();
-    // };
-    console.log("aaaaaaaaa", taskId);
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
     const superintendents = useSelector(state => state.project.superintendents);

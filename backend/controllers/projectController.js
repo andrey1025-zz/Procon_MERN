@@ -106,8 +106,8 @@ getProjectDetail = (req, res, next) => {
 
 // Get Task Detail
 getTaskDetail = (req, res, next) => {
-    const { taskId: taskId } = req.body;
-    projectService.getTaskDetail(taskId).then((data) => {
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.getTaskDetail(projectId, taskId).then((data) => {
         res.json(data);
     }).catch(next)
 };
