@@ -63,7 +63,10 @@ import {
     GET_TASK_MEMBERS_FAILURE,
     GET_TASK_DETAIL_FAILURE,
     GET_TASK_DETAIL_SUCCESS,
-    GET_TASK_DETAIL_REQUEST
+    GET_TASK_DETAIL_REQUEST,
+    REVIEW_TASK_REQUEST,
+    REVIEW_TASK_FAILURE,
+    REVIEW_TASK_SUCCESS
 } from '../types';
 import api from '../../api';
 
@@ -126,6 +129,27 @@ export const addTask = (data) => async dispatch => {
     } else {
         dispatch({
             type: ADD_TASK_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const reviewTask = (data) => async dispatch => {
+    dispatch({
+        type: REVIEW_TASK_REQUEST
+    });
+   
+    const response = await api.post('/project/review-task', data);
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: REVIEW_TASK_SUCCESS,
+            payload: response.data
+        });
+
+    } else {
+        dispatch({
+            type: REVIEW_TASK_FAILURE,
             payload: response.data
         });
     }

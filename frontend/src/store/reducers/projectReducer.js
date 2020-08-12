@@ -32,7 +32,9 @@ import {
     GET_TASK_DETAIL_FAILURE,
     GET_TASK_DETAIL_SUCCESS,
     INVITE_MEMBER_SUCCESS,
-    INVITE_MEMBER_FAILURE
+    INVITE_MEMBER_FAILURE,
+    REVIEW_TASK_SUCCESS,
+    REVIEW_TASK_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -155,6 +157,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 taskId: null,
+            };
+        case REVIEW_TASK_SUCCESS:
+            return {
+                ...state,
+                progress: 0,
+            };
+        case REVIEW_TASK_FAILURE:
+            return {
+                ...state,
+                progress: 0,
             };
         case GET_TASK_ENGINEERS_SUCCESS:
             return {

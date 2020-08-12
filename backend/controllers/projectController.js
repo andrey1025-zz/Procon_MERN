@@ -140,6 +140,22 @@ editTask = (req, res, next) => {
         }).catch(next);
 };
 
+// Review Task
+reviewTask = (req, res, next) => {
+    const projectId = req.body.projectId;
+    const taskId = req.body.taskId;
+
+    const { sub: userId } = req.user;
+
+    const ipAddress = req.ip;
+    projectService.reviewTask({projectId, taskId, userId, ipAddress })
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
 // Get Tasks
 getTasks = (req, res, next) => {
     const { projectId: projectId } = req.body;

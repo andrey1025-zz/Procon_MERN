@@ -6,6 +6,7 @@ import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
 import { 
     addTask,
+    reviewTask,
     getProjectDetail, 
     getViewerForgeToken, 
     getSuperintendents, 
@@ -58,7 +59,7 @@ const initialValues = {
 };
 
 const SupervisorHome = (props) => {
-    const loading = useSelector(state => loadingSelector(['ADD_TASK'])(state));
+    const loading = useSelector(state => loadingSelector(['REVIEW_TASK'])(state));
     var index = 0;
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
@@ -67,8 +68,8 @@ const SupervisorHome = (props) => {
     const dispatch = useDispatch();
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
-        // dispatch(reviewTask(data, setErrors, setSubmitting));
-        $(".add-member").show();
+        data.taskId = task_id;
+        dispatch(reviewTask(data, setErrors, setSubmitting));
     }
     const values = queryString.parse(props.location.search)
     const task_id = values.task_id;

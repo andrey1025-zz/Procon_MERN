@@ -340,6 +340,85 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
     }
 };
 
+async function reviewTask({projectId, taskId, userId, ipAddress }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        // Check if name already add
+        const user = await User.findById(userId);
+        const project = await Project.findById(projectId);
+        if (user.role != SupervisorRole) {
+            return {
+                ...response,
+                errorMessage: {
+                    ...response.errorMessage,
+                    email: "Only Supervisor can review this Task"
+                }
+            };
+        } else {
+            // Create new project
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].status': NotStart
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+                }
+            )
+            await Notification.updateOne(
+                {projectId: projectId, taskId:taskId},
+                {
+                    $set: {'isRead': true}
+                }
+            )
+            const notification = new Notification({
+                from: userId,
+                to: project.superintendent[0].id,
+                taskId: taskId,
+                projectId: projectId,
+                message: "The Engineer edited the project you created task."
+            });
+
+            const session = await mongoose.startSession();
+            try {
+                const opts = { session, returnOriginal: false };
+                //await session.startTransaction();
+                await RefreshToken.createCollection();
+                await Project.createCollection();
+                await project.save(opts);
+                await Notification.createCollection();
+                await notification.save(opts);
+                const jwtToken = generateJwtToken(user);
+                const refreshToken = generateRefreshToken(user, ipAddress);
+                await refreshToken.save(opts);
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    errorMessage: {},
+                    token: jwtToken,
+                    refreshToken: refreshToken.token,
+                    taskId: taskId
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
+            }
+        }
+    }
+    catch (error) {
+        throw error
+    }
+};
+
 // Get Tasks
 async function getTasks(projectId) {
     var response = {
@@ -934,6 +1013,7 @@ module.exports = {
     uploadFile,
     addTask,
     editTask,
+    reviewTask,
     getTasks,
     getTaskDetail,
     getSuperintendents,
