@@ -298,6 +298,16 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
                     $set: {'isRead': true}
                 }
             )
+            const notification = new Notification({
+                from: userId,
+                to: project.superintendent[0].id,
+                taskId: taskId,
+                projectId: projectId,
+                message: "The Engineer edited the project you created task."
+            });
+            console.log(project.superintendent[0].id);
+            console.log("==============");
+
             const session = await mongoose.startSession();
             try {
                 const opts = { session, returnOriginal: false };
@@ -305,6 +315,8 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
                 await RefreshToken.createCollection();
                 await Project.createCollection();
                 await project.save(opts);
+                await Notification.createCollection();
+                await notification.save(opts);
                 const jwtToken = generateJwtToken(user);
                 const refreshToken = generateRefreshToken(user, ipAddress);
                 await refreshToken.save(opts);
@@ -316,7 +328,7 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
                     errorMessage: {},
                     token: jwtToken,
                     refreshToken: refreshToken.token,
-                    taskId: task._id
+                    taskId: taskId
                 };
             } catch (error) {
                 //await session.abortTransaction();
