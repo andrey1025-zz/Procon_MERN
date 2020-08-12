@@ -241,6 +241,15 @@ inviteMember = async (req, res, next) => {
     }).catch(next)
 };
 
+reviewTask = async (req, res, next) => {
+    const { projectId: projectId, taskId: taskId } = req.body;
+    const { sub: userId } = req.user;
+    const ipAddress = req.ip;
+    projectService.reviewTask({ projectId, taskId, userId, ipAddress }).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 // Get Task Engineers
 getTaskEngineers = (req, res, next) => {
     const { sub: userId } = req.user;
@@ -450,6 +459,7 @@ module.exports = {
     getNotifications,
     getTaskEngineers,
     getTaskMembers,
+    reviewTask,
     createBucket,
     getBucketDetail,
     uploadToBucket,

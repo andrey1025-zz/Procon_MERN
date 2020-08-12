@@ -71,6 +71,16 @@ const SupervisorHome = (props) => {
         data.taskId = task_id;
         dispatch(reviewTask(data, setErrors, setSubmitting));
     }
+
+    const handleReviewTask = () => {
+        var data = {
+            projectId: projectId,
+            taskId: task_id,
+        };
+        
+        dispatch(reviewTask(data));
+    }
+
     const values = queryString.parse(props.location.search)
     const task_id = values.task_id;
     const handleAddTask = () => {
@@ -90,6 +100,7 @@ const SupervisorHome = (props) => {
     const members = useSelector(state => state.project.members);
     const taskId = useSelector(state => state.project.taskId);
     const task = useSelector(state => state.project.task);
+    console.log(task);
     const taskEngineers = useSelector(state => state.project.taskEngineers);
     const taskMembers = useSelector(state => state.project.taskMembers);
 
@@ -147,6 +158,8 @@ const SupervisorHome = (props) => {
         $('.selected-role').html(EngineerRole + "<i class='fa fa-sort-down'></i>");
         dispatch(getEngineers());
     }
+
+    console.log("task detail", task);
 
     useEffect(() => {
         $(".Forhome").hide();
@@ -316,8 +329,7 @@ const SupervisorHome = (props) => {
                     <div className="task-info">
                         <div className="scrollbar" id="style-2">
                             <Form
-                                onSubmit={handleSubmit}
-                                validationSchema={validationSchema}
+                                onSubmit={handleReviewTask}
                                 initialValues={initialValues}
                             >
                                 <div className="force-overflow">

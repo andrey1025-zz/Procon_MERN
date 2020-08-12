@@ -371,18 +371,54 @@ async function reviewTask({projectId, taskId, userId, ipAddress }) {
                     arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
                 }
             )
+            
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+                } 
+            );
+            
+            var members = [];
+            var engineerId = null;
+
+            if(task && task[0] && task[0].tasks[0]){
+                members = task[0].tasks[0].members;
+                engineerId = task[0].tasks[0].engineers[0].id;
+            }
+
             await Notification.updateOne(
-                {projectId: projectId, taskId:taskId},
+                {projectId: projectId, taskId:taskId, from: engineerId, to: userId},
                 {
                     $set: {'isRead': true}
                 }
             )
+
+            for(i = 0; i < members.length; i++){
+                const old_notification = await Notification.findOne({to: members[i].id, from: userId, taskId: taskId, projectId: projectId, isRead: false});
+                if(old_notification && old_notification.length > 0){
+                    var count = old_notification.count + 1;
+                    old_notification.overwrite = ({count: count});
+                    await old_notification.save();
+                } else {
+                    const notification = new Notification({
+                        from: userId,
+                        to: members[i].id,
+                        taskId: taskId,
+                        projectId: projectId,
+                        message: "The Superintendent invited you to the task as member."
+                    });
+                    Notification.createCollection();
+                    notification.save(opts);
+                }
+            }
+
             const notification = new Notification({
                 from: userId,
-                to: project.superintendent[0].id,
+                to: engineerId,
                 taskId: taskId,
                 projectId: projectId,
-                message: "The Engineer edited the project you created task."
+                message: "The Superintendent reviewed the project you edited task."
             });
 
             const session = await mongoose.startSession();
@@ -467,7 +503,6 @@ async function getTaskDetail(projectId, taskId) {
             { _id: projectId }, 
             { 
                 tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
-                coverImage : { $elemMatch: { _id: projectId } }            
             } 
         );
         if (task === null) {
