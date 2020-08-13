@@ -66,7 +66,22 @@ import {
     GET_TASK_DETAIL_REQUEST,
     REVIEW_TASK_REQUEST,
     REVIEW_TASK_FAILURE,
-    REVIEW_TASK_SUCCESS
+    REVIEW_TASK_SUCCESS,
+    START_TASK_REQUEST,
+    START_TASK_SUCCESS,
+    START_TASK_FAILURE,
+    CANCEL_TASK_REQUEST,
+    CANCEL_TASK_SUCCESS,
+    CANCEL_TASK_FAILURE,
+    CLEAR_NOTIFICATION_REQUEST,
+    CLEAR_NOTIFICATION_SUCCESS,
+    CLEAR_NOTIFICATION_FAILURE,
+    POST_MESSAGE_REQUEST,
+    POST_MESSAGE_SUCCESS,
+    POST_MESSAGE_FAILURE,
+    GET_TASK_MESSAGES_REQUEST,
+    GET_TASK_MESSAGES_SUCCESS,
+    GET_TASK_MESSAGES_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -343,6 +358,86 @@ export const getTaskDetail = (data) => async dispatch => {
     }
 };
 
+export const postMessage = (data) => async dispatch => {
+    dispatch({
+        type: POST_MESSAGE_REQUEST
+    });
+
+    const response = await api.post('/project/post-message', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: POST_MESSAGE_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: POST_MESSAGE_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const startTask = (data) => async dispatch => {
+    dispatch({
+        type: START_TASK_REQUEST
+    });
+
+    const response = await api.post('/project/start-task', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: START_TASK_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: START_TASK_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const cancelTask = (data) => async dispatch => {
+    dispatch({
+        type: CANCEL_TASK_REQUEST
+    });
+
+    const response = await api.post('/project/cancel-task', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: CANCEL_TASK_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: CANCEL_TASK_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const clearNotification = (data) => async dispatch => {
+    dispatch({
+        type: CLEAR_NOTIFICATION_REQUEST
+    });
+
+    const response = await api.post('/project/clear-notification', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: CLEAR_NOTIFICATION_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: CLEAR_NOTIFICATION_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
 export const getUsers = () => async dispatch => {
 
     dispatch({
@@ -552,6 +647,25 @@ export const getNotifications = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_NOTIFICATIONS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getTaskMessages = (data) => async dispatch => {
+    dispatch({
+        type: GET_TASK_MESSAGES_REQUEST
+    });
+
+    const response = await api.post('/project/get-messages', data);
+    if (response.data && response.status === 200) {
+        dispatch({
+            type: GET_TASK_MESSAGES_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_TASK_MESSAGES_FAILURE,
             payload: response.data
         })
     }
