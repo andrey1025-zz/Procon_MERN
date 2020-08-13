@@ -3945,10 +3945,9 @@ table.focus-on tbody tr.focused td {
 }
 .footer {
     background-color: #16171b;
-
 }
 .friends-suggestions-list .position-relative{
-	    width: 100%;
+    width: 100%;
     float: left;
     padding-top: 16px;
 }
