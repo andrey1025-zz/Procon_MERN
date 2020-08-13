@@ -34,7 +34,9 @@ import {
     INVITE_MEMBER_SUCCESS,
     INVITE_MEMBER_FAILURE,
     REVIEW_TASK_SUCCESS,
-    REVIEW_TASK_FAILURE
+    REVIEW_TASK_FAILURE,
+    GET_TASK_MESSAGES_SUCCESS,
+    GET_TASK_MESSAGES_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -50,7 +52,8 @@ const initialState = {
     taskEngineers: [],
     taskMembers: [],
     notificCount: 0,
-    notifications: []
+    notifications: [],
+    taskMessages: []
 };
 
 export default (state = initialState, action) => {
@@ -217,6 +220,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 taskMembers: [],
+            };
+        case GET_TASK_MESSAGES_SUCCESS:
+            return {
+                ...state,
+                taskMessages: action.payload.data,
+            };
+        case GET_TASK_MESSAGES_FAILURE:
+            return {
+                ...state,
+                taskMessages: [],
             };
         case GET_NOTIFICATION_COUNT_SUCCESS:
             return {

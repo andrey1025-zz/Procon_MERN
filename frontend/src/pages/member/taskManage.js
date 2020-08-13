@@ -7,7 +7,7 @@ import { NotStart, Inprogress, Completed, Reviewed } from '../../enums/taskStatu
 
 import $ from 'jquery';
 
-const SupervisorTaskManage = () => {
+const MemberTaskManage = () => {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
     const user = useSelector(state => state.auth.user);
     const projectId = window.localStorage.getItem("projectId");
@@ -344,4 +344,4 @@ const SupervisorTaskManage = () => {
         </React.Fragment>
     )
 }
-export default SupervisorTaskManage;
+export default MemberTaskManage;

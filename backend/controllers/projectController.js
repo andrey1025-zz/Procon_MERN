@@ -112,6 +112,15 @@ getTaskDetail = (req, res, next) => {
     }).catch(next)
 };
 
+// Post Message
+postMessage = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId, message: message } = req.body;
+    projectService.postMessage(projectId, taskId, userId, message).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 // Add New Task
 addTask = (req, res, next) => {
     const { components, componentId, projectId } = req.body;
@@ -270,6 +279,36 @@ getTaskMembers = (req, res, next) => {
         }).catch(next);
 };
 
+// Start Task
+startTask = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.startTask({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// cancel Task
+cancelTask = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.cancelTask({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// clear Notification
+clearNotification = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.clearNotification({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
 // Get Notification Count
 getNotificationCount = (req, res, next) => {
     const { sub: userId } = req.user;
@@ -287,6 +326,18 @@ getNotifications = (req, res, next) => {
     const { sub: userId } = req.user;
     const { projectId: projectId } = req.body;
     projectService.getNotifications({ userId, projectId })
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
+// Get Task messages
+getTaskMessages = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.getTaskMessages({ userId, projectId, taskId })
         .then(response => {
             if (response.status === responseStatus.success)
                 setTokenCookie(res, response.refreshToken);
@@ -452,6 +503,7 @@ module.exports = {
     getEngineers,
     getMembers,
     getTaskDetail,
+    postMessage,
     inviteSuperintendent,
     inviteMember,
     inviteEngineer,
@@ -460,6 +512,10 @@ module.exports = {
     getTaskEngineers,
     getTaskMembers,
     reviewTask,
+    startTask,
+    cancelTask,
+    getTaskMessages,
+    clearNotification,
     createBucket,
     getBucketDetail,
     uploadToBucket,

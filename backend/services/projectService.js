@@ -292,11 +292,8 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
                     arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
                 }
             )
-            await Notification.updateOne(
-                {projectId: projectId, taskId:taskId},
-                {
-                    $set: {'isRead': true}
-                }
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 }
             )
             const notification = new Notification({
                 from: userId,
@@ -387,11 +384,9 @@ async function reviewTask({projectId, taskId, userId, ipAddress }) {
                 engineerId = task[0].tasks[0].engineers[0].id;
             }
 
-            await Notification.updateOne(
-                {projectId: projectId, taskId:taskId, from: engineerId, to: userId},
-                {
-                    $set: {'isRead': true}
-                }
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), from: ObjectID(engineerId), to: ObjectID(userId), type: 0 },
+                // {projectId: projectId, taskId:taskId, from: engineerId, to: userId},
             )
 
             const session = await mongoose.startSession();
@@ -515,6 +510,80 @@ async function getTaskDetail(projectId, taskId) {
                 status: responseStatus.success,
                 errorMessage: {},
                 data: task
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+async function postMessage(projectId, taskId, userId, message) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const task = await Project.find(
+            { _id: projectId }, 
+            { 
+                tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+            } 
+        );
+        
+        var members = [];
+
+        if(task && task[0] && task[0].tasks[0]){
+            members = task[0].tasks[0].members;
+        }
+        
+        const session = await mongoose.startSession();
+
+        // for(i = 0; i < members.length; i++){
+        //     const old_notification = await Notification.findOne({to: members[i].id, from: userId, taskId: taskId, projectId: projectId, isRead: false});
+        //     if(old_notification && old_notification.length > 0){
+        //         var count = old_notification.count + 1;
+        //         old_notification.overwrite = ({count: count});
+        //         await old_notification.save();
+        //     } else {
+        //         const session1 = await mongoose.startSession();
+        //         const opts = { session1, returnOriginal: false };
+        //         const notification = new Notification({
+        //             from: userId,
+        //             to: members[i].id,
+        //             taskId: taskId,
+        //             projectId: projectId,
+        //             message: message,
+        //             type: 1
+        //         });
+        //         Notification.createCollection();
+        //         notification.save(opts);
+        //     }
+        // }
+
+        const session1 = await mongoose.startSession();
+        const opts = { session1, returnOriginal: false };
+        const notification = new Notification({
+            from: userId,
+            to: new ObjectID(),
+            taskId: taskId,
+            projectId: projectId,
+            message: message,
+            type: 1
+        });
+        Notification.createCollection();
+        notification.save(opts);
+
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
             };
         } catch (error) {
             throw error;
@@ -654,6 +723,8 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
         const notification = new Notification({
             from: userId,
             to: superintendentId,
+            projectId: projectId,
+            taskId: null,
             message: "The project manager invited you to the project as a superintendent."
         });
 
@@ -773,6 +844,203 @@ async function getTaskMembers({ userId, projectId, taskId }) {
                 status: responseStatus.success,
                 errorMessage: {},
                 data: taskMembers
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Start Task
+async function startTask({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        var taskMembers = [];
+        if(taskId != null){
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].status': Inprogress
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+                }
+            );
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].members.$[elem1].status': Inprogress
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } , { "elem1.id": userId } ]
+                }
+            );
+
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
+                // {projectId: projectId, taskId:taskId, to: userId},
+            );
+
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+                } 
+            );
+            var engineerId = null;
+
+            if(task && task[0] && task[0].tasks[0]){
+                engineerId = task[0].tasks[0].engineers[0].id;
+            }
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+            const user_detail = basicDetails(user);
+            const notification = new Notification({
+                from: userId,
+                to: engineerId,
+                taskId: taskId,
+                projectId: projectId,
+                message: `The ${user_detail.firstName+` `+user_detail.lastName} started task you invited.`
+            });
+            Notification.createCollection();
+            notification.save(opts);
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: taskMembers
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// cancel Task
+async function cancelTask({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        var taskMembers = [];
+        if(taskId != null){
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].status': Inprogress
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+                }
+            );
+
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), from: ObjectID(engineerId), to: ObjectID(userId), type: 0 },
+                // {projectId: projectId, taskId:taskId, to: userId},
+            );
+
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+                } 
+            );
+            var engineerId = null;
+
+            if(task && task[0] && task[0].tasks[0]){
+                engineerId = task[0].tasks[0].engineers[0].id;
+            }
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+            const user_detail = basicDetails(user);
+            const notification = new Notification({
+                from: userId,
+                to: engineerId,
+                taskId: taskId,
+                projectId: projectId,
+                message: `The ${user_detail.firstName+` `+user_detail.lastName} cancelled task you invited.`
+            });
+            Notification.createCollection();
+            notification.save(opts);
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: taskMembers
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// clear Notification
+async function clearNotification({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        if(taskId != null){
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 }
+            );
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
             };
         } catch (error) {
             //await session.abortTransaction();
@@ -1023,6 +1291,55 @@ async function getNotifications({ userId, projectId }) {
     }
 };
 
+// Get Task Messages
+async function getTaskMessages({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        let data = [];
+        const notifications = await Notification.find(
+            { projectId: projectId, taskId: taskId, isRead: false, type: 1 }
+        ).sort( { createdOn: 1 } );
+        for(i = 0 ; i < notifications.length; i++){
+
+            const from = await User.findById(notifications[i].from);
+
+            const fromUserDetail = basicDetails(from);
+
+            const item = {
+                from: notifications[i].from,
+                to: notifications[i].to,
+                myId: new ObjectID(userId),
+                count: notifications[i].count,
+                createdOn: notifications[i].createdOn,
+                message: notifications[i].message,
+                firstName: fromUserDetail.firstName,
+                lastName: fromUserDetail.lastName,
+                photo: fromUserDetail.photo,
+                mobile: fromUserDetail.mobile,
+                role: fromUserDetail.role,
+                taskId: notifications[i].taskId
+            };
+            data.push(item);
+        }
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: data
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 
 //#region helper functions
 function generateJwtToken(user) {
@@ -1063,5 +1380,10 @@ module.exports = {
     getNotificationCount,
     getNotifications,
     getTaskEngineers,
-    getTaskMembers
+    getTaskMembers,
+    startTask,
+    cancelTask,
+    clearNotification,
+    postMessage,
+    getTaskMessages
 };

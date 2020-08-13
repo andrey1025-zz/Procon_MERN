@@ -1,6 +1,7 @@
 import EngineerWelcome from '../pages/engineer';
 import EngineerHome from '../pages/engineer/home';
 import EngineerNotification from '../pages/engineer/notification';
+import EngineerTaskManage from '../pages/engineer/taskManage';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 
@@ -16,6 +17,10 @@ const leadRoutes = [
     {
         path: '/engineer/notification',
         component: EngineerNotification
+    },
+    {
+        path: '/engineer/task_manage',
+        component: EngineerTaskManage
     },
     {
         path: '/engineer/change-password',
