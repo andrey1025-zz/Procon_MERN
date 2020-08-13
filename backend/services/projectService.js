@@ -1259,7 +1259,7 @@ async function getNotifications({ userId, projectId }) {
                     coverImage : { $elemMatch: { _id: projectId } }
                 }
                 );
-
+            console.log("aaaaaaaaaa");
             const fromUserDetail = basicDetails(from);
             var item = {
                 count: notifications[i].count,
