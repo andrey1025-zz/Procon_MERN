@@ -207,7 +207,7 @@ const EngineerHome = (props) => {
     return (
         <React.Fragment>
             <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
-                <div className="card viewer-wrapper" style={{display: 'none'}}>
+                <div className="card viewer-wrapper">
                     <div className="card-heading">
                         <div className="threed-effect">
                             <ForgeViewer

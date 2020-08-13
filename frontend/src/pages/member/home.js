@@ -82,6 +82,8 @@ const MemberHome = (props) => {
     const [view, setView] = useState(null);
 
     var scrollbar_class = '';
+    if(taskMessages.length > 0)
+        scrollbar_class = 'scrollbar';
 
     useEffect(() => {
         if(project){
@@ -303,9 +305,6 @@ const MemberHome = (props) => {
                 }
                 {
                     taskId ? <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20 show-blog" onClick={handleShowBlog}>Show Blog</button> : ''
-                }
-                {
-                    taskMessages.length > 0 ? scrollbar_class = 'scrollbar' : ''
                 }
                 <div className="chat-info" style={{display: 'none'}}>
                     <div className={scrollbar_class} id="style-2">
