@@ -28,7 +28,7 @@ const AuthenticationContainer = () => {
         if (token && user && user.role === EngineerRole)
             return <Redirect to={`/engineer/welcome`} />
         else if (token && user && user.role === MemberRole)
-            return <Redirect to={`/member/home`} />
+            return <Redirect to={`/member/welcome`} />
         else if (token && user && user.role === SupervisorRole)
             return <Redirect to={`/supervisor/welcome`} />
         else if (token && user && user.role === ProjectManagerRole)

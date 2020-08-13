@@ -279,3 +279,23 @@
   border-radius:3px;
   color:white;
 }
+.task-status.notstart{
+  position: absolute;
+  right: 0;
+  bottom: 15px;
+  color: #ceb610;
+}
+
+.task-status.inprogress{
+  position: absolute;
+  right: 0;
+  bottom: 15px;
+  color: #e04c4c;
+}
+
+.task-status.complete{
+  position: absolute;
+  right: 0;
+  bottom: 15px;
+  color: #3ad83a;
+}

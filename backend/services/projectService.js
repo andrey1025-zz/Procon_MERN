@@ -394,6 +394,9 @@ async function reviewTask({projectId, taskId, userId, ipAddress }) {
                 }
             )
 
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+
             for(i = 0; i < members.length; i++){
                 const old_notification = await Notification.findOne({to: members[i].id, from: userId, taskId: taskId, projectId: projectId, isRead: false});
                 if(old_notification && old_notification.length > 0){
@@ -406,7 +409,7 @@ async function reviewTask({projectId, taskId, userId, ipAddress }) {
                         to: members[i].id,
                         taskId: taskId,
                         projectId: projectId,
-                        message: "The Superintendent invited you to the task as member."
+                        message: "The Superintendent invited you to the task as a member."
                     });
                     Notification.createCollection();
                     notification.save(opts);
@@ -421,9 +424,7 @@ async function reviewTask({projectId, taskId, userId, ipAddress }) {
                 message: "The Superintendent reviewed the project you edited task."
             });
 
-            const session = await mongoose.startSession();
             try {
-                const opts = { session, returnOriginal: false };
                 //await session.startTransaction();
                 await RefreshToken.createCollection();
                 await Project.createCollection();
@@ -653,7 +654,7 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
         const notification = new Notification({
             from: userId,
             to: superintendentId,
-            message: "The project manager invited you to the project as superintendent."
+            message: "The project manager invited you to the project as a superintendent."
         });
 
         const session = await mongoose.startSession();
@@ -755,7 +756,9 @@ async function getTaskMembers({ userId, projectId, taskId }) {
                     var task_detail = task[0].tasks[0];
                     for(i = 0; i < task_detail.members.length; i++){
                         const userInfo = await User.findById(task_detail.members[i].id);
-                        taskMembers.push(basicDetails(userInfo));
+                        let basic_detail = basicDetails(userInfo);
+                        basic_detail.status = task_detail.members[i].status;
+                        taskMembers.push(basic_detail);
                     }
                 }
             }
@@ -908,7 +911,7 @@ async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress
             to: engineerId,
             taskId: taskId,
             projectId: projectId,
-            message: "The Superintendent invited you to the project as engineer."
+            message: "The Superintendent invited you to the project as an engineer."
         });
 
         const session = await mongoose.startSession();

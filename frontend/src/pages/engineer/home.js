@@ -4,10 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
+import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
 import { 
     editTask,
     getProjectDetail, 
     getViewerForgeToken, 
+    getTaskEngineers,
+    getTaskMembers,
+    getTaskDetail
 } 
 from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
@@ -64,6 +68,9 @@ const EngineerHome = (props) => {
     }
     const values = queryString.parse(props.location.search)
     const taskId = values.task_id;
+    const task = useSelector(state => state.project.task);
+    const taskEngineers = useSelector(state => state.project.taskEngineers);
+    const taskMembers = useSelector(state => state.project.taskMembers);
 
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
@@ -92,6 +99,35 @@ const EngineerHome = (props) => {
         $(".Forhome").hide();
         $("#side-menu").show();
     });
+
+    useEffect(() => {
+        let data = {
+            projectId: projectId,
+            taskId: taskId
+        }
+        dispatch(getTaskEngineers(data));
+    }, []);
+
+    useEffect(() => {
+        let data = {
+            projectId: projectId,
+            taskId: taskId
+        }
+        dispatch(getTaskMembers(data));
+    }, []);
+
+    useEffect(() => {
+        if(taskId){
+            let data = {
+                projectId: projectId,
+                taskId: taskId
+            }
+            dispatch(getTaskDetail(data));
+        }
+        if(task.length > 0){
+            $(".task-info").show();
+        }
+    }, []);
 
     const handleViewerError = (error) => {
         console.log('Error loading viewer.');
@@ -150,107 +186,172 @@ const EngineerHome = (props) => {
                     </div>
                 </div>
                 {
-                    taskId ? 
+                    task.length > 0 ? 
                     <div className="task-info">
                         <div className="scrollbar" id="style-2">
                             <Form
                                 onSubmit={handleSubmit}
-                                validationSchema={validationSchema}
                                 initialValues={initialValues}
                             >
                                 <div className="force-overflow">
                                     <div className="form-group-task">
                                         <label>Task name:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="name"/>
+                                            <FormTextarea className="form-control-task" name="name" value={task[0].tasks[0].name}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="startTime"/>
+                                            <FormField className="form-control-task" type="time" name="startTime" value={task[0].tasks[0].startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="endTime"/>
+                                            <FormField className="form-control-task" type="time" name="endTime" value={task[0].tasks[0].endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Equipment and tools:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="equipTools"/>
+                                            <FormTextarea className="form-control-task" name="equipTools" value={task[0].tasks[0].equipTools}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Components:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="components"/>
+                                            <FormTextarea className="form-control-task" name="components" value={task[0].tasks[0].components}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Materials:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="materials"/>
+                                            <FormTextarea className="form-control-task" name="materials" value={task[0].tasks[0].materials}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Working area:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="workingArea"/>
+                                            <FormTextarea className="form-control-task" name="workingArea" value={task[0].tasks[0].workingArea}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Weather:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="weather"/>
+                                            <FormTextarea className="form-control-task" name="weather" value={task[0].tasks[0].weather}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Site condition:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="siteCondition"/>
+                                            <FormTextarea className="form-control-task" name="siteCondition" value={task[0].tasks[0].siteCondition}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Nearby irrelevant objects:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects"/>
+                                            <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects" value={task[0].tasks[0].nearbyIrrelevantObjects}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Cultural and legal constraints:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="cultural_legal_constraints"/>
+                                            <FormTextarea className="form-control-task" name="cultural_legal_constraints" value={task[0].tasks[0].cultural_legal_constraints}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Technical and safety specifications:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="technical_safety_specifications"/>
+                                            <FormTextarea className="form-control-task" name="technical_safety_specifications" value={task[0].tasks[0].technical_safety_specifications}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Public relation requirements:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="publicRelationRequirements"/>
+                                            <FormTextarea className="form-control-task" name="publicRelationRequirements" value={task[0].tasks[0].publicRelationRequirements}/>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
-                                <SubmitButton title='Edit' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
+                                {/* <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
+                                <SubmitButton title='Review' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} /> */}
                             </Form>
                         </div>
                     </div> : ''  
                 }
             </div>
+
+            <div className="col-sm-3 col-xl-3 col-md-3 member-panel">
+            {
+                (taskEngineers != [] > 0 || taskMembers != [] > 0 ) ?
+                <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
+                    <div className="card-body">
+                        <div className="friends-suggestions">
+                            { 
+                                taskEngineers != [] > 0 ? 
+                                    <a href="#" className="friends-suggestions-list" >
+                                        <div className="border-bottom position-relative">
+                                            <div className="float-left mb-0 mr-3">
+                                                <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
+                                                <p>{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                            </div>
+                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
+                                            <div className="desc">
+                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers.email}</h5>
+                                                <p className="text-muted">{!taskEngineers.mobile ? '' : taskEngineers.mobile}</p>
+                                            </div>
+                                        </div>
+                                    </a> 
+                                : ''
+                            }
+                            { 
+                                taskMembers != [] > 0 ? 
+                                    taskMembers.map((value, index) => {
+                                        return (
+                                            <a href="#" className="friends-suggestions-list" key={index}>
+                                                <div className="border-bottom position-relative">
+                                                    <div className="float-left mb-0 mr-3">
+                                                        <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
+                                                        <p>{value.firstName} {value.lastName}</p>
+                                                    </div>
+                                                    <div className="suggestion-icon float-right mt-2 pt-1"> {value.role} </div>
+                                                    {
+                                                        value.status == NotStart ? 
+                                                            <div className="task-status notstart">not start</div>
+                                                        : ''
+                                                    }
+                                                    {
+                                                        value.status == Inprogress ? 
+                                                            <div className="task-status inprogress">in progress</div>
+                                                        : ''
+                                                    }
+                                                    {
+                                                        value.status == Completed ? 
+                                                            <div className="task-status complete">complete</div>
+                                                        : ''
+                                                    }
+                                                    <div className="desc">
+                                                        <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
+                                                        <p className="text-muted">{!value.mobile ? '' : value.mobile}</p>
+                                                    </div>
+                                                </div>
+                                            </a> 
+                                        ) 
+                                    })
+                                : ''
+                            }
+                        </div>
+                    </div>
+                </div>
+                 : ''
+            }
+        </div>
         </React.Fragment>
     )
 }

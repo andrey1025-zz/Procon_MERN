@@ -29,7 +29,7 @@ const SupervisorNotification = () => {
                             notifications.map((value, index) => {
                                 return (
                                 <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
-                                    <div className="card no-margin">
+                                    <div className="card">
                                         <div className="card-heading">
                                             <div className="row col-md-12">
                                                 <div className="float-left padding10 col-md-5">

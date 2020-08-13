@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
+import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
 import { 
     addTask,
     reviewTask,
@@ -66,6 +67,7 @@ const SupervisorHome = (props) => {
     if(projectId == '')
         projectId = window.localStorage.getItem("projectId");
     const dispatch = useDispatch();
+
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         data.taskId = task_id;
@@ -100,7 +102,6 @@ const SupervisorHome = (props) => {
     const members = useSelector(state => state.project.members);
     const taskId = useSelector(state => state.project.taskId);
     const task = useSelector(state => state.project.task);
-    console.log(task);
     const taskEngineers = useSelector(state => state.project.taskEngineers);
     const taskMembers = useSelector(state => state.project.taskMembers);
 
@@ -158,8 +159,6 @@ const SupervisorHome = (props) => {
         $('.selected-role').html(EngineerRole + "<i class='fa fa-sort-down'></i>");
         dispatch(getEngineers());
     }
-
-    console.log("task detail", task);
 
     useEffect(() => {
         $(".Forhome").hide();
@@ -460,6 +459,21 @@ const SupervisorHome = (props) => {
                                                         <p>{value.firstName} {value.lastName}</p>
                                                     </div>
                                                     <div className="suggestion-icon float-right mt-2 pt-1"> {value.role} </div>
+                                                    {
+                                                        value.status == NotStart ? 
+                                                            <div className="task-status notstart">not start</div>
+                                                        : ''
+                                                    }
+                                                    {
+                                                        value.status == Inprogress ? 
+                                                            <div className="task-status inprogress">in progress</div>
+                                                        : ''
+                                                    }
+                                                    {
+                                                        value.status == Completed ? 
+                                                            <div className="task-status complete">complete</div>
+                                                        : ''
+                                                    }
                                                     <div className="desc">
                                                         <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
                                                         <p className="text-muted">{!value.mobile ? '' : value.mobile}</p>

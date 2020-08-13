@@ -7,7 +7,7 @@ import { getSimpleRoleName } from '../../services';
 
 import $ from 'jquery';
 
-const EngineerNotification = () => {
+const MemberNotification = () => {
     const user = useSelector(state => state.auth.user);
     const projectId = window.localStorage.getItem("projectId");
     const notifications = useSelector(state => state.project.notifications);
@@ -76,4 +76,4 @@ const EngineerNotification = () => {
         </React.Fragment>
     )
 }
-export default EngineerNotification;
+export default MemberNotification;

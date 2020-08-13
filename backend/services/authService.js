@@ -123,7 +123,7 @@ async function login({ email, password, ipAddress }) {
                 refreshToken: refreshToken.token
             };
         } catch (error) {
-            await session.abortTransaction();
+            //await session.abortTransaction();
             await session.endSession();
             throw error;
         }
