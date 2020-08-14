@@ -32,10 +32,5 @@ router.post("/get-notification-count", authorize(), projectController.getNotific
 router.post("/get-notifications", authorize(), projectController.getNotifications);
 router.post("/get-task-engineers", authorize(), projectController.getTaskEngineers);
 router.post("/get-task-members", authorize(), projectController.getTaskMembers);
-router.post("/start-task", authorize(), projectController.startTask);
-router.post("/cancel-task", authorize(), projectController.cancelTask);
-router.post("/clear-notification", authorize(), projectController.clearNotification);
-router.post("/post-message", authorize(), projectController.postMessage);
-router.post("/get-messages", authorize(), projectController.getTaskMessages);
 
 module.exports = router;

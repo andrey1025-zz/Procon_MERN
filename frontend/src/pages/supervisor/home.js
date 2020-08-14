@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
-import { NotStart, Inprogress, Completed, Reviewed } from '../../enums/taskStatus';
+import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
 import { 
     addTask,
     reviewTask,
@@ -118,23 +118,19 @@ const SupervisorHome = (props) => {
     }, [project]);
      
     useEffect(() => {
-        if(task_id){
-            let data = {
-                projectId: projectId,
-                taskId: task_id
-            }
-            dispatch(getTaskEngineers(data));
+        let data = {
+            projectId: projectId,
+            taskId: taskId
         }
+        dispatch(getTaskEngineers(data));
     }, []);
 
     useEffect(() => {
-        if(task_id){
-            let data = {
-                projectId: projectId,
-                taskId: task_id
-            }
-            dispatch(getTaskMembers(data));
+        let data = {
+            projectId: projectId,
+            taskId: taskId
         }
+        dispatch(getTaskMembers(data));
     }, []);
     
     useEffect(() => {
@@ -328,8 +324,8 @@ const SupervisorHome = (props) => {
                     </div>
                 </div>
                 {
-                    task.length > 0 && task_id != null ? 
-                    <div className="task-info" style={{display: 'block'}}>
+                    task.length > 0 ? 
+                    <div className="task-info">
                         <div className="scrollbar" id="style-2">
                             <Form
                                 onSubmit={handleReviewTask}
@@ -421,16 +417,8 @@ const SupervisorHome = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                {
-                                    task[0].tasks[0].status == Reviewed ?
-                                    <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
-                                    : ''
-                                }
-                                {
-                                    task[0].tasks[0].status == Reviewed ?
-                                    <SubmitButton title='Review' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
-                                    : ''
-                                }
+                                <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
+                                <SubmitButton title='Review' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
                             </Form>
                         </div>
                     </div> : ''  
@@ -449,7 +437,7 @@ const SupervisorHome = (props) => {
                                         <div className="border-bottom position-relative">
                                             <div className="float-left mb-0 mr-3">
                                                 <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                                <p>{taskEngineers.firstName} {taskEngineers.lastName}</p>
                                             </div>
                                             <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
                                             <div className="desc">
@@ -468,7 +456,7 @@ const SupervisorHome = (props) => {
                                                 <div className="border-bottom position-relative">
                                                     <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
-                                                        <p className="user-name" >{value.firstName} {value.lastName}</p>
+                                                        <p>{value.firstName} {value.lastName}</p>
                                                     </div>
                                                     <div className="suggestion-icon float-right mt-2 pt-1"> {value.role} </div>
                                                     {

@@ -3,7 +3,6 @@ import MemberHome from '../pages/member/home';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 import MemberNotification from '../pages/member/notification';
-import MemberTaskManage from '../pages/member/taskManage';
 
 const memberRoutes = [
     {
@@ -13,10 +12,6 @@ const memberRoutes = [
     {
         path: '/member/notification',
         component: MemberNotification
-    },
-    {
-        path: '/member/task_manage',
-        component: MemberTaskManage
     },
     {
         path: '/member/home/:id',

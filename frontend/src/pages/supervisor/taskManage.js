@@ -3,7 +3,6 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTasks, getTaskDetail, getTaskMembers } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
-import { NotStart, Inprogress, Completed, Reviewed } from '../../enums/taskStatus';
 
 import $ from 'jquery';
 
@@ -82,31 +81,17 @@ const SupervisorTaskManage = () => {
                                                 taskMembers.map((value, index) => {
                                                     return (
                                                         <a href="#" className="friends-suggestions-list" key={index}>
-                                                            <div className="border-bottom position-relative">
+                                                            <div className="border-bottom position-relative p-50">
                                                                 <div className="float-left mb-0 mr-3">
                                                                     <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="rounded-circle11 thumb-md"/>
                                                                 </div>
-                                                                <div className="suggestion-icon float-right">
+                                                                <div className="suggestion-icon float-right mt-30">
                                                                     <p>2020.06.26 22:36:24</p>
                                                                 </div>
-                                                                {
-                                                                    value.status == NotStart ? 
-                                                                        <div className="task-status notstart">not start</div>
-                                                                    : ''
-                                                                }
-                                                                {
-                                                                    value.status == Inprogress ? 
-                                                                        <div className="task-status inprogress">in progress</div>
-                                                                    : ''
-                                                                }
-                                                                {
-                                                                    value.status == Completed ? 
-                                                                        <div className="task-status complete">complete</div>
-                                                                    : ''
-                                                                }
+
                                                                 <div className="desc1">
                                                                     <h5 className="font-14 mb-1 pt-2">{value.firstName} {value.lastName}</h5>
-                                                                    <p className="text-muted">{ task.length > 0 ? task[0].tasks[0].name : ''}</p>
+                                                                    <p className="text-muted">{ task.length > 0 ? task[0].tasks[0].name : ''} complete</p>
                                                                 </div>
                                                             </div>
                                                         </a>

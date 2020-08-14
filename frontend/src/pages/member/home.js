@@ -9,12 +9,7 @@ import queryString from 'query-string'
 import { 
     getProjectDetail, 
     getViewerForgeToken, 
-    getTaskDetail,
-    startTask,
-    cancelTask,
-    getTaskMessages,
-    getTaskMembers,
-    postMessage
+    getTaskDetail
 } 
 from '../../store/actions/projectActions';
 import $ from 'jquery'; 
@@ -37,53 +32,28 @@ const initialValues = {
 const MemberHome = (props) => {
     const loading = useSelector(state => loadingSelector(['EDIT_TASK'])(state));
     var projectId = props.match.params.id;
-    const user = JSON.parse(window.localStorage.getItem('user'));
     window.localStorage.setItem("projectId", projectId);
     if(projectId == '')
         projectId = window.localStorage.getItem("projectId");
     const dispatch = useDispatch();
-    
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         data.taskId = taskId;
+        console.log(data);
         // dispatch(startTask(data, setErrors, setSubmitting));
         $(".member-panel").show();
     }
-
-    const handleStart = () => {
-        let data = {
-            projectId: projectId,
-            taskId: taskId
-        };
-
-        dispatch(startTask(data));
-    };
-
-    const handleCancel = () => {
-        let data = {
-            projectId: projectId,
-            taskId: taskId
-        };
-
-        dispatch(cancelTask(data));
-    };
-
     const values = queryString.parse(props.location.search)
     const taskId = values.task_id;
     const task = useSelector(state => state.project.task);
     const taskEngineers = useSelector(state => state.project.taskEngineers);
     const taskMembers = useSelector(state => state.project.taskMembers);
-    const taskMessages = useSelector(state => state.project.taskMessages);
 
     const project = useSelector(state => state.project.project);
     const forgeToken = useSelector(state => state.project.forgeToken);
 
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
-
-    var scrollbar_class = '';
-    if(taskMessages.length > 0)
-        scrollbar_class = 'scrollbar';
 
     useEffect(() => {
         if(project){
@@ -117,13 +87,6 @@ const MemberHome = (props) => {
             $(".task-info").show();
         }
     }, []);     
-    useEffect(() => {
-        let data = {
-            projectId: projectId,
-            taskId: taskId
-        }
-        dispatch(getTaskMembers(data));
-    }, []);
     const handleViewerError = (error) => {
         console.log('Error loading viewer.');
     }
@@ -145,29 +108,6 @@ const MemberHome = (props) => {
         }
         else{
           setView(viewables[0]);
-        }
-    }
-
-    const handleShowBlog = () => {
-        $(".show-blog").hide();
-        $(".chat-info").show();
-        $(".post-container").show();
-        let data = {
-            projectId: projectId,
-            taskId: taskId
-        }
-        dispatch(getTaskMessages(data));
-    }
-
-    const handlePostMessage = () => {
-        var message = $("#message").val();
-        if(taskId && message != ''){
-            let data = {
-                projectId: projectId,
-                taskId: taskId,
-                message: message
-            };
-            dispatch(postMessage(data));
         }
     }
     
@@ -208,7 +148,7 @@ const MemberHome = (props) => {
                     <div className="task-info">
                         <div className="scrollbar" id="style-2">
                             <Form
-                                onSubmit={handleStart}
+                                onSubmit={handleSubmit}
                                 initialValues={initialValues}
                             >
                                 <div className="force-overflow">
@@ -297,98 +237,11 @@ const MemberHome = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={handleCancel}>Cancel</button>
+                                <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
                                 <SubmitButton title='Confirm and Start' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
                             </Form>
                         </div>
                     </div> : ''  
-                }
-                {
-                    taskId ? <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20 show-blog" onClick={handleShowBlog}>Show Blog</button> : ''
-                }
-                <div className="chat-info" style={{display: 'none'}}>
-                    <div className={scrollbar_class} id="style-2">
-                        { 
-                            taskMessages != [] > 0 ? 
-                                taskMessages.map((value, index) => {
-                                    {
-                                        var class_name = 'chat-item';
-                                        value.myId == value.from ? class_name = 'chat-item right' : class_name = 'chat-item';
-                                    }
-                                    return (
-                                        <div className={class_name} key={index}>
-                                            <div className="user-info inline-block">
-                                                <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >{value.firstName} {value.lastName}</p>
-                                            </div>
-                                            <div className="inline-block">
-                                                <p className="chat-content" >{value.message}</p>
-                                                <p class="text-muted text-time">{value.createdOn}</p>
-                                            </div>
-                                        </div>
-                                    ) 
-                                })
-                            : ''
-                        }
-                        {/* <div className='chat-item'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item right'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item right'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div> */}
-                    </div>
-                </div>
-                {
-                    user ?
-                    <div className="post-container" style={{background: '#252529', display: 'none'}}>
-                        <div className="" id="style-2">
-                            <div className='chat-item right'>
-                                <div className="user-info inline-block">
-                                    <img src={!user.photo ? require('../../images/users/user.jpg') : user.photo} alt="" className="roundedImg thumb-md"/>
-                                    <p className="user-name" >{user.firstName} {user.lastName}</p>
-                                </div>
-                                <div className="edit-message">
-                                    <textarea name="message" id="message" className="message-content"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={handlePostMessage}>Post</button>
-                    </div> : ''
                 }
             </div>
 
@@ -404,7 +257,7 @@ const MemberHome = (props) => {
                                         <div className="border-bottom position-relative">
                                             <div className="float-left mb-0 mr-3">
                                                 <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                                <p>{taskEngineers.firstName} {taskEngineers.lastName}</p>
                                             </div>
                                             <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
                                             <div className="desc">
@@ -423,7 +276,7 @@ const MemberHome = (props) => {
                                                 <div className="border-bottom position-relative">
                                                     <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
-                                                        <p className="user-name" >{value.firstName} {value.lastName}</p>
+                                                        <p>{value.firstName} {value.lastName}</p>
                                                     </div>
                                                     <div className="suggestion-icon float-right mt-2 pt-1"> {value.role} </div>
                                                     {
