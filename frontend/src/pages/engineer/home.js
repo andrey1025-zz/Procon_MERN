@@ -320,8 +320,8 @@ const EngineerHome = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
-                                <SubmitButton title='Review' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} /> */}
+                                <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20">Cancel</button>
+                                <SubmitButton title='Review' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
                             </Form>
                         </div>
                     </div> : ''  
