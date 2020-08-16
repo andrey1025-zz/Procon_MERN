@@ -226,6 +226,7 @@ const EngineerHome = (props) => {
                         </div>
                     </div>
                 </div>
+
                 {
                     task.length > 0 ? 
                     <div className="task-info" style={{display: 'block'}}>
@@ -238,85 +239,85 @@ const EngineerHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task name:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="name" value={task[0].tasks[0].name}/>
+                                            <FormTextarea className="form-control-task" name="name" defaultValue={task[0].tasks[0].name}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="startTime" value={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="time" name="startTime" defaultValue={task[0].tasks[0].startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="endTime" value={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="time" name="endTime" defaultValue={task[0].tasks[0].endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Equipment and tools:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="equipTools" value={task[0].tasks[0].equipTools}/>
+                                            <FormTextarea className="form-control-task" name="equipTools" defaultValue={task[0].tasks[0].equipTools}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Components:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="components" value={task[0].tasks[0].components}/>
+                                            <FormTextarea className="form-control-task" name="components" defaultValue={task[0].tasks[0].components}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Materials:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="materials" value={task[0].tasks[0].materials}/>
+                                            <FormTextarea className="form-control-task" name="materials" defaultValue={task[0].tasks[0].materials}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Working area:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="workingArea" value={task[0].tasks[0].workingArea}/>
+                                            <FormTextarea className="form-control-task" name="workingArea" defaultValue={task[0].tasks[0].workingArea}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Weather:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="weather" value={task[0].tasks[0].weather}/>
+                                            <FormTextarea className="form-control-task" name="weather" defaultValue={task[0].tasks[0].weather}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Site condition:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="siteCondition" value={task[0].tasks[0].siteCondition}/>
+                                            <FormTextarea className="form-control-task" name="siteCondition" defaultValue={task[0].tasks[0].siteCondition}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Nearby irrelevant objects:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects" value={task[0].tasks[0].nearbyIrrelevantObjects}/>
+                                            <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects" defaultValue={task[0].tasks[0].nearbyIrrelevantObjects}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Cultural and legal constraints:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="cultural_legal_constraints" value={task[0].tasks[0].cultural_legal_constraints}/>
+                                            <FormTextarea className="form-control-task" name="cultural_legal_constraints" defaultValue={task[0].tasks[0].cultural_legal_constraints}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Technical and safety specifications:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="technical_safety_specifications" value={task[0].tasks[0].technical_safety_specifications}/>
+                                            <FormTextarea className="form-control-task" name="technical_safety_specifications" defaultValue={task[0].tasks[0].technical_safety_specifications}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Public relation requirements:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="publicRelationRequirements" value={task[0].tasks[0].publicRelationRequirements}/>
+                                            <FormTextarea className="form-control-task" name="publicRelationRequirements" defaultValue={task[0].tasks[0].publicRelationRequirements}/>
                                         </div>
                                     </div>
                                 </div>
@@ -356,47 +357,6 @@ const EngineerHome = (props) => {
                                 })
                             : ''
                         }
-                        {/* <div className='chat-item'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item right'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item right'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div> */}
                     </div>
                 </div>
                 {

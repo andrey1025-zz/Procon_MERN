@@ -262,7 +262,7 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
                 ...response,
                 errorMessage: {
                     ...response.errorMessage,
-                    email: "Only Engineer can add new Task"
+                    email: "Only Engineer can edit new Task"
                 }
             };
         } else {

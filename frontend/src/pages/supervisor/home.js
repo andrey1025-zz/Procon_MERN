@@ -428,7 +428,7 @@ const SupervisorHome = (props) => {
                                 }
                                 {
                                     task[0].tasks[0].status == Reviewed ?
-                                    <SubmitButton title='Review' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
+                                    <SubmitButton title='Publish' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
                                     : ''
                                 }
                             </Form>
