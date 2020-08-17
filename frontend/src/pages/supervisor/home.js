@@ -259,6 +259,7 @@ const SupervisorHome = (props) => {
                 data.engineerId = inviteList[index].id;
                 data.taskId = taskId;
                 dispatch(inviteEngineer(data));
+                window.$("#addMemberModal").modal('hide');
                 break;
             case MemberRole:
                 if(data.taskId != 0){
@@ -270,6 +271,7 @@ const SupervisorHome = (props) => {
                     });
                     data.taskId = taskId;
                     dispatch(inviteMember(data));
+                    window.$("#addMemberModal").modal('hide');
                 } else {
                     alert("You can only invite members in task.");
                 }
@@ -521,7 +523,7 @@ const SupervisorHome = (props) => {
                                                     }
                                                     {
                                                         value.status == Completed ? 
-                                                            <div className="task-status complete">complete</div>
+                                                            <div className="task-status complete">available</div>
                                                         : ''
                                                     }
                                                     <div className="desc">
@@ -564,7 +566,7 @@ const SupervisorHome = (props) => {
                                         </div>                                    
                                     </div>
                                     <div className="col-md-6 col-sm-6 text-right task-status">
-                                        <span className="text-black mr-2">Complete</span>
+                                        <span className="text-black mr-2">Available</span>
                                         <div className="circle-light light-green mr-3"></div>
                                         <span className="text-black mr-2">In progress</span>
                                         <div className="circle-light light-red mr-3"></div>
