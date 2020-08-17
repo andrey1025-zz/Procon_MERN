@@ -29,8 +29,8 @@ const EngineerNotification = () => {
                     notifications.map((value, index) => {
                         return (
                         <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
-                            <div className="card">
-                                <div className="card-heading">
+                            <div className="project-wrapper">
+                                <div className="project-title">
                                     <div className="row col-md-12">
                                         <div className="float-left padding10 col-md-5">
                                             <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="user" className="custom-rounded mr-5 mr-20"/>
@@ -63,6 +63,8 @@ const EngineerNotification = () => {
                                     <span style={{float:'right'}}></span>
                                     <p>{value.message}</p>
                                     </div>
+                                </div>
+                                <div className="project-body">
                                     <div className="pro-image">
                                         <Link to={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value.taskId}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
                                     </div>

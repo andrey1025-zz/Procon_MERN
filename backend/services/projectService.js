@@ -203,7 +203,7 @@ async function addTask({ components, componentId, projectId, userId, ipAddress }
         } else {
             // Create new project
             const task = {
-                _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: Created, members: []
+                _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: Created, members: [],engineers: []
             };
             
             await Project.updateOne(
@@ -1596,64 +1596,63 @@ async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress
         const engineer = await User.findById(engineerId);
         var engineers = [];
         engineers.push({id: engineerId, status: NotStart});
-        await Project.update(
-            {_id: projectId},
-            {
-                $addToSet: {
-                    engineers: basicDetails(engineer)
-                }
-            }
-        )
-
-        await Project.updateOne(
-            { _id: projectId },
-            {
-                $push: {
-                    "tasks.$[elem].engineers": { $each: engineers }
+        const task = await Project.find(
+                { _id: projectId },
+                { 
+                    tasks: { $elemMatch: { _id: ObjectID(taskId) } }
+                });
+        if(task[0].tasks[0].engineers.length == 0){
+            await Project.updateOne(
+                { _id: projectId },
+                {
+                    $push: {
+                        "tasks.$[elem].engineers": { $each: engineers }
+                    },
+                    $set: {
+                        "tasks.$[elem].status": Created
+                    }
                 },
-                $set: {
-                    "tasks.$[elem].status": Created
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
                 }
-            },
-            {
-                multi: true,
-                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+            )
+    
+            const notification = new Notification({
+                from: userId,
+                to: engineerId,
+                taskId: taskId,
+                projectId: projectId,
+                message: "The Superintendent invited you to the project as an engineer."
+            });
+    
+            const session = await mongoose.startSession();
+            try {
+                const opts = { session, returnOriginal: false };
+                //await session.startTransaction();
+                await RefreshToken.createCollection();
+                await Notification.createCollection();
+                await notification.save(opts);
+                const jwtToken = generateJwtToken(user);
+                const refreshToken = generateRefreshToken(user, ipAddress);
+                await refreshToken.save(opts);
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    errorMessage: {},
+                    token: jwtToken,
+                    refreshToken: refreshToken.token,
+                    data: basicDetails(engineer)
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
             }
-        )
+        }      
 
-        const notification = new Notification({
-            from: userId,
-            to: engineerId,
-            taskId: taskId,
-            projectId: projectId,
-            message: "The Superintendent invited you to the project as an engineer."
-        });
-
-        const session = await mongoose.startSession();
-        try {
-            const opts = { session, returnOriginal: false };
-            //await session.startTransaction();
-            await RefreshToken.createCollection();
-            await Notification.createCollection();
-            await notification.save(opts);
-            const jwtToken = generateJwtToken(user);
-            const refreshToken = generateRefreshToken(user, ipAddress);
-            await refreshToken.save(opts);
-            //await session.commitTransaction();
-            await session.endSession();
-            return {
-                ...response,
-                status: responseStatus.success,
-                errorMessage: {},
-                token: jwtToken,
-                refreshToken: refreshToken.token,
-                data: basicDetails(engineer)
-            };
-        } catch (error) {
-            //await session.abortTransaction();
-            await session.endSession();
-            throw error;
-        }
     }
     catch (error) {
         throw error;
