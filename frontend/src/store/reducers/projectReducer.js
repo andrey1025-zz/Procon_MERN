@@ -36,7 +36,9 @@ import {
     REVIEW_TASK_SUCCESS,
     REVIEW_TASK_FAILURE,
     GET_TASK_MESSAGES_SUCCESS,
-    GET_TASK_MESSAGES_FAILURE
+    GET_TASK_MESSAGES_FAILURE,
+    GET_TASK_HISTORY_SUCCESS,
+    GET_TASK_HISTORY_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -53,7 +55,8 @@ const initialState = {
     taskMembers: [],
     notificCount: 0,
     notifications: [],
-    taskMessages: []
+    taskMessages: [],
+    taskHistories: []
 };
 
 export default (state = initialState, action) => {
@@ -140,6 +143,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 members: [],
+            };
+        case GET_TASK_HISTORY_SUCCESS:
+            return {
+                ...state,
+                taskHistories: action.payload.data,
+            };
+        case GET_TASK_HISTORY_FAILURE:
+            return {
+                ...state,
+                taskHistories: [],
             };
         case GET_TASKS_SUCCESS:
             return {

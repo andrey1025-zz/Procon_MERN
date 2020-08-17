@@ -12,6 +12,7 @@ import {
     getTaskDetail,
     startTask,
     cancelTask,
+    submitForCheckingTask,
     getTaskMessages,
     getTaskMembers,
     postMessage
@@ -51,12 +52,22 @@ const MemberHome = (props) => {
     }
 
     const handleStart = () => {
+        console.log("started");
         let data = {
             projectId: projectId,
             taskId: taskId
         };
 
         dispatch(startTask(data));
+    };
+
+    const handleSubmitforChecking = () => {
+        let data = {
+            projectId: projectId,
+            taskId: taskId
+        };
+
+        dispatch(submitForCheckingTask(data));
     };
 
     const handleCancel = () => {
@@ -82,8 +93,12 @@ const MemberHome = (props) => {
     const [view, setView] = useState(null);
 
     var scrollbar_class = '';
+    var mystatus = '';
+    var i = 0;
     if(taskMessages.length > 0)
         scrollbar_class = 'scrollbar';
+
+    $(".task-info").show();
 
     useEffect(() => {
         if(project){
@@ -124,6 +139,15 @@ const MemberHome = (props) => {
         }
         dispatch(getTaskMembers(data));
     }, []);
+
+    // get my status
+    for(i = 0 ; i < taskMembers.length; i++){
+        if(taskMembers[i].id == user.id){
+            mystatus = taskMembers[i].status;
+        }
+    }
+
+    console.log("aaaaaaaaaaaa", mystatus);
     const handleViewerError = (error) => {
         console.log('Error loading viewer.');
     }
@@ -208,7 +232,6 @@ const MemberHome = (props) => {
                     <div className="task-info">
                         <div className="scrollbar" id="style-2">
                             <Form
-                                onSubmit={handleStart}
                                 initialValues={initialValues}
                             >
                                 <div className="force-overflow">
@@ -297,8 +320,14 @@ const MemberHome = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={handleCancel}>Cancel</button>
-                                <SubmitButton title='Confirm and Start' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} />
+                                {
+                                    mystatus == NotStart ? <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20" onClick={handleCancel}>Cancel</button>
+                                    : ''
+                                }
+                                {
+                                    mystatus == NotStart ? <button title='Confirm and Start' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} onClick={handleStart}>Confirm and Start</button>
+                                    : <button title='Submit for checking' className="btn btn-info btn-lg task-btn mr-20 mb-20" loading={loading} disabled={loading} onClick={handleSubmitforChecking}>Submit for Checking</button>
+                                }
                             </Form>
                         </div>
                     </div> : ''  

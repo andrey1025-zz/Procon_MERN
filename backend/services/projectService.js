@@ -14,7 +14,7 @@ const responseStatus = require("../enums/responseStatus");
 const RefreshToken = require("../models/refreshTokenModel");
 const { basicDetails, projectDetails } = require('../services/helperService');
 const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require('../enums/roles');
-const { NotStart, Inprogress, Completed, Created, Reviewed } = require('../enums/taskStatus');
+const { NotStart, Inprogress, Completed, Created, Reviewed, Checked } = require('../enums/taskStatus');
 const { Console } = require('console');
 const { ObjectID } = require('mongodb');
 const saltRounds = 10;
@@ -489,6 +489,66 @@ async function getTasks(projectId) {
     }
 };
 
+// Get Task History
+async function getTaskHistory(projectId) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const project = await Project.findById(projectId);
+
+        try {
+            var tasks = [];
+            for(i = 0; i < project.tasks.length; i++){
+                // var task = project.tasks[i];
+                var item = {
+                    superintendent: null,
+                    id: null,
+                    startTime: null,
+                    endTime: null,
+                    taskName: null,
+                    members: [],
+                    coverImage: null
+                };
+
+                if(project.superintendent.length > 0 && project.superintendent[0]){
+                    var superintendent = await User.findById(project.superintendent[0].id);
+                    item.superintendent = basicDetails(superintendent);
+                }
+
+                item.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null
+                if(project.tasks[i].status == Completed ){
+                    item.id = project.tasks[i]._id;
+                    item.startTime = project.tasks[i].startTime;
+                    item.endTime = project.tasks[i].endTime;
+                    item.taskName = project.tasks[i].name;
+                    for(j = 0; j < project.tasks[i].engineers.length; j++){
+                        const engineer = await User.findById(project.tasks[i].engineers[j].id);
+                        item.members.push(basicDetails(engineer));
+                    }
+                    for(k = 0; k < project.tasks[i].engineers.length; k++){
+                        const member = await User.findById(project.tasks[i].engineers[k].id);
+                        item.members.push(basicDetails(member));
+                    }
+                    tasks.push(item);
+                }
+            }
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: tasks
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 async function getTaskDetail(projectId, taskId) {
     var response = {
         status: responseStatus.failure,
@@ -944,6 +1004,393 @@ async function startTask({ userId, projectId, taskId }) {
     }
 };
 
+// Submit For Checking Task
+async function submitForCheckingTask({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        var taskMembers = [];
+        if(taskId != null){
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].members.$[elem1].status': Completed
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } , { "elem1.id": userId } ]
+                }
+            );
+
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
+                // {projectId: projectId, taskId:taskId, to: userId},
+            );
+
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+                } 
+            );
+
+            const project = await Project.findById(projectId);
+            var engineerId = null;
+            var superintendentId = null;
+
+            if(task && task[0] && task[0].tasks[0]){
+                engineerId = task[0].tasks[0].engineers[0].id;
+            }
+
+            if(project && project.superintendent){
+                superintendentId = project.superintendent[0].id;
+            }
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+            const user_detail = basicDetails(user);
+            const notification = new Notification({
+                from: userId,
+                to: engineerId,
+                taskId: taskId,
+                projectId: projectId,
+                message: `The ${user_detail.firstName+` `+user_detail.lastName} submitted task for checking.`
+            });
+            Notification.createCollection();
+            notification.save(opts);
+
+            const notification2 = new Notification({
+                from: userId,
+                to: superintendentId,
+                taskId: taskId,
+                projectId: projectId,
+                message: `The ${user_detail.firstName+` `+user_detail.lastName} submitted task for checking.`
+            });
+            Notification.createCollection();
+            notification2.save(opts);
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Check Task
+async function checkTask({ userId, projectId, taskId, memberId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        if(taskId != null){
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].members.$[elem1].status': Checked
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } , { "elem1.id": memberId } ]
+                }
+            );
+
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
+                // {projectId: projectId, taskId:taskId, to: userId},
+            );
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+            const user_detail = basicDetails(user);
+            const notification = new Notification({
+                from: userId,
+                to: memberId,
+                taskId: taskId,
+                projectId: projectId,
+                message: `The ${user_detail.firstName+` `+user_detail.lastName} checked your work.`
+            });
+            Notification.createCollection();
+            notification.save(opts);
+
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+                } 
+            );
+
+            var total_status = 1;
+
+            if(task && task[0] && task[0].tasks[0]){
+                for(i = 0; i < task[0].tasks[0].members; i++){
+                    if(task[0].tasks[0].members[i].status == Checked)
+                        total_status *= 1;
+                    else
+                        total_status *= 0;
+                }
+            }
+
+            console.log("total_status", total_status);
+
+            if(total_status == 1){
+                await Project.updateOne(
+                    {_id: projectId},
+                    {
+                        $set: {
+                            'tasks.$[elem].status': Completed
+                        }
+                    },
+                    {
+                        multi: true,
+                        arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+                    }
+                );
+            }
+
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Rework Task
+async function reworkTask({ userId, projectId, taskId, memberId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        if(taskId != null){
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].members.$[elem1].status': Inprogress
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } , { "elem1.id": memberId } ]
+                }
+            );
+
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
+                // {projectId: projectId, taskId:taskId, to: userId},
+            );
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+            const user_detail = basicDetails(user);
+            const notification = new Notification({
+                from: userId,
+                to: memberId,
+                taskId: taskId,
+                projectId: projectId,
+                message: `The ${user_detail.firstName+` `+user_detail.lastName} asked you to rework.`
+            });
+            Notification.createCollection();
+            notification.save(opts);
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Rework Task
+async function deleteTask({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        if(taskId != null){
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem]': null
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } ]
+                }
+            );
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $pull: {
+                        'tasks.$[elem]': null
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } ]
+                }
+            );
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Remove Member
+async function removeMember({ userId, projectId, taskId, memberId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        if(taskId != null){
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].members.$[elem1]': null
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } , { "elem1.id": memberId } ]
+                }
+            );
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $pull: {
+                        'tasks.$[elem].members': null
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } ]
+                }
+            );
+
+            await Notification.deleteOne(
+                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
+                // {projectId: projectId, taskId:taskId, to: userId},
+            );
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+            const user_detail = basicDetails(user);
+            const notification = new Notification({
+                from: userId,
+                to: memberId,
+                taskId: taskId,
+                projectId: projectId,
+                message: `The ${user_detail.firstName+` `+user_detail.lastName} removed you in member list.`
+            });
+            Notification.createCollection();
+            notification.save(opts);
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 // cancel Task
 async function cancelTask({ userId, projectId, taskId }) {
     var response = {
@@ -1249,14 +1696,14 @@ async function getNotifications({ userId, projectId }) {
     };
     try {
         var data = [];
+        const project = await Project.findById(projectId);
         const notifications = await Notification.find({to: userId, projectId: projectId, isRead: false});
         for(i = 0 ; i < notifications.length; i++){
             const from = await User.findById(notifications[i].from);
             const task = await Project.find(
                 { _id: projectId },
                 { 
-                    tasks: { $elemMatch: { _id: notifications[i].taskId } },
-                    coverImage : { $elemMatch: { _id: projectId } }
+                    tasks: { $elemMatch: { _id: notifications[i].taskId } }
                 }
                 );
             const fromUserDetail = basicDetails(from);
@@ -1271,7 +1718,7 @@ async function getNotifications({ userId, projectId }) {
                 role: fromUserDetail.role,
                 taskId: notifications[i].taskId,
                 taskName: task[0].tasks[0].name,
-                coverImage: task[0].coverImage ? `${config.assetsBaseUrl}/${task[0].coverImage}` : null
+                coverImage: project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null
             }
             data.push(item);
         }
@@ -1382,8 +1829,14 @@ module.exports = {
     getTaskEngineers,
     getTaskMembers,
     startTask,
+    submitForCheckingTask,
     cancelTask,
+    checkTask,
+    reworkTask,
+    deleteTask,
+    removeMember,
     clearNotification,
     postMessage,
-    getTaskMessages
+    getTaskMessages,
+    getTaskHistory
 };

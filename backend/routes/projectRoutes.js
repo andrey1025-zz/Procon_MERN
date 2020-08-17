@@ -33,7 +33,13 @@ router.post("/get-notifications", authorize(), projectController.getNotification
 router.post("/get-task-engineers", authorize(), projectController.getTaskEngineers);
 router.post("/get-task-members", authorize(), projectController.getTaskMembers);
 router.post("/start-task", authorize(), projectController.startTask);
+router.post("/submit-check-task", authorize(), projectController.submitForCheckingTask);
 router.post("/cancel-task", authorize(), projectController.cancelTask);
+router.post("/check-task", authorize(), projectController.checkTask);
+router.post("/get-task-history", authorize(), projectController.getTaskHistory);
+router.post("/rework-task", authorize(), projectController.reworkTask);
+router.post("/delete-task", authorize(), projectController.deleteTask);
+router.post("/remove-member", authorize(), projectController.removeMember);
 router.post("/clear-notification", authorize(), projectController.clearNotification);
 router.post("/post-message", authorize(), projectController.postMessage);
 router.post("/get-messages", authorize(), projectController.getTaskMessages);

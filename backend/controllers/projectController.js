@@ -176,6 +176,15 @@ getTasks = (req, res, next) => {
         }).catch(next);
 };
 
+// Get Task History
+getTaskHistory = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.getTaskHistory(projectId)
+        .then(response => {
+            res.json(response);
+        }).catch(next);
+};
+
 // Get Users
 getUsers = (req, res, next) => {
     const { projectId: projectId } = req.body;
@@ -284,6 +293,56 @@ startTask = (req, res, next) => {
     const { sub: userId } = req.user;
     const { projectId: projectId, taskId: taskId } = req.body;
     projectService.startTask({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Check Task
+checkTask = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId, memberId: memberId } = req.body;
+    projectService.checkTask({ userId, projectId, taskId, memberId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Rework Task
+reworkTask = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId, memberId: memberId } = req.body;
+    projectService.reworkTask({ userId, projectId, taskId, memberId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Delete Task
+deleteTask = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.deleteTask({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Remove Member
+removeMember = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId, memberId: memberId } = req.body;
+    projectService.removeMember({ userId, projectId, taskId, memberId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Submit for checking Task
+submitForCheckingTask = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.submitForCheckingTask({ userId, projectId, taskId })
         .then(data => {
             res.json(data);
         }).catch(next);
@@ -514,8 +573,14 @@ module.exports = {
     reviewTask,
     startTask,
     cancelTask,
+    checkTask,
+    reworkTask,
+    deleteTask,
+    removeMember,
     getTaskMessages,
     clearNotification,
+    getTaskHistory,
+    submitForCheckingTask,
     createBucket,
     getBucketDetail,
     uploadToBucket,

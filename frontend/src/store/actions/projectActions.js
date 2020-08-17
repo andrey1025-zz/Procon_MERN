@@ -81,7 +81,25 @@ import {
     POST_MESSAGE_FAILURE,
     GET_TASK_MESSAGES_REQUEST,
     GET_TASK_MESSAGES_SUCCESS,
-    GET_TASK_MESSAGES_FAILURE
+    GET_TASK_MESSAGES_FAILURE,
+    SUBMIT_FOR_CHECKING_TASK_REQUEST,
+    SUBMIT_FOR_CHECKING_TASK_SUCCESS,
+    SUBMIT_FOR_CHECKING_TASK_FAILURE,
+    CHECK_TASK_REQUEST,
+    CHECK_TASK_SUCCESS,
+    CHECK_TASK_FAILURE,
+    REWORK_TASK_REQUEST,
+    REWORK_TASK_SUCCESS,
+    REWORK_TASK_FAILURE,
+    REMOVE_MEMBER_REQUEST,
+    REMOVE_MEMBER_SUCCESS,
+    REMOVE_MEMBER_FAILURE,
+    GET_TASK_HISTORY_REQUEST,
+    GET_TASK_HISTORY_SUCCESS,
+    GET_TASK_HISTORY_FAILURE,
+    DELETE_TASK_REQUEST,
+    DELETE_TASK_SUCCESS,
+    DELETE_TASK_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -393,6 +411,126 @@ export const startTask = (data) => async dispatch => {
     } else if (response.data && response.data.status === 'failure' ){
         dispatch({
             type: START_TASK_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const checkTask = (data) => async dispatch => {
+    dispatch({
+        type: CHECK_TASK_REQUEST
+    });
+
+    const response = await api.post('/project/check-task', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: CHECK_TASK_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: CHECK_TASK_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const reworkTask = (data) => async dispatch => {
+    dispatch({
+        type: REWORK_TASK_REQUEST
+    });
+
+    const response = await api.post('/project/rework-task', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: REWORK_TASK_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: REWORK_TASK_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getTaskHistory = (data) => async dispatch => {
+    dispatch({
+        type: GET_TASK_HISTORY_REQUEST
+    });
+
+    const response = await api.post('/project/get-task-history', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_TASK_HISTORY_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: GET_TASK_HISTORY_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const removeMember = (data) => async dispatch => {
+    dispatch({
+        type: REMOVE_MEMBER_REQUEST
+    });
+
+    const response = await api.post('/project/remove-member', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: REMOVE_MEMBER_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: REMOVE_MEMBER_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const deleteTask = (data) => async dispatch => {
+    dispatch({
+        type: DELETE_TASK_REQUEST
+    });
+
+    const response = await api.post('/project/delete-task', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: DELETE_TASK_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: DELETE_TASK_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const submitForCheckingTask = (data) => async dispatch => {
+    dispatch({
+        type: SUBMIT_FOR_CHECKING_TASK_REQUEST
+    });
+
+    const response = await api.post('/project/submit-check-task', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: SUBMIT_FOR_CHECKING_TASK_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: SUBMIT_FOR_CHECKING_TASK_FAILURE,
             payload: response.data
         })
     }

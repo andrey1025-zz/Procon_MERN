@@ -3,5 +3,6 @@ module.exports = {
     Reviewed: "reviewed",
     NotStart: "notstart",
     Inprogress: "inprogress",
-    Completed: "completed"
+    Completed: "completed",
+    Checked: "checked"
 }

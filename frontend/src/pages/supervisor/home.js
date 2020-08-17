@@ -18,7 +18,10 @@ import {
     inviteEngineer,
     getTaskEngineers,
     getTaskMembers,
-    getTaskDetail
+    getTaskDetail,
+    checkTask,
+    reworkTask,
+    removeMember
 } 
 from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
@@ -61,6 +64,8 @@ const initialValues = {
 
 const SupervisorHome = (props) => {
     const loading = useSelector(state => loadingSelector(['REVIEW_TASK'])(state));
+    const values = queryString.parse(props.location.search)
+    const task_id = values.task_id;
     var index = 0;
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
@@ -83,8 +88,36 @@ const SupervisorHome = (props) => {
         dispatch(reviewTask(data));
     }
 
-    const values = queryString.parse(props.location.search)
-    const task_id = values.task_id;
+    const handleCheck = (memberId) => {
+        let data = {
+            projectId: projectId,
+            taskId: task_id,
+            memberId: memberId
+        };
+        
+        dispatch(checkTask(data));
+    }
+
+    const handleRework = (memberId) => {
+        let data = {
+            projectId: projectId,
+            taskId: task_id,
+            memberId: memberId
+        };
+        
+        dispatch(reworkTask(data));
+    }
+
+    const handleRemoveMember = (memberId) => {
+        let data = {
+            projectId: projectId,
+            taskId: task_id,
+            memberId: memberId
+        };
+        
+        dispatch(removeMember(data));
+    }
+
     const handleAddTask = () => {
         let data = {
             projectId: projectId,
@@ -184,6 +217,11 @@ const SupervisorHome = (props) => {
             });
             if(count == 0)
                 $(".btn-invite").parent().hide();
+        });
+
+        $(".member-item").click(function(){
+            $(".check-task").hide();
+            $(this).find('.check-task').show();
         });
     });
 
@@ -464,7 +502,7 @@ const SupervisorHome = (props) => {
                                 taskMembers != [] > 0 ? 
                                     taskMembers.map((value, index) => {
                                         return (
-                                            <a href="#" className="friends-suggestions-list" key={index}>
+                                            <a href="#" className="friends-suggestions-list member-item" key={index}>
                                                 <div className="border-bottom position-relative">
                                                     <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
@@ -489,6 +527,11 @@ const SupervisorHome = (props) => {
                                                     <div className="desc">
                                                         <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
                                                         <p className="text-muted">{!value.mobile ? '' : value.mobile}</p>
+                                                    </div>
+                                                    <div className="check-task" data-id={value.id}>
+                                                        <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 mt-0 ml-0" onClick={() => handleCheck(value.id)}>Check</button>
+                                                        <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 ml-0 mt-10 btn-rework" onClick={() => handleRework(value.id)}>Rework</button>
+                                                        <a className="remove-member" onClick={() => handleRemoveMember(value.id)}>Remove Member</a>
                                                     </div>
                                                 </div>
                                             </a> 

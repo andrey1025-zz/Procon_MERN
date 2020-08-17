@@ -185,7 +185,7 @@ const EngineerTaskManage = () => {
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
-                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1" onClick={() => handleDisplayTask(value._id)}/>
                                                     </div>
                                                 </div>
                                             </div>

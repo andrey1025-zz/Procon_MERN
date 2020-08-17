@@ -361,3 +361,32 @@
 .chat-item.right .text-time{
   margin-right: 15px;
 }
+
+.check-task{
+  position: absolute;
+  top: 0;
+  left: -210px;
+  width: 200px;
+  background: lightgrey;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  display: none;
+}
+
+.check-task button:first-child{
+  background-color: #5331c2;
+  color: white;
+  border: none;
+}
+
+.check-task button.btn-rework{
+  margin-top: 5px !important;
+}
+
+.remove-member{
+  color: red !important;
+}
+.member-image {
+  width: 35px !important;
+}
