@@ -52,15 +52,15 @@ const ManagerWelcome = () => {
         <React.Fragment>
             <div className="col-sm-4 col-xl-4 col-md-4">
                 <div className="popup" data-toggle="modal" data-target="#addProjectModal">
-                    <img src={require('../../images/plus.png')} alt="user" className="menu-logo1"/>
+                    <img src={require('../../images/plus.png')} alt="user" className="menu-logo1 plus-project"/>
                     <p className="addNewProject">Add a new project</p>
                 </div>
             </div>
             {projects.map((value, index) => {
               return (
                 <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
-                  <div className="card">
-                      <div className="card-heading">
+                  <div className="project-wrapper">
+                      <div className="project-title">
                           <div className="mini-stat-icon float-right">
                               <nav className="navbar-custom">
                                   <ul className="navbar-right list-inline float-right mb-0">
@@ -82,12 +82,12 @@ const ManagerWelcome = () => {
                               </nav>
                           </div>
                           <div className="p-20">
-                              <h5 className="font-16">{value.name}</h5>
+                              <label className="font-16">{value.name}</label>
                               <p className="text-overflow">{value.location}</p>
                           </div>
-                          <div className="pro-image">
-                              <Link to={`/${getSimpleRoleName(user.role)}/home/` + value._id} params={{ projectInfo: value }}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
-                          </div>
+                      </div>
+                      <div className="project-body">
+                            <Link to={`/${getSimpleRoleName(user.role)}/home/` + value._id} params={{ projectInfo: value }}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
                       </div>
                   </div>
               </div>   

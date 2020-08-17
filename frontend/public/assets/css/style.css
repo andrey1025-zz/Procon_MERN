@@ -926,9 +926,7 @@ dt {
 
 .notification-list .nav-link {
   padding: 0 15px;
-  line-height: 70px;
   color: #f6f6f6;
-  max-height: 70px;
 }
 
 .notification-list .noti-icon {
@@ -4092,7 +4090,6 @@ body {
     background: #252529;
     text-align: center;
     padding: 70px;
-    height: 250px;
 }
 .modal .modal-dialog .modal-content {
     background: #D8D8D8;
@@ -4106,9 +4103,7 @@ body {
     padding: 16px;
     width: 100%;
 }
-.pro-image img{
-	width:100%;
-}
+
 .p-20{
 	    padding: 0px 20px;
 }
