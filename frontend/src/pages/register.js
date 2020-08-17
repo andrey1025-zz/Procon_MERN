@@ -14,7 +14,7 @@ const validationSchema = Yup.object().shape({
     email: Yup.string().email().max(255).required().label("Email"),
     password: Yup.string().required().min(6).max(255).label("Password"),
     reEnterPassword: Yup.string().equals([Yup.ref('password')], "Password and Repeat Password must match").required().min(6).max(255).label("Repeat Password"),
-    role: Yup.string().required().label("Role")
+    role: Yup.string().required().label("role")
 });
 
 const initialValues = {
