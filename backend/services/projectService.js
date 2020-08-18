@@ -778,11 +778,10 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
     try {
         const user = User.findById(userId);
         const superintendent = await User.findById(superintendentId);
-
         await Project.updateOne(
             {_id: projectId},
             {
-                $addToSet: {
+                $push: {
                     superintendent: basicDetails(superintendent)
                 }
             }
@@ -1332,8 +1331,6 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
     try {
         const user = await User.findById(userId);
         if(taskId != null){
-            console.log(memberId);
-            console.log("-------------");
 
             await Project.updateOne(
                 {_id: projectId},
@@ -1364,7 +1361,16 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
             await Notification.deleteOne(
                 { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
             );
-
+            const task = await Project.find(
+                { _id: projectId },
+                { 
+                    tasks: { $elemMatch: { _id: ObjectID(taskId) } }
+                });
+            var taskMembers = [];
+            for (let i = 0; i < task[0].tasks[0].members.length; i++) {
+                let member = await User.findById(task[0].tasks[0].members[i].id);
+                taskMembers.push(basicDetails(member));
+            }
             const session = await mongoose.startSession();
             const opts = { session, returnOriginal: false };
             const user_detail = basicDetails(user);
@@ -1377,21 +1383,21 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
             });
             Notification.createCollection();
             notification.save(opts);
-        }
-        const session = await mongoose.startSession();
-        try {
-            //await session.startTransaction();
-            //await session.commitTransaction();
-            await session.endSession();
-            return {
-                ...response,
-                status: responseStatus.success,
-                errorMessage: {}
-            };
-        } catch (error) {
-            //await session.abortTransaction();
-            await session.endSession();
-            throw error;
+            try {
+                //await session.startTransaction();
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    data : taskMembers,
+                    errorMessage: {}
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
+            }
         }
     }
     catch (error) {

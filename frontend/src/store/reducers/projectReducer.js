@@ -39,6 +39,7 @@ import {
     GET_TASK_MESSAGES_SUCCESS,
     GET_TASK_MESSAGES_FAILURE,
     GET_TASK_HISTORY_SUCCESS,
+    REMOVE_MEMBER_SUCCESS,
     GET_TASK_HISTORY_FAILURE
 } from "../types";
 const initialState = {
@@ -221,6 +222,11 @@ export default (state = initialState, action) => {
                 taskEngineers: [],
             };
         case INVITE_MEMBER_SUCCESS:
+            return {
+                ...state,
+                taskMembers: action.payload.data,
+            };
+        case REMOVE_MEMBER_SUCCESS:
             return {
                 ...state,
                 taskMembers: action.payload.data,
