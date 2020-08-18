@@ -13,7 +13,6 @@ import {
     getSuperintendents, 
     getEngineers, 
     getMembers,
-    inviteSuperintendent,
     inviteMember,
     inviteEngineer,
     getTaskEngineers,
@@ -66,19 +65,12 @@ const SupervisorHome = (props) => {
     const loading = useSelector(state => loadingSelector(['REVIEW_TASK'])(state));
     const values = queryString.parse(props.location.search)
     const task_id = values.task_id;
-    var index = 0;
+    let index = 0;
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
     if(projectId == '')
         projectId = window.localStorage.getItem("projectId");
     const dispatch = useDispatch();
-
-    const handleSubmit = (data, { setErrors, setSubmitting }) => {
-        data.projectId = projectId;
-        data.taskId = task_id;
-        dispatch(reviewTask(data, setErrors, setSubmitting));
-    }
-
     const handleReviewTask = () => {
         var data = {
             projectId: projectId,
@@ -111,10 +103,9 @@ const SupervisorHome = (props) => {
     const handleRemoveMember = (memberId) => {
         let data = {
             projectId: projectId,
-            taskId: task_id,
+            taskId: taskId,
             memberId: memberId
         };
-        
         dispatch(removeMember(data));
     }
 
@@ -196,6 +187,8 @@ const SupervisorHome = (props) => {
         $('.selected-role').html(EngineerRole + "<i class='fa fa-sort-down'></i>");
         dispatch(getEngineers());
     }
+    console.log(taskMembers);
+    console.log("===========");
 
     useEffect(() => {
         $(".Forhome").hide();
@@ -219,7 +212,7 @@ const SupervisorHome = (props) => {
                 $(".btn-invite").parent().hide();
         });
 
-        $(".member-item").click(function(){
+        $("body").on("click", ".member-item", function(){
             $(".check-task").hide();
             $(this).find('.check-task').show();
         });
@@ -242,18 +235,13 @@ const SupervisorHome = (props) => {
         $(".btn-invite").parent().hide();
     }
 
-    const handleUserClicked = (index) => {
-        index = index;
+    const handleUserClicked = (key) => {
+        index = key;
     }
 
     const handleInvite = () => {
         let data = {};
         switch(role){
-            case SupervisorRole:
-                data.projectId = projectId;
-                data.superintendentId = inviteList[index].id;
-                dispatch(inviteSuperintendent(data));
-                break;
             case EngineerRole:
                 data.projectId = projectId;
                 data.engineerId = inviteList[index].id;
@@ -385,13 +373,13 @@ const SupervisorHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="startTime" value={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task[0].tasks[0].startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="endTime" value={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task[0].tasks[0].endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
@@ -485,7 +473,7 @@ const SupervisorHome = (props) => {
                         <div className="friends-suggestions">
                             { 
                                 taskEngineers != [] > 0 ? 
-                                    <a href="#" className="friends-suggestions-list" >
+                                    <a href="#" className="friends-suggestions-list">
                                         <div className="border-bottom position-relative">
                                             <div className="float-left mb-0 mr-3">
                                                 <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
@@ -504,7 +492,7 @@ const SupervisorHome = (props) => {
                                 taskMembers != [] > 0 ? 
                                     taskMembers.map((value, index) => {
                                         return (
-                                            <a href="#" className="friends-suggestions-list member-item" key={index}>
+                                            <a href="#" className="friends-suggestions-list member-item" key={index} data-id={value.id}>
                                                 <div className="border-bottom position-relative">
                                                     <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
@@ -533,7 +521,7 @@ const SupervisorHome = (props) => {
                                                     <div className="check-task" data-id={value.id}>
                                                         <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 mt-0 ml-0" onClick={() => handleCheck(value.id)}>Check</button>
                                                         <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 ml-0 mt-10 btn-rework" onClick={() => handleRework(value.id)}>Rework</button>
-                                                        <a className="remove-member" onClick={() => handleRemoveMember(value.id)}>Remove Member</a>
+                                                        <span className="remove-member" onClick={() => handleRemoveMember(value.id)}>Remove Member</span>
                                                     </div>
                                                 </div>
                                             </a> 

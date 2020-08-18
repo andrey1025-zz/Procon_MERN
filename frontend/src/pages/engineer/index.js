@@ -29,8 +29,8 @@ const EngineerWelcome = () => {
             {projects.map((value, index) => {
               return (
                 <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
-                  <div className="card">
-                      <div className="card-heading">
+                  <div className="project-wrapper">
+                      <div className="project-title">
                           <div className="mini-stat-icon float-right">
                               <nav className="navbar-custom">
                                   <ul className="navbar-right list-inline float-right mb-0">
@@ -55,10 +55,12 @@ const EngineerWelcome = () => {
                               <h5 className="font-16">{value.name}</h5>
                               <p className="text-overflow">{value.location}</p>
                           </div>
-                          <div className="pro-image">
-                              <Link to={`/${getSimpleRoleName(user.role)}/home/` + value._id}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
-                          </div>
                       </div>
+                    <div className="project-body">
+                        <div className="pro-image">
+                            <Link to={`/${getSimpleRoleName(user.role)}/home/` + value._id}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
+                        </div>
+                    </div>
                   </div>
               </div>   
               )

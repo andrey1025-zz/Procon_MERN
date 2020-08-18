@@ -1,6 +1,7 @@
 import {
     MODEL_UPLOAD_SUCCESS,
     COVER_UPLOAD_SUCCESS,
+    ADD_PROJECT_SUCCESS,
     GET_PROJECT_SUCCESS,
     GET_PROJECT_REQUEST,
     GET_PROJECT_DETAIL_SUCCESS,
@@ -38,6 +39,7 @@ import {
     GET_TASK_MESSAGES_SUCCESS,
     GET_TASK_MESSAGES_FAILURE,
     GET_TASK_HISTORY_SUCCESS,
+    REMOVE_MEMBER_SUCCESS,
     GET_TASK_HISTORY_FAILURE
 } from "../types";
 const initialState = {
@@ -61,6 +63,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
+        case ADD_PROJECT_SUCCESS:
+            return {
+                ...state,
+                projects: action.payload,
+            };
         case MODEL_UPLOAD_SUCCESS:
             return {
                 ...state,
@@ -215,6 +222,11 @@ export default (state = initialState, action) => {
                 taskEngineers: [],
             };
         case INVITE_MEMBER_SUCCESS:
+            return {
+                ...state,
+                taskMembers: action.payload.data,
+            };
+        case REMOVE_MEMBER_SUCCESS:
             return {
                 ...state,
                 taskMembers: action.payload.data,

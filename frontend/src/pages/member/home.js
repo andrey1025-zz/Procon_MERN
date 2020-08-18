@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { loadingSelector } from '../../store/selectors';
-import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
+import { Form, FormField, FormTextarea } from '../../components/form';
 import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
 import ForgeViewer from 'react-forge-viewer';
 import queryString from 'query-string'
@@ -147,7 +147,6 @@ const MemberHome = (props) => {
         }
     }
 
-    console.log("aaaaaaaaaaaa", mystatus);
     const handleViewerError = (error) => {
         console.log('Error loading viewer.');
     }
@@ -244,13 +243,13 @@ const MemberHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="startTime" value={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task[0].tasks[0].startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="endTime" value={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task[0].tasks[0].endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">

@@ -59,6 +59,10 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
                 await refreshToken.save(opts);
                 //await session.commitTransaction();
                 await session.endSession();
+                const projects = await Project.find({ userId: userId });
+                projects.forEach(project => {
+                    project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
+                });
                 return {
                     ...response,
                     status: responseStatus.success,
@@ -66,6 +70,7 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
                     token: jwtToken,
                     refreshToken: refreshToken.token,
                     project: projectDetails(project),
+                    projects : projects,
                     user: basicDetails(user)
                 };
             } catch (error) {
@@ -163,6 +168,8 @@ async function getProjectDetail(projectId) {
     };
     try {
         const project = await Project.findById(projectId);
+        project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
+
         if (project === null) {
             throw `Project with id ${projectId} doesn't exist`
         }
@@ -203,7 +210,7 @@ async function addTask({ components, componentId, projectId, userId, ipAddress }
         } else {
             // Create new project
             const task = {
-                _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: Created, members: []
+                _id: new ObjectID(), name: '', startTime: '', endTime: '', equipTools: '', components: components, componentId: componentId, materials: '', workingArea: '', weather: '', siteCondition: '', nearbyIrrelevantObjects: '', cultural_legal_constraints: '', technical_safety_specifications: '', publicRelationRequirements: '', createdBy: userId, status: Created, members: [],engineers: []
             };
             
             await Project.updateOne(
@@ -771,11 +778,10 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
     try {
         const user = User.findById(userId);
         const superintendent = await User.findById(superintendentId);
-
         await Project.updateOne(
             {_id: projectId},
             {
-                $addToSet: {
+                $push: {
                     superintendent: basicDetails(superintendent)
                 }
             }
@@ -1354,9 +1360,17 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
 
             await Notification.deleteOne(
                 { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
-                // {projectId: projectId, taskId:taskId, to: userId},
             );
-
+            const task = await Project.find(
+                { _id: projectId },
+                { 
+                    tasks: { $elemMatch: { _id: ObjectID(taskId) } }
+                });
+            var taskMembers = [];
+            for (let i = 0; i < task[0].tasks[0].members.length; i++) {
+                let member = await User.findById(task[0].tasks[0].members[i].id);
+                taskMembers.push(basicDetails(member));
+            }
             const session = await mongoose.startSession();
             const opts = { session, returnOriginal: false };
             const user_detail = basicDetails(user);
@@ -1369,21 +1383,21 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
             });
             Notification.createCollection();
             notification.save(opts);
-        }
-        const session = await mongoose.startSession();
-        try {
-            //await session.startTransaction();
-            //await session.commitTransaction();
-            await session.endSession();
-            return {
-                ...response,
-                status: responseStatus.success,
-                errorMessage: {}
-            };
-        } catch (error) {
-            //await session.abortTransaction();
-            await session.endSession();
-            throw error;
+            try {
+                //await session.startTransaction();
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    data : taskMembers,
+                    errorMessage: {}
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
+            }
         }
     }
     catch (error) {
@@ -1512,10 +1526,7 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
         var taskMembers = [];
         for (let i = 0; i < memberIds.length; i++) {
             members.push({id: memberIds[i], status: NotStart});
-            let member = await User.findById(memberIds[i]);
-            taskMembers.push(basicDetails(member));
         }
-
         await Project.updateOne(
             { _id: projectId },
             {
@@ -1531,6 +1542,16 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
                 arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
             }
         )
+        const task = await Project.find(
+                { _id: projectId },
+                { 
+                    tasks: { $elemMatch: { _id: ObjectID(taskId) } }
+                });
+                          
+        for (let i = 0; i < task[0].tasks[0].members.length; i++) {
+            let member = await User.findById(task[0].tasks[0].members[i].id);
+            taskMembers.push(basicDetails(member));
+        }
         
         const session = await mongoose.startSession();
         try {
@@ -1596,64 +1617,63 @@ async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress
         const engineer = await User.findById(engineerId);
         var engineers = [];
         engineers.push({id: engineerId, status: NotStart});
-        await Project.update(
-            {_id: projectId},
-            {
-                $addToSet: {
-                    engineers: basicDetails(engineer)
-                }
-            }
-        )
-
-        await Project.updateOne(
-            { _id: projectId },
-            {
-                $push: {
-                    "tasks.$[elem].engineers": { $each: engineers }
+        const task = await Project.find(
+                { _id: projectId },
+                { 
+                    tasks: { $elemMatch: { _id: ObjectID(taskId) } }
+                });
+        if(task[0].tasks[0].engineers.length == 0){
+            await Project.updateOne(
+                { _id: projectId },
+                {
+                    $push: {
+                        "tasks.$[elem].engineers": { $each: engineers }
+                    },
+                    $set: {
+                        "tasks.$[elem].status": Created
+                    }
                 },
-                $set: {
-                    "tasks.$[elem].status": Created
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
                 }
-            },
-            {
-                multi: true,
-                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+            )
+    
+            const notification = new Notification({
+                from: userId,
+                to: engineerId,
+                taskId: taskId,
+                projectId: projectId,
+                message: "The Superintendent invited you to the project as an engineer."
+            });
+    
+            const session = await mongoose.startSession();
+            try {
+                const opts = { session, returnOriginal: false };
+                //await session.startTransaction();
+                await RefreshToken.createCollection();
+                await Notification.createCollection();
+                await notification.save(opts);
+                const jwtToken = generateJwtToken(user);
+                const refreshToken = generateRefreshToken(user, ipAddress);
+                await refreshToken.save(opts);
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    errorMessage: {},
+                    token: jwtToken,
+                    refreshToken: refreshToken.token,
+                    data: basicDetails(engineer)
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
             }
-        )
+        }      
 
-        const notification = new Notification({
-            from: userId,
-            to: engineerId,
-            taskId: taskId,
-            projectId: projectId,
-            message: "The Superintendent invited you to the project as an engineer."
-        });
-
-        const session = await mongoose.startSession();
-        try {
-            const opts = { session, returnOriginal: false };
-            //await session.startTransaction();
-            await RefreshToken.createCollection();
-            await Notification.createCollection();
-            await notification.save(opts);
-            const jwtToken = generateJwtToken(user);
-            const refreshToken = generateRefreshToken(user, ipAddress);
-            await refreshToken.save(opts);
-            //await session.commitTransaction();
-            await session.endSession();
-            return {
-                ...response,
-                status: responseStatus.success,
-                errorMessage: {},
-                token: jwtToken,
-                refreshToken: refreshToken.token,
-                data: basicDetails(engineer)
-            };
-        } catch (error) {
-            //await session.abortTransaction();
-            await session.endSession();
-            throw error;
-        }
     }
     catch (error) {
         throw error;
@@ -1703,10 +1723,12 @@ async function getNotifications({ userId, projectId }) {
             const task = await Project.find(
                 { _id: projectId },
                 { 
-                    tasks: { $elemMatch: { _id: notifications[i].taskId } }
+                    tasks: { $elemMatch: { _id: ObjectID(notifications[i].taskId) } }
                 }
                 );
             console.log(task);
+            console.log(notifications[i].taskId);
+            console.log("=============");    
             const fromUserDetail = basicDetails(from);
             var item = {
                 count: notifications[i].count,

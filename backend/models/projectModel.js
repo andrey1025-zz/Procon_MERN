@@ -27,27 +27,9 @@ const projectSchema = new Schema({
         type: Array,
         default: []
     }, // Superintendent Id
-    engineers: {
-        type: Array,
-        default: []
-    }, 
-    // {  
-    //      [
-    //            userIds
-    //      ]   
-    // }
-    members: {
-        type: Array,
-        default: []
-    },
     tasks: {
         type: Array
     }, 
-    // {  
-    //      [
-    //            userIds
-    //      ]   
-    // }
     coverImage: {
         type: String,
         maxlength: 255

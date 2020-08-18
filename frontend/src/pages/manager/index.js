@@ -10,6 +10,7 @@ import { Form, SubmitButton, FormField, ErrorMessage, FormTextarea } from '../..
 import CoverUpload from '../../components/CoverUpload';
 import ModelUpload from '../../components/ModelUpload';
 import $ from 'jquery'; 
+import { setNestedObjectValues } from 'formik';
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().max(255).required().label("name"),
@@ -34,8 +35,6 @@ const ManagerWelcome = () => {
       dispatch(getProjects());
     }, []);
 
-    useEffect(() => {
-    }, [projects]);
     if(cover_path == null)
         errors['coverImage'] = "Cover Image is a required field";
     if(model_path == null)
@@ -44,8 +43,11 @@ const ManagerWelcome = () => {
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
       data.coverImage = cover_path;
       data.model = model_path;
-      if(cover_path != null && model_path != null)
-        dispatch(addProject(data, setErrors, setSubmitting));
+      if(cover_path != null && model_path != null){
+        dispatch(addProject(data, setErrors, setSubmitting)).then(() => {
+            window.$("#addProjectModal").modal('hide');
+        });
+      }
     }
     
     return (

@@ -21,7 +21,6 @@ const SupervisorWelcome = () => {
 
     const projects = useSelector(state => state.project.projects);
     const dispatch = useDispatch();
-
     useEffect(() => {
     }, [projects]);      
     return (

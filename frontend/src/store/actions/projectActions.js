@@ -111,9 +111,10 @@ export const addProject = (data, setErrors, setSubmitting) => async dispatch => 
     
     const response = await api.post('/project/add-new-project', data);    
     if (response.data && response.data.status === 'success') {
+        console.log(response.data);
         dispatch({
             type: ADD_PROJECT_SUCCESS,
-            payload: response.data.path
+            payload: response.data.projects
         });
     } else {
         dispatch({
@@ -480,7 +481,6 @@ export const removeMember = (data) => async dispatch => {
     dispatch({
         type: REMOVE_MEMBER_REQUEST
     });
-
     const response = await api.post('/project/remove-member', data);
     
     if (response.data && response.data.status === 'success') {

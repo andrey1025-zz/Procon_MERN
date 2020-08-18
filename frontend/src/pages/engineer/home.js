@@ -66,7 +66,6 @@ const EngineerHome = (props) => {
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         data.taskId = taskId;
-        console.log(data);
         dispatch(editTask(data, setErrors, setSubmitting));
         $(".member-panel").show();
     }
@@ -245,13 +244,13 @@ const EngineerHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="startTime" defaultValue={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" defaultValue={task[0].tasks[0].startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="endTime" defaultValue={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" defaultValue={task[0].tasks[0].endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
