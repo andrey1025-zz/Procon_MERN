@@ -142,7 +142,7 @@ const ManagerHome = (props) => {
                                         <span className="text-black">Select Superintendent</span>
                                     </div>
                                     <div className="col-md-6 col-sm-6 text-right task-status">
-                                        <span className="text-black mr-2">Complete</span>
+                                        <span className="text-black mr-2">Available</span>
                                         <div className="circle-light light-green mr-3"></div>
                                         <span className="text-black mr-2">In progress</span>
                                         <div className="circle-light light-red mr-3"></div>
