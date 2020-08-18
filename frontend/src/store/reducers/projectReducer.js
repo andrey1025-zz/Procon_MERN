@@ -1,6 +1,7 @@
 import {
     MODEL_UPLOAD_SUCCESS,
     COVER_UPLOAD_SUCCESS,
+    ADD_PROJECT_SUCCESS,
     GET_PROJECT_SUCCESS,
     GET_PROJECT_REQUEST,
     GET_PROJECT_DETAIL_SUCCESS,
@@ -61,6 +62,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
+        case ADD_PROJECT_SUCCESS:
+            return {
+                ...state,
+                projects: action.payload,
+            };
         case MODEL_UPLOAD_SUCCESS:
             return {
                 ...state,

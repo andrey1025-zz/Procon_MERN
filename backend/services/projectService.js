@@ -59,6 +59,10 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
                 await refreshToken.save(opts);
                 //await session.commitTransaction();
                 await session.endSession();
+                const projects = await Project.find({ userId: userId });
+                projects.forEach(project => {
+                    project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
+                });
                 return {
                     ...response,
                     status: responseStatus.success,
@@ -66,6 +70,7 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
                     token: jwtToken,
                     refreshToken: refreshToken.token,
                     project: projectDetails(project),
+                    projects : projects,
                     user: basicDetails(user)
                 };
             } catch (error) {
