@@ -793,8 +793,8 @@ async function inviteSuperintendent({ projectId, superintendentId, userId, ipAdd
             const opts = { session, returnOriginal: false };
             //await session.startTransaction();
             await RefreshToken.createCollection();
-            await Notification.createCollection();
-            await notification.save(opts);
+            // await Notification.createCollection();
+            // await notification.save(opts);
             const jwtToken = generateJwtToken(user);
             const refreshToken = generateRefreshToken(user, ipAddress);
             await refreshToken.save(opts);
@@ -1706,6 +1706,7 @@ async function getNotifications({ userId, projectId }) {
                     tasks: { $elemMatch: { _id: notifications[i].taskId } }
                 }
                 );
+            console.log(task);
             const fromUserDetail = basicDetails(from);
             var item = {
                 count: notifications[i].count,
