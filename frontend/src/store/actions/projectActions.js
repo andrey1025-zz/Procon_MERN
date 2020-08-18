@@ -480,7 +480,6 @@ export const removeMember = (data) => async dispatch => {
     dispatch({
         type: REMOVE_MEMBER_REQUEST
     });
-
     const response = await api.post('/project/remove-member', data);
     
     if (response.data && response.data.status === 'success') {

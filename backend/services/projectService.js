@@ -1325,6 +1325,8 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
     try {
         const user = await User.findById(userId);
         if(taskId != null){
+            console.log(memberId);
+            console.log("-------------");
 
             await Project.updateOne(
                 {_id: projectId},
@@ -1354,7 +1356,6 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
 
             await Notification.deleteOne(
                 { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
-                // {projectId: projectId, taskId:taskId, to: userId},
             );
 
             const session = await mongoose.startSession();

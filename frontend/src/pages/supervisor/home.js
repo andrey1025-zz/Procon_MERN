@@ -111,11 +111,11 @@ const SupervisorHome = (props) => {
     const handleRemoveMember = (memberId) => {
         let data = {
             projectId: projectId,
-            taskId: task_id,
+            taskId: taskId,
             memberId: memberId
         };
-        
         dispatch(removeMember(data));
+        $("a[data-id='" + memberId + "']").remove();
     }
 
     const handleAddTask = () => {
@@ -219,7 +219,7 @@ const SupervisorHome = (props) => {
                 $(".btn-invite").parent().hide();
         });
 
-        $(".member-item").click(function(){
+        $("body").on("click", ".member-item", function(){
             $(".check-task").hide();
             $(this).find('.check-task').show();
         });
@@ -504,7 +504,7 @@ const SupervisorHome = (props) => {
                                 taskMembers != [] > 0 ? 
                                     taskMembers.map((value, index) => {
                                         return (
-                                            <a href="#" className="friends-suggestions-list member-item" key={index}>
+                                            <a href="#" className="friends-suggestions-list member-item" key={index} data-id={value.id}>
                                                 <div className="border-bottom position-relative">
                                                     <div className="float-left mb-0 mr-3">
                                                         <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>

@@ -384,6 +384,8 @@
 
 .remove-member{
   color: red !important;
+  margin-top:5px;
+  display: block;
 }
 .member-image {
   width: 35px !important;
