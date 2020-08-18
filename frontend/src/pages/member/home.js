@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { loadingSelector } from '../../store/selectors';
-import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
+import { Form, FormField, FormTextarea } from '../../components/form';
 import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
 import ForgeViewer from 'react-forge-viewer';
 import queryString from 'query-string'
@@ -147,7 +147,6 @@ const MemberHome = (props) => {
         }
     }
 
-    console.log("aaaaaaaaaaaa", mystatus);
     const handleViewerError = (error) => {
         console.log('Error loading viewer.');
     }

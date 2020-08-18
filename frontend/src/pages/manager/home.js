@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { ProjectManagerRole } from '../../enums/roles';
-import { getSuperintendents, inviteSuperintendent } from '../../store/actions/projectActions';
+import { getSuperintendents, inviteSuperintendent, getViewerForgeToken, getProjectDetail } from '../../store/actions/projectActions';
+import ForgeViewer from 'react-forge-viewer';
 
 import $ from 'jquery'; 
 
 const ManagerHome = (props) => {
-    const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
     const superintendents = useSelector(state => state.project.superintendents);
     const projectId = props.match.params.id;
     var index = 0;
+    const forgeToken = useSelector(state => state.project.forgeToken);
+    const project = useSelector(state => state.project.project);
+    const [urn, setUrn] = useState("");
+    const [view, setView] = useState(null);
 
     useEffect(() => {
         $(".Forhome").hide();
@@ -30,7 +33,17 @@ const ManagerHome = (props) => {
         });
 
     });
-    
+    useEffect(() => {
+        dispatch(getProjectDetail(projectId));
+    }, []);
+    useEffect(() => {
+        dispatch(getViewerForgeToken());
+    }, []);
+    useEffect(() => {
+        if(project){
+            setUrn(project.model);
+        }
+    }, [project]);
     const handleOpenMembersDialog = () => {
         dispatch(getSuperintendents());
     }
@@ -50,13 +63,58 @@ const ManagerHome = (props) => {
     useEffect(() => {
     }, [superintendents]);
 
+    const handleViewerError = (error) => {
+        console.log('Error loading viewer.');
+    }
+
+    const handleTokenRequested = (onAccessToken) => {
+        console.log('Token requested by the viewer.');
+        if(forgeToken){
+            if(onAccessToken){
+                onAccessToken(forgeToken.access_token, forgeToken.expires_in);
+            }
+        }    
+    }
+    const handleDocumentError = (viewer, error) => {
+        console.log('Error loading a document');
+    }
+    
+    const handleDocumentLoaded = (doc, viewables) => {
+        if (viewables.length === 0) {
+        }
+        else{
+          setView(viewables[0]);
+        }
+    }
+    const handleModelLoaded = (viewer, model) => {
+        console.log('Loaded model:', model);
+        console.log(viewer.listeners.selection);
+    }
+    
+    const handleModelError = (viewer, error) => {
+        console.log('Error loading the model.');
+    }
+    const handleNodeSelected = (viewer, model) => {
+    }
     return (
         <React.Fragment>
-            <div className="col-sm-9 col-xl-9 col-md-9">
-                <div className="card">
-                    <div className="card-heading p-4">
-                        <div className="threed-effect" style={{position:'relative'}}>
-                            <img src={require('../../images/3d.jpg')}/>
+            <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
+                <div className="card viewer-wrapper">
+                    <div className="card-heading">
+                        <div className="threed-effect">
+                            <ForgeViewer
+                                    version="6.0"
+                                    urn={urn}
+                                    view={view}
+                                    headless={false}
+                                    onViewerError={handleViewerError}
+                                    onTokenRequest={handleTokenRequested}
+                                    onDocumentLoad={handleDocumentLoaded}
+                                    onDocumentError={handleDocumentError}
+                                    onModelLoad={handleModelLoaded}
+                                    onModelError={handleModelError}
+                                    onSelectionEvent={() => handleNodeSelected}
+                                />
                         </div>
                         <div className="progress mt-4 mb-4" style={{height: '8px'}}>
                             <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
