@@ -169,8 +169,6 @@ async function getProjectDetail(projectId) {
     try {
         const project = await Project.findById(projectId);
         project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
-        console.log(project);
-        console.log("===========");
 
         if (project === null) {
             throw `Project with id ${projectId} doesn't exist`
