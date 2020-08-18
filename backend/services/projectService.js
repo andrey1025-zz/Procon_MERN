@@ -168,6 +168,10 @@ async function getProjectDetail(projectId) {
     };
     try {
         const project = await Project.findById(projectId);
+        project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
+        console.log(project);
+        console.log("===========");
+
         if (project === null) {
             throw `Project with id ${projectId} doesn't exist`
         }
@@ -1518,10 +1522,7 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
         var taskMembers = [];
         for (let i = 0; i < memberIds.length; i++) {
             members.push({id: memberIds[i], status: NotStart});
-            let member = await User.findById(memberIds[i]);
-            taskMembers.push(basicDetails(member));
         }
-
         await Project.updateOne(
             { _id: projectId },
             {
@@ -1537,6 +1538,16 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
                 arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
             }
         )
+        const task = await Project.find(
+                { _id: projectId },
+                { 
+                    tasks: { $elemMatch: { _id: ObjectID(taskId) } }
+                });
+                          
+        for (let i = 0; i < task[0].tasks[0].members.length; i++) {
+            let member = await User.findById(task[0].tasks[0].members[i].id);
+            taskMembers.push(basicDetails(member));
+        }
         
         const session = await mongoose.startSession();
         try {
@@ -1708,9 +1719,11 @@ async function getNotifications({ userId, projectId }) {
             const task = await Project.find(
                 { _id: projectId },
                 { 
-                    tasks: { $elemMatch: { _id: notifications[i].taskId } }
+                    tasks: { $elemMatch: { _id: ObjectID(notifications[i].taskId) } }
                 }
                 );
+            console.log(notifications[i].taskId);
+            console.log("=============");    
             const fromUserDetail = basicDetails(from);
             var item = {
                 count: notifications[i].count,

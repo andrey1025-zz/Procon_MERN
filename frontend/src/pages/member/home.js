@@ -244,13 +244,13 @@ const MemberHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="startTime" value={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task[0].tasks[0].startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="time" name="endTime" value={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task[0].tasks[0].endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">

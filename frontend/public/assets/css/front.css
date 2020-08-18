@@ -399,6 +399,9 @@
   width:100%;
   height:100%;
 }
+.project-wrapper .project-body .pro-image{
+  height: 100%;
+}
 .project-title{
   padding: 5px 0px;
   background: #252529;

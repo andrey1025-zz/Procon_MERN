@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTasks, getTaskDetail, getTaskMembers } from '../../store/actions/projectActions';
+import { getTasks, getTaskDetail, getTaskMembers, getProjectDetail } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
-import { NotStart, Inprogress, Completed, Reviewed } from '../../enums/taskStatus';
+import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
 
 import $ from 'jquery';
 
@@ -14,12 +14,18 @@ const SupervisorTaskManage = () => {
     const tasks = useSelector(state => state.project.tasks);
     const task = useSelector(state => state.project.task);
     const taskMembers = useSelector(state => state.project.taskMembers);
+    const project = useSelector(state => state.project.project);
+
     useEffect(() => {
         $("#side-menu").show();
         $(".Forhome").hide();
     });
     useEffect(() => {
         dispatch(getTasks(projectId));
+    }, []);
+
+    useEffect(() => {
+        dispatch(getProjectDetail(projectId));
     }, []);
 
     const dispatch = useDispatch();
@@ -231,8 +237,8 @@ const SupervisorTaskManage = () => {
                                 {tasks.inprogressTasks.map((value, index) => {
                                     return (
                                         <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
-                                            <div className="card">
-                                                <div className="card-heading">
+                                            <div className="project-wrapper">
+                                                <div className="project-title">
                                                     <div className="float-left padding10">
                                                         <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
                                                         <span>Supervisor</span>
@@ -255,9 +261,11 @@ const SupervisorTaskManage = () => {
                                                         </div>
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
+                                                </div>
+                                                <div className="project-body">
                                                     <div className="pro-image">
-                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
-                                                    </div>
+                                                        <img src={project.coverImage} alt="user" className="menu-logo1"/>
+                                                    </div>                                                    
                                                 </div>
                                             </div>
                                         </div>
