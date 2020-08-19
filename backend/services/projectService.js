@@ -85,6 +85,82 @@ async function addProject({ name, location, model, coverImage, userId, ipAddress
     }
 };
 
+// Update Project
+async function updateProject({ name, location, model, coverImage, projectId, userId, ipAddress }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        // Check if name already add
+        const user = await User.findById(userId);
+        if (user.role != ProjectManagerRole) {
+            return {
+                ...response,
+                errorMessage: {
+                    ...response.errorMessage,
+                    email: "Only Project Manager can update Project"
+                }
+            };
+        } else {
+            // Create new project
+            const userId = user.id;
+            const project_data = {};
+            if(name != "")
+                project_data.name = name;
+            if(location != "")
+                project_data.location = location;
+            if(model != null)
+                project_data.model = model;
+            if(coverImage != null)
+                project_data.coverImage = coverImage;
+            
+
+            await Project.updateOne(
+                { _id: projectId },
+                {
+                    $set: project_data
+                }
+            )
+
+            const project = await Project.findById(projectId);
+
+            const session = await mongoose.startSession();
+            try {
+                const opts = { session, returnOriginal: false };
+                //await session.startTransaction();
+                await RefreshToken.createCollection();
+                const jwtToken = generateJwtToken(user);
+                const refreshToken = generateRefreshToken(user, ipAddress);
+                await refreshToken.save(opts);
+                //await session.commitTransaction();
+                await session.endSession();
+                const projects = await Project.find({ userId: userId });
+                projects.forEach(project => {
+                    project.coverImage = project.coverImage ? `${config.assetsBaseUrl}/${project.coverImage}` : null;
+                });
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    errorMessage: {},
+                    token: jwtToken,
+                    refreshToken: refreshToken.token,
+                    project: projectDetails(project),
+                    projects : projects,
+                    user: basicDetails(user)
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
+            }
+        }
+    }
+    catch (error) {
+        throw error
+    }
+};
+
 // upload file
 async function uploadFile(tempFile) {
     const response = {
@@ -179,6 +255,29 @@ async function getProjectDetail(projectId) {
                 status: responseStatus.success,
                 errorMessage: {},
                 data: project
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Delete Project
+async function deleteProject(projectId) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const project = await Project.remove({_id:projectId});
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
             };
         } catch (error) {
             throw error;
@@ -1861,5 +1960,7 @@ module.exports = {
     clearNotification,
     postMessage,
     getTaskMessages,
-    getTaskHistory
+    getTaskHistory,
+    deleteProject,
+    updateProject
 };

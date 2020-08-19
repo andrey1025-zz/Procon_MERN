@@ -34,6 +34,22 @@ addProject = (req, res, next) => {
         }).catch(next);
 };
 
+// Update Project
+updateProject = (req, res, next) => {
+    const { name, location, projectId } = req.body;
+    const { sub: userId } = req.user;
+
+    const ipAddress = req.ip;
+    const coverImage = req.body.coverImage;
+    const model = req.body.model;
+    projectService.updateProject({ name, location, model, coverImage, projectId, userId, ipAddress })
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
 // Upload Cover Image
 uploadCoverImage = (req, res, next) => {
     const file = req.file
@@ -100,6 +116,14 @@ getProjects = (req, res, next) => {
 getProjectDetail = (req, res, next) => {
     const { projectId: projectId } = req.body;
     projectService.getProjectDetail(projectId).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
+// Delete Project
+deleteProject = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.deleteProject(projectId).then((data) => {
         res.json(data);
     }).catch(next)
 };
@@ -581,6 +605,8 @@ module.exports = {
     clearNotification,
     getTaskHistory,
     submitForCheckingTask,
+    deleteProject,
+    updateProject,
     createBucket,
     getBucketDetail,
     uploadToBucket,

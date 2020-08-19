@@ -419,3 +419,14 @@
 .topbar .list-inline-item{
   padding:20px 0px;
 }
+#displayProjectModal .modal-dialog {
+  max-width: 700px;
+}
+#updateProjectModal .modal-dialog {
+  max-width: 700px;
+}
+
+.value-label{
+  text-align: left !important;
+  font-weight: bold !important;
+}

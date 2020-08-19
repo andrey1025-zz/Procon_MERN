@@ -99,7 +99,13 @@ import {
     GET_TASK_HISTORY_FAILURE,
     DELETE_TASK_REQUEST,
     DELETE_TASK_SUCCESS,
-    DELETE_TASK_FAILURE
+    DELETE_TASK_FAILURE,
+    DELETE_PROJECT_REQUEST,
+    DELETE_PROJECT_SUCCESS,
+    DELETE_PROJECT_FAILURE,
+    UPDATE_PROJECT_REQUEST,
+    UPDATE_PROJECT_SUCCESS,
+    UPDATE_PROJECT_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -114,6 +120,26 @@ export const addProject = (data, setErrors, setSubmitting) => async dispatch => 
         console.log(response.data);
         dispatch({
             type: ADD_PROJECT_SUCCESS,
+            payload: response.data.projects
+        });
+    } else {
+        dispatch({
+            type: ADD_PROJECT_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const updateProject = (data, setErrors, setSubmitting) => async dispatch => {
+    setSubmitting(true);
+    dispatch({
+        type: UPDATE_PROJECT_REQUEST
+    });
+    
+    const response = await api.post('/project/update-project', data);    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: UPDATE_PROJECT_SUCCESS,
             payload: response.data.projects
         });
     } else {
@@ -227,6 +253,30 @@ export const getProjectDetail = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_PROJECT_DETAIL_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const deleteProject = (projectId) => async dispatch => {
+
+    let data = {
+        projectId: projectId
+    };
+    dispatch({
+        type: DELETE_PROJECT_REQUEST
+    });
+
+    const response = await api.post('/project/delete', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: DELETE_PROJECT_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: DELETE_PROJECT_FAILURE,
             payload: response.data
         })
     }

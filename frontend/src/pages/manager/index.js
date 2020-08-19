@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 
 import { getSimpleRoleName } from '../../services';
-import { addProject, getProjects } from '../../store/actions/projectActions';
+import { addProject, getProjects, getProjectDetail, deleteProject, updateProject } from '../../store/actions/projectActions';
 import { loadingSelector, errorSelector } from '../../store/selectors';
 import { Form, SubmitButton, FormField, ErrorMessage, FormTextarea } from '../../components/form';
 import CoverUpload from '../../components/CoverUpload';
@@ -21,6 +21,11 @@ const initialValues = {
     location : ""
 };
 
+const updateValues = {
+    name: "",
+    location: ""
+};
+
 const ManagerWelcome = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
@@ -29,10 +34,11 @@ const ManagerWelcome = () => {
     const errors = useSelector(state => errorSelector(['ADD_PROJECT'])(state));
     const loading = useSelector(state => loadingSelector(['ADD_PROJECT'])(state));
     const projects = useSelector(state => state.project.projects);
+    const project = useSelector(state => state.project.project);
 
     useEffect(() => {
-      $("#side-menu").hide();
-      dispatch(getProjects());
+        $("#side-menu").hide();
+        dispatch(getProjects());
     }, []);
 
     if(cover_path == null)
@@ -41,13 +47,42 @@ const ManagerWelcome = () => {
         errors['model'] = "Model is a required field";
 
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
-      data.coverImage = cover_path;
-      data.model = model_path;
-      if(cover_path != null && model_path != null){
-        dispatch(addProject(data, setErrors, setSubmitting)).then(() => {
-            window.$("#addProjectModal").modal('hide');
-        });
-      }
+        data.coverImage = cover_path;
+        data.model = model_path;
+        if(cover_path != null && model_path != null){
+            dispatch(addProject(data, setErrors, setSubmitting)).then(() => {
+                window.$("#addProjectModal").modal('hide');
+            });
+        }
+    }
+
+    const handleUpdateProject = (data, { setErrors, setSubmitting }) => {
+        data.coverImage = cover_path;
+        data.model = model_path;
+        // data.name = $("#updatedName").val();
+        // data.location = $("#updatedLocation").val();
+        data.projectId = $("#projectId").val();
+        // if(cover_path != null && model_path != null){
+            dispatch(updateProject(data, setErrors, setSubmitting)).then(() => {
+                window.$("#updateProjectModal").modal('hide');
+            });
+        // }
+    }
+
+    const handleDisplayProject = (projectId) => {
+        dispatch(getProjectDetail(projectId));
+        window.$("#displayProjectModal").modal();
+    }
+
+    const handleEditProject = (projectId) => {
+        dispatch(getProjectDetail(projectId));
+        window.$("#updateProjectModal").modal();
+        updateValues.location = project.location;
+        updateValues.name = project.name;
+    }
+
+    const handleDeleteProject = (projectId) => {
+        dispatch(deleteProject(projectId));
     }
     
     return (
@@ -74,9 +109,10 @@ const ManagerWelcome = () => {
                                                   <i className="mdi mdi-menu"></i>
                                               </a>
                                               <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                  <a className="dropdown-item"> Display Project</a>
-                                                  <a className="dropdown-item d-block"> Edit Project</a>
+                                                  <a className="dropdown-item" onClick={() => handleDisplayProject(value._id)}> Display Project</a>
+                                                  <a className="dropdown-item d-block" onClick={() => handleEditProject(value._id)}> Edit Project</a>
                                                   <a className="dropdown-item"> End Project</a>
+                                                  <a className="dropdown-item" onClick={() => handleDeleteProject(value._id)}> Delete Project</a>
                                               </div>
                                           </div>
                                       </li>
@@ -140,6 +176,78 @@ const ManagerWelcome = () => {
                             </div>
                             <div className="modal-footer text-center">
                                 <p><SubmitButton title='Create' loading={loading} disabled={loading} className="btn btn-info btn-lg waves-effect waves-light task-btn3"/></p>
+                            </div>
+                          </Form>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal fade" id="displayProjectModal" role="dialog">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <p>Project Detail</p>
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group row">
+                                    <label className="col-sm-3 col-form-label">Project name</label>
+                                    <label className="col-sm-9 col-form-label value-label">
+                                        {project.name}
+                                    </label>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-sm-3 col-form-label">Project location</label>
+                                    <label className="col-sm-9 col-form-label value-label">
+                                        {project.location}
+                                    </label>
+                                </div>
+                                <div className="form-group row" style={{padding: '10px'}}>
+                                    <img src={project.coverImage ? project.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal fade" id="updateProjectModal" role="dialog">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                          <Form className="form-horizontal m-t-30"
+                            onSubmit={handleUpdateProject}
+                            initialValues={initialValues}
+                            >
+                            <div className="modal-header">
+                                <p>Update Project</p>
+                                <input type="hidden" value={project._id} id="projectId" />
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group row">
+                                    <label className="col-sm-3 col-form-label">Project name</label>
+                                    <div className="col-sm-9">
+                                        <FormField name="name" type="text" defaultValue={project.name} id="updatedName" ref="updatedName"/>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-sm-3 col-form-label">Project location</label>
+                                    <div className="col-sm-9">
+                                        <FormField name="location" type="text" defaultValue={project.location} id="updatedLocation" ref="updatedLocation"/>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-sm-3 col-form-label">3D model file</label>
+                                    <div className="col-sm-9">
+                                        <ModelUpload url={ null } name="model_file"/>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-sm-3 col-form-label">Cover page</label>
+                                    <div className="col-sm-9">
+                                        <CoverUpload url={ null } name="cover_file"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer text-center">
+                                <p><SubmitButton title='Update' loading={loading} disabled={loading} className="btn btn-info btn-lg waves-effect waves-light task-btn3"/></p>
                             </div>
                           </Form>
                         </div>

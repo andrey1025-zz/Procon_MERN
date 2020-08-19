@@ -58,7 +58,8 @@ const initialState = {
     notificCount: 0,
     notifications: [],
     taskMessages: [],
-    taskHistories: []
+    taskHistories: [],
+    project: []
 };
 
 export default (state = initialState, action) => {

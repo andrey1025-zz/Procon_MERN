@@ -43,5 +43,7 @@ router.post("/remove-member", authorize(), projectController.removeMember);
 router.post("/clear-notification", authorize(), projectController.clearNotification);
 router.post("/post-message", authorize(), projectController.postMessage);
 router.post("/get-messages", authorize(), projectController.getTaskMessages);
+router.post("/delete", authorize(), projectController.deleteProject);
+router.post("/update-project", authorize(), projectController.updateProject);
 
 module.exports = router;
