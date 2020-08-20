@@ -224,13 +224,13 @@ const ManagerWelcome = () => {
                                 <div className="form-group row">
                                     <label className="col-sm-3 col-form-label">Project name</label>
                                     <div className="col-sm-9">
-                                        <FormField name="name" type="text" defaultValue={project.name} id="updatedName" ref="updatedName"/>
+                                        <FormField name="name" type="text" defaultValue={project.name} id="updatedName"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <label className="col-sm-3 col-form-label">Project location</label>
                                     <div className="col-sm-9">
-                                        <FormField name="location" type="text" defaultValue={project.location} id="updatedLocation" ref="updatedLocation"/>
+                                        <FormField name="location" type="text" defaultValue={project.location} id="updatedLocation"/>
                                     </div>
                                 </div>
                                 <div className="form-group row">

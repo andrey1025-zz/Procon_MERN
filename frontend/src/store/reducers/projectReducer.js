@@ -40,7 +40,9 @@ import {
     GET_TASK_MESSAGES_FAILURE,
     GET_TASK_HISTORY_SUCCESS,
     REMOVE_MEMBER_SUCCESS,
-    GET_TASK_HISTORY_FAILURE
+    GET_TASK_HISTORY_FAILURE,
+    GET_PROJECT_SUPERINTENDENTS_SUCCESS,
+    GET_PROJECT_SUPERINTENDENTS_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -59,7 +61,8 @@ const initialState = {
     notifications: [],
     taskMessages: [],
     taskHistories: [],
-    project: []
+    project: [],
+    projectSuperintendent: []
 };
 
 export default (state = initialState, action) => {
@@ -121,6 +124,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 users: [],
+            };
+        case GET_PROJECT_SUPERINTENDENTS_SUCCESS:
+            return {
+                ...state,
+                projectSuperintendent: action.payload.data,
+            };
+        case GET_PROJECT_SUPERINTENDENTS_FAILURE:
+            return {
+                ...state,
+                projectSuperintendent: [],
             };
         case GET_ENGINEERS_SUCCESS:
             return {

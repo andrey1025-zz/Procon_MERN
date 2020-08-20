@@ -170,6 +170,7 @@ const EngineerHome = (props) => {
                 message: message
             };
             dispatch(postMessage(data));
+            dispatch(getTaskMessages(data));
         }
     }
 

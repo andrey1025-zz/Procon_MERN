@@ -971,6 +971,46 @@ async function getTaskEngineers({ userId, projectId, taskId }) {
     }
 };
 
+// Get Task Engineers
+async function getProjectSuperintendents({ userId, projectId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        var superintendent;
+        if(projectId != null){
+            const project = await Project.find(
+                { _id: projectId }
+            );
+            if(project && project.length> 0 && project[0].superintendent && project[0].superintendent.length > 0){
+                const user = await User.findById(project[0].superintendent[0].id);
+                superintendent = basicDetails(user);
+            }
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: superintendent
+                // data: basicDetails(engineer)
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 // Get Task Members
 async function getTaskMembers({ userId, projectId, taskId }) {
     var response = {
@@ -1361,7 +1401,54 @@ async function reworkTask({ userId, projectId, taskId, memberId }) {
     }
 };
 
-// Rework Task
+// End Task
+async function endTask({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(userId);
+        if(taskId != null){
+
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        'tasks.$[elem].status': Completed
+                    }
+                },
+                {
+                    multi: true,
+                    arrayFilters: [ { "elem._id": ObjectID(taskId) } ]
+                }
+            );
+
+            const session = await mongoose.startSession();
+            const opts = { session, returnOriginal: false };
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// delete Task
 async function deleteTask({ userId, projectId, taskId }) {
     var response = {
         status: responseStatus.failure,
@@ -1960,7 +2047,9 @@ module.exports = {
     clearNotification,
     postMessage,
     getTaskMessages,
+    endTask,
     getTaskHistory,
     deleteProject,
-    updateProject
+    updateProject,
+    getProjectSuperintendents
 };

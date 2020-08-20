@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTasks, getTaskDetail, getTaskMembers, getProjectDetail } from '../../store/actions/projectActions';
+import { getTasks, getTaskDetail, getTaskMembers, getProjectDetail, endTask, getTaskMessages } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
-import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
+import { NotStart, Inprogress, Completed, Checked } from '../../enums/taskStatus';
 
 import $ from 'jquery';
 
@@ -15,6 +15,7 @@ const SupervisorTaskManage = () => {
     const task = useSelector(state => state.project.task);
     const taskMembers = useSelector(state => state.project.taskMembers);
     const project = useSelector(state => state.project.project);
+    const taskMessages = useSelector(state => state.project.taskMessages);
 
     useEffect(() => {
         $("#side-menu").show();
@@ -38,10 +39,23 @@ const SupervisorTaskManage = () => {
             }
             dispatch(getTaskDetail(data));
             dispatch(getTaskMembers(data));
+            dispatch(getTaskMessages(data));
         }
 
         if(task.length > 0){
             $(".selected-task-info").show();
+        }
+    };
+
+    const handleEndTask = (taskId) => {
+        if(taskId){
+            let data = {
+                projectId: projectId,
+                taskId: taskId
+            };
+            dispatch(endTask(data)).then(() => {
+                dispatch(getTasks(projectId));
+            });
         }
     };
     var today = new Date();
@@ -49,6 +63,8 @@ const SupervisorTaskManage = () => {
     const year = today.getFullYear();
     const month = today.getMonth();
     const date = today.getDate();
+
+    var scrollbar_class = '';
 
     return (
         <React.Fragment>
@@ -107,7 +123,12 @@ const SupervisorTaskManage = () => {
                                                                 }
                                                                 {
                                                                     value.status == Completed ? 
-                                                                        <div className="task-status complete">complete</div>
+                                                                        <div className="task-status reviewing">reveiwing</div>
+                                                                    : ''
+                                                                }
+                                                                {
+                                                                    value.status == Checked ? 
+                                                                        <div className="task-status complete">available</div>
                                                                     : ''
                                                                 }
                                                                 <div className="desc1">
@@ -128,6 +149,35 @@ const SupervisorTaskManage = () => {
                     </div>
                     <div className="col-sm-5 col-xl-5 col-md-5">
                         <div className="card card1">
+                            <div className="chat-info">
+                                {
+                                    taskMessages.length > 0 ? scrollbar_class = 'scrollbar' : ''
+                                }
+                                <div className={scrollbar_class} id="style-2">
+                                    { 
+                                        taskMessages != [] > 0 ? 
+                                            taskMessages.map((value, index) => {
+                                                {
+                                                    var class_name = 'chat-item';
+                                                    value.myId == value.from ? class_name = 'chat-item right' : class_name = 'chat-item';
+                                                }
+                                                return (
+                                                    <div className={class_name} key={index}>
+                                                        <div className="user-info inline-block">
+                                                            <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="roundedImg thumb-md"/>
+                                                            <p className="user-name" >{value.firstName} {value.lastName}</p>
+                                                        </div>
+                                                        <div className="inline-block">
+                                                            <p className="chat-content" >{value.message}</p>
+                                                            <p class="text-muted text-time">{value.createdOn}</p>
+                                                        </div>
+                                                    </div>
+                                                ) 
+                                            })
+                                        : ''
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>                
                 </div>
@@ -184,14 +234,16 @@ const SupervisorTaskManage = () => {
                                                                 <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
                                                                     <a className="dropdown-item" onClick={() => handleDisplayTask(value._id)}> Display Task</a>
                                                                     <a className="dropdown-item d-block" href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}> Edit Task</a>
-                                                                    <a className="dropdown-item"> End Task</a>
+                                                                    <a className="dropdown-item" onClick={() => handleEndTask(value._id)}> End Task</a>
                                                                 </div>
                                                             </div>  
                                                         </div>
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
-                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                        <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
+                                                            <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1 project-img"/>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -255,7 +307,7 @@ const SupervisorTaskManage = () => {
                                                                 <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
                                                                     <a className="dropdown-item" onClick={() => handleDisplayTask(value._id)}> Display Task</a>
                                                                     <a className="dropdown-item d-block" href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}> Edit Task</a>
-                                                                    <a className="dropdown-item"> End Task</a>
+                                                                    <a className="dropdown-item" onClick={() => handleEndTask(value._id)}> End Task</a>
                                                                 </div>
                                                             </div>  
                                                         </div>
@@ -264,7 +316,9 @@ const SupervisorTaskManage = () => {
                                                 </div>
                                                 <div className="project-body">
                                                     <div className="pro-image">
-                                                        <img src={project.coverImage} alt="user" className="menu-logo1"/>
+                                                        <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
+                                                            <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1 project-img"/>
+                                                        </a>
                                                     </div>                                                    
                                                 </div>
                                             </div>
@@ -328,14 +382,16 @@ const SupervisorTaskManage = () => {
                                                                 <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
                                                                     <a className="dropdown-item" onClick={() => handleDisplayTask(value._id)}> Display Task</a>
                                                                     <a className="dropdown-item d-block" href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}> Edit Task</a>
-                                                                    <a className="dropdown-item"> End Task</a>
+                                                                    <a className="dropdown-item" onClick={() => handleEndTask(value._id)}> End Task</a>
                                                                 </div>
                                                             </div>  
                                                         </div>
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
-                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                        <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
+                                                            <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1 project-img"/>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

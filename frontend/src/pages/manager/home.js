@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSuperintendents, inviteSuperintendent, getViewerForgeToken, getProjectDetail } from '../../store/actions/projectActions';
+import { getSuperintendents, inviteSuperintendent, getViewerForgeToken, getProjectDetail, getProjectSuperintendents } from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
 
 import $ from 'jquery'; 
@@ -13,6 +13,7 @@ const ManagerHome = (props) => {
     var index = 0;
     const forgeToken = useSelector(state => state.project.forgeToken);
     const project = useSelector(state => state.project.project);
+    const projectSuperintendent = useSelector(state => state.project.projectSuperintendent);
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
 
@@ -33,9 +34,15 @@ const ManagerHome = (props) => {
         });
 
     });
+    
     useEffect(() => {
         dispatch(getProjectDetail(projectId));
     }, []);
+
+    useEffect(() => {
+        dispatch(getProjectSuperintendents(projectId));
+    }, []);
+
     useEffect(() => {
         dispatch(getViewerForgeToken());
     }, []);
@@ -57,7 +64,10 @@ const ManagerHome = (props) => {
             projectId: projectId,
             superintendentId: superintendents[index].id
         }
-        dispatch(inviteSuperintendent(data));
+        dispatch(inviteSuperintendent(data)).then(() => {
+            window.$("#addMemberModal").modal('hide');
+            dispatch(getProjectSuperintendents(projectId));
+        });
     }
 
     useEffect(() => {
@@ -130,6 +140,33 @@ const ManagerHome = (props) => {
                 </div>
             </div>
             <div className="col-sm-3 col-xl-3 col-md-3">
+                {
+                    ( projectSuperintendent != [] > 0 && projectSuperintendent != undefined ) ?
+                    <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
+                        <div className="card-body">
+                            <div className="friends-suggestions">
+                                { 
+                                    projectSuperintendent != [] > 0 ? 
+                                        <a href="#" className="friends-suggestions-list">
+                                            <div className="border-bottom position-relative">
+                                                <div className="float-left mb-0 mr-3">
+                                                    <img src={!projectSuperintendent.photo ? require('../../images/users/user.jpg') : projectSuperintendent.photo} alt="" className="roundedImg thumb-md"/>
+                                                    <p className="user-name" >{projectSuperintendent.firstName} {projectSuperintendent.lastName}</p>
+                                                </div>
+                                                <div className="suggestion-icon float-right mt-2 pt-1"> {projectSuperintendent.role} </div>
+                                                <div className="desc">
+                                                    <h5 className="font-14 mb-1 pt-2">{projectSuperintendent.email}</h5>
+                                                    <p className="text-muted">{!projectSuperintendent.mobile ? '' : projectSuperintendent.mobile}</p>
+                                                </div>
+                                            </div>
+                                        </a> 
+                                    : ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    : ''
+                }
                 <div className="text-center add-member custom-rounded">
                     <a onClick={handleOpenMembersDialog} className="md-plus" data-toggle="modal" data-target="#addMemberModal"><i className="fas fa-plus"></i></a>
                 </div>

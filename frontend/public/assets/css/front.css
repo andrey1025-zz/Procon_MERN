@@ -298,6 +298,13 @@
   color: #3ad83a;
 }
 
+.task-status.reviewing{
+  position: absolute;
+  right: 0;
+  bottom: 15px;
+  color: #007bff;
+}
+
 .chat-info{
   margin-top: 50px;
 }
@@ -429,4 +436,8 @@
 .value-label{
   text-align: left !important;
   font-weight: bold !important;
+}
+
+.project-img{
+  width: 100%;
 }

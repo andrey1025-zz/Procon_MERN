@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { loadingSelector } from '../../store/selectors';
 import { Form, FormField, FormTextarea } from '../../components/form';
-import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
+import { NotStart, Inprogress, Completed, Checked } from '../../enums/taskStatus';
 import ForgeViewer from 'react-forge-viewer';
 import queryString from 'query-string'
 import { 
@@ -58,7 +58,13 @@ const MemberHome = (props) => {
             taskId: taskId
         };
 
-        dispatch(startTask(data));
+        dispatch(startTask(data)).then(() => {
+            let data = {
+                projectId: projectId,
+                taskId: taskId
+            }
+            dispatch(getTaskMembers(data));
+        });
     };
 
     const handleSubmitforChecking = () => {
@@ -67,7 +73,9 @@ const MemberHome = (props) => {
             taskId: taskId
         };
 
-        dispatch(submitForCheckingTask(data));
+        dispatch(submitForCheckingTask(data)).then(() => {
+            dispatch(getTaskMembers(data));
+        });;
     };
 
     const handleCancel = () => {
@@ -466,7 +474,12 @@ const MemberHome = (props) => {
                                                     }
                                                     {
                                                         value.status == Completed ? 
-                                                            <div className="task-status complete">complete</div>
+                                                            <div className="task-status reviewing">reveiwing</div>
+                                                        : ''
+                                                    }
+                                                    {
+                                                        value.status == Checked ? 
+                                                            <div className="task-status complete">available</div>
                                                         : ''
                                                     }
                                                     <div className="desc">

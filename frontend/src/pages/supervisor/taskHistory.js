@@ -111,7 +111,7 @@ const SupervisorTaskHistory = () => {
                                                     <div>DUE BY: {value.endTime}</div>
                                                 </div>
                                                 <div className="pro-image">
-                                                    <img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/>
+                                                    <img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1 project-img"/>
                                                 </div>
                                             </div>
                                         </div>

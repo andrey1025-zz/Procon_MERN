@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
-import { NotStart, Inprogress, Completed, Reviewed } from '../../enums/taskStatus';
+import { NotStart, Inprogress, Completed, Reviewed, Checked } from '../../enums/taskStatus';
 import { 
     addTask,
     reviewTask,
@@ -87,7 +87,9 @@ const SupervisorHome = (props) => {
             memberId: memberId
         };
         
-        dispatch(checkTask(data));
+        dispatch(checkTask(data)).then(() => {
+            dispatch(getTaskMembers(data));
+        });
     }
 
     const handleRework = (memberId) => {
@@ -97,7 +99,9 @@ const SupervisorHome = (props) => {
             memberId: memberId
         };
         
-        dispatch(reworkTask(data));
+        dispatch(reworkTask(data)).then(() => {
+            dispatch(getTaskMembers(data));
+        });
     }
 
     const handleRemoveMember = (memberId) => {
@@ -187,8 +191,6 @@ const SupervisorHome = (props) => {
         $('.selected-role').html(EngineerRole + "<i class='fa fa-sort-down'></i>");
         dispatch(getEngineers());
     }
-    console.log(taskMembers);
-    console.log("===========");
 
     useEffect(() => {
         $(".Forhome").hide();
@@ -504,6 +506,11 @@ const SupervisorHome = (props) => {
                                                     }
                                                     {
                                                         value.status == Completed ? 
+                                                            <div className="task-status reviewing">reveiwing</div>
+                                                        : ''
+                                                    }
+                                                    {
+                                                        value.status == Checked ? 
                                                             <div className="task-status complete">available</div>
                                                         : ''
                                                     }
@@ -511,11 +518,15 @@ const SupervisorHome = (props) => {
                                                         <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
                                                         <p className="text-muted">{!value.mobile ? '' : value.mobile}</p>
                                                     </div>
-                                                    <div className="check-task" data-id={value.id}>
-                                                        <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 mt-0 ml-0" onClick={() => handleCheck(value.id)}>Check</button>
-                                                        <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 ml-0 mt-10 btn-rework" onClick={() => handleRework(value.id)}>Rework</button>
-                                                        <span className="remove-member" onClick={() => handleRemoveMember(value.id)}>Remove Member</span>
-                                                    </div>
+                                                    {
+                                                        value.status == Completed ? 
+                                                            <div className="check-task" data-id={value.id}>
+                                                                <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 mt-0 ml-0" onClick={() => handleCheck(value.id)}>Check</button>
+                                                                <button className="btn btn-info btn-lg waves-effect waves-light task-btn3 ml-0 mt-10 btn-rework" onClick={() => handleRework(value.id)}>Rework</button>
+                                                                <span className="remove-member" onClick={() => handleRemoveMember(value.id)}>Remove Member</span>
+                                                            </div>
+                                                        : ''
+                                                    }
                                                 </div>
                                             </a> 
                                         ) 

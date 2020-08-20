@@ -185,7 +185,9 @@ const MemberTaskManage = () => {
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
-                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                        <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
+                                                            <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1 project-img"/>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -256,7 +258,9 @@ const MemberTaskManage = () => {
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
-                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                        <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
+                                                            <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1 project-img"/>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -327,7 +331,9 @@ const MemberTaskManage = () => {
                                                         <div>DUE BY: {value.startTime}</div>
                                                     </div>
                                                     <div className="pro-image">
-                                                        <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1"/>
+                                                        <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
+                                                            <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1 project-img"/>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

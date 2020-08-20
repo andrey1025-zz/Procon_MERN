@@ -105,7 +105,13 @@ import {
     DELETE_PROJECT_FAILURE,
     UPDATE_PROJECT_REQUEST,
     UPDATE_PROJECT_SUCCESS,
-    UPDATE_PROJECT_FAILURE
+    UPDATE_PROJECT_FAILURE,
+    GET_PROJECT_SUPERINTENDENTS_REQUEST,
+    GET_PROJECT_SUPERINTENDENTS_SUCCESS,
+    GET_PROJECT_SUPERINTENDENTS_FAILURE,
+    END_TASK_REQUEST,
+    END_TASK_SUCCESS,
+    END_TASK_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -144,7 +150,7 @@ export const updateProject = (data, setErrors, setSubmitting) => async dispatch 
         });
     } else {
         dispatch({
-            type: ADD_PROJECT_FAILURE,
+            type: UPDATE_PROJECT_FAILURE,
             payload: response.data
         });
     }
@@ -168,6 +174,27 @@ export const editTask = (data, setErrors, setSubmitting) => async dispatch => {
     } else {
         dispatch({
             type: EDIT_TASK_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const endTask = (data) => async dispatch => {
+    dispatch({
+        type: END_TASK_REQUEST
+    });
+   
+    const response = await api.post('/project/end-task', data);    
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: END_TASK_SUCCESS,
+            payload: response.data
+        });
+
+    } else {
+        dispatch({
+            type: END_TASK_FAILURE,
             payload: response.data
         });
     }
@@ -382,6 +409,29 @@ export const getTaskEngineers = (data) => async dispatch => {
     } else if (response.data && response.data.status === 'failure' ){
         dispatch({
             type: GET_TASK_ENGINEERS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const getProjectSuperintendents = (projectId) => async dispatch => {
+    let data = {
+        projectId: projectId
+    };
+    dispatch({
+        type: GET_PROJECT_SUPERINTENDENTS_REQUEST
+    });
+
+    const response = await api.post('/project/get-project-superintendents', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_PROJECT_SUPERINTENDENTS_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: GET_PROJECT_SUPERINTENDENTS_FAILURE,
             payload: response.data
         })
     }

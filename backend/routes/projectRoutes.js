@@ -45,5 +45,7 @@ router.post("/post-message", authorize(), projectController.postMessage);
 router.post("/get-messages", authorize(), projectController.getTaskMessages);
 router.post("/delete", authorize(), projectController.deleteProject);
 router.post("/update-project", authorize(), projectController.updateProject);
+router.post("/get-project-superintendents", authorize(), projectController.getProjectSuperintendents);
+router.post("/end-task", authorize(), projectController.endTask);
 
 module.exports = router;

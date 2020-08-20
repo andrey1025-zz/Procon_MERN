@@ -302,6 +302,16 @@ getTaskEngineers = (req, res, next) => {
         }).catch(next);
 };
 
+// Get Project Superintendents
+getProjectSuperintendents = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId } = req.body;
+    projectService.getProjectSuperintendents({ userId, projectId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
 // Get Task Members
 getTaskMembers = (req, res, next) => {
     const { sub: userId } = req.user;
@@ -347,6 +357,16 @@ deleteTask = (req, res, next) => {
     const { sub: userId } = req.user;
     const { projectId: projectId, taskId: taskId } = req.body;
     projectService.deleteTask({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// End Task
+endTask = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.endTask({ userId, projectId, taskId })
         .then(data => {
             res.json(data);
         }).catch(next);
@@ -607,6 +627,8 @@ module.exports = {
     submitForCheckingTask,
     deleteProject,
     updateProject,
+    getProjectSuperintendents,
+    endTask,
     createBucket,
     getBucketDetail,
     uploadToBucket,
