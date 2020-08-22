@@ -441,3 +441,131 @@
 .project-img{
   width: 100%;
 }
+
+.react-notification-root{
+  right: 0;
+  top: 55px;
+}
+
+.team-member-list > div {
+  background: #252529;
+  border: none !important;
+  padding-left: 15px;
+  padding-right: 15px; 
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.team-member-list .user-role {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  color: #a5a6ad;
+}
+
+.team-member-list .user-name{
+  color: white;
+}
+
+.team-member-list .circle-light {
+  position: absolute;
+  right: 5px;
+}
+
+.selected-team {
+  font-size: 25px;
+  color: white;
+}
+
+.selected-team i{
+  color: #5331C2;
+}
+
+.user-role i{
+  color: #5331c2;
+  font-size: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 35px;
+  height: 22px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #5331C2;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #5331C2;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(11px);
+  -ms-transform: translateX(11px);
+  transform: translateX(11px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.btn-invite{
+  color: #5331C2 !important;
+  cursor: pointer;
+}
+
+.personal-info{
+  border: none !important;
+  margin-top: 12px;
+}
+
+.personal-info .user-role {
+  position: absolute;
+  right: 10px;
+  bottom: 20px;
+}
+
+.personal-info .user-name{
+  color: white;
+}
+
+.info-member {
+  margin-top: 0px;
+}

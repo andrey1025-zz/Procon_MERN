@@ -22,6 +22,18 @@ import queryString from 'query-string'
 
 import * as Yup from 'yup';
 import $ from 'jquery'; 
+import ReactNotification from 'react-notifications-component';
+import { store } from 'react-notifications-component';
+
+var notification = {
+    title: "Wonderful!",
+    message: "Configurable",
+    type: "success",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"]
+};
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().max(100).required().label("name"),
@@ -66,7 +78,14 @@ const EngineerHome = (props) => {
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         data.taskId = taskId;
-        dispatch(editTask(data, setErrors, setSubmitting));
+        dispatch(editTask(data, setErrors, setSubmitting)).then(() => {
+            
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have edited task detail."
+            })
+        });
         $(".member-panel").show();
     }
     const values = queryString.parse(props.location.search)
@@ -169,7 +188,13 @@ const EngineerHome = (props) => {
                 taskId: taskId,
                 message: message
             };
-            dispatch(postMessage(data));
+            dispatch(postMessage(data)).then(() => {
+                store.addNotification({
+                    ...notification,
+                    title: "Success!",
+                    message: "You have posted new message"
+                })
+            });
             dispatch(getTaskMessages(data));
         }
     }
@@ -206,6 +231,7 @@ const EngineerHome = (props) => {
     }
     return (
         <React.Fragment>
+            <ReactNotification />
             <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
                 <div className="card viewer-wrapper">
                     <div className="card-heading">

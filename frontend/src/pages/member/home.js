@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
+import ReactNotification from 'react-notifications-component'
 import { useSelector, useDispatch } from 'react-redux';
 import { loadingSelector } from '../../store/selectors';
 import { Form, FormField, FormTextarea } from '../../components/form';
@@ -19,6 +20,7 @@ import {
 } 
 from '../../store/actions/projectActions';
 import $ from 'jquery'; 
+import { store } from 'react-notifications-component';
 
 const initialValues = {
     name: "",
@@ -35,6 +37,17 @@ const initialValues = {
     technical_safety_specifications:"",
     publicRelationRequirements:""
 };
+
+var notification = {
+    title: "Wonderful!",
+    message: "Configurable",
+    type: "success",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"]
+};
+
 const MemberHome = (props) => {
     const loading = useSelector(state => loadingSelector(['EDIT_TASK'])(state));
     var projectId = props.match.params.id;
@@ -75,6 +88,11 @@ const MemberHome = (props) => {
 
         dispatch(submitForCheckingTask(data)).then(() => {
             dispatch(getTaskMembers(data));
+            store.addNotification({
+                ...notification,
+                title: "Congratulation!",
+                message: "You have successfully submitted your task."
+              })
         });;
     };
 
@@ -215,6 +233,7 @@ const MemberHome = (props) => {
     return (
         <React.Fragment>
             <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
+                <ReactNotification />
                 <div className="card viewer-wrapper">
                     <div className="card-heading">
                         <div className="threed-effect">

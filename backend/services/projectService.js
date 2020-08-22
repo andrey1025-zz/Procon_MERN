@@ -1912,9 +1912,6 @@ async function getNotifications({ userId, projectId }) {
                     tasks: { $elemMatch: { _id: ObjectID(notifications[i].taskId) } }
                 }
                 );
-            console.log(task);
-            console.log(notifications[i].taskId);
-            console.log("=============");    
             const fromUserDetail = basicDetails(from);
             var item = {
                 count: notifications[i].count,
@@ -1980,6 +1977,8 @@ async function getTaskMessages({ userId, projectId, taskId }) {
             };
             data.push(item);
         }
+
+        console.log("item", data);
         try {
             return {
                 ...response,

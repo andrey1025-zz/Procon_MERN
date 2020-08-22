@@ -11,6 +11,18 @@ import CoverUpload from '../../components/CoverUpload';
 import ModelUpload from '../../components/ModelUpload';
 import $ from 'jquery'; 
 import { setNestedObjectValues } from 'formik';
+import ReactNotification from 'react-notifications-component'
+import { store } from 'react-notifications-component';
+
+var notification = {
+    title: "Wonderful!",
+    message: "Configurable",
+    type: "success",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"]
+};
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().max(255).required().label("name"),
@@ -50,8 +62,13 @@ const ManagerWelcome = () => {
         data.coverImage = cover_path;
         data.model = model_path;
         if(cover_path != null && model_path != null){
-            dispatch(addProject(data, setErrors, setSubmitting)).then(() => {
+            dispatch(addProject(data, setErrors, setSubmitting)).then((response) => {
                 window.$("#addProjectModal").modal('hide');
+                store.addNotification({
+                    ...notification,
+                    title: "Success!",
+                    message: "You have created new project."
+                })
             });
         }
     }
@@ -63,8 +80,13 @@ const ManagerWelcome = () => {
         // data.location = $("#updatedLocation").val();
         data.projectId = $("#projectId").val();
         // if(cover_path != null && model_path != null){
-            dispatch(updateProject(data, setErrors, setSubmitting)).then(() => {
+            dispatch(updateProject(data, setErrors, setSubmitting)).then((response) => {
                 window.$("#updateProjectModal").modal('hide');
+                store.addNotification({
+                    ...notification,
+                    title: "Success!",
+                    message: "You have updated project."
+                });
             });
         // }
     }
@@ -76,17 +98,24 @@ const ManagerWelcome = () => {
 
     const handleEditProject = (projectId) => {
         dispatch(getProjectDetail(projectId));
-        window.$("#updateProjectModal").modal();
+        window.$("#updateProjectModal").modal(); 
         updateValues.location = project.location;
         updateValues.name = project.name;
     }
 
     const handleDeleteProject = (projectId) => {
-        dispatch(deleteProject(projectId));
+        dispatch(deleteProject(projectId)).then((response) => {
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have deleted project."
+            })
+        });
     }
     
     return (
         <React.Fragment>
+            <ReactNotification />
             <div className="col-sm-4 col-xl-4 col-md-4">
                 <div className="popup" data-toggle="modal" data-target="#addProjectModal">
                     <img src={require('../../images/plus.png')} alt="user" className="menu-logo1 plus-project"/>
@@ -217,10 +246,10 @@ const ManagerWelcome = () => {
                             >
                             <div className="modal-header">
                                 <p>Update Project</p>
-                                <input type="hidden" value={project._id} id="projectId" />
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div className="modal-body">
+                                <FormField name="name" type="hidden" value={project._id || ''} id="projectId" name="projectId"/>
                                 <div className="form-group row">
                                     <label className="col-sm-3 col-form-label">Project name</label>
                                     <div className="col-sm-9">
@@ -230,6 +259,7 @@ const ManagerWelcome = () => {
                                 <div className="form-group row">
                                     <label className="col-sm-3 col-form-label">Project location</label>
                                     <div className="col-sm-9">
+                                        {project.name} {project.location}
                                         <FormField name="location" type="text" defaultValue={project.location} id="updatedLocation"/>
                                     </div>
                                 </div>

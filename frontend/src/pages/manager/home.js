@@ -3,8 +3,19 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSuperintendents, inviteSuperintendent, getViewerForgeToken, getProjectDetail, getProjectSuperintendents } from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
+import ReactNotification from 'react-notifications-component'
+import { store } from 'react-notifications-component';
 
 import $ from 'jquery'; 
+var notification = {
+    title: "Wonderful!",
+    message: "Configurable",
+    type: "success",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"]
+};
 
 const ManagerHome = (props) => {
     const dispatch = useDispatch();
@@ -67,6 +78,12 @@ const ManagerHome = (props) => {
         dispatch(inviteSuperintendent(data)).then(() => {
             window.$("#addMemberModal").modal('hide');
             dispatch(getProjectSuperintendents(projectId));
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have invited superintendent into your project."
+            })
+
         });
     }
 
@@ -108,6 +125,7 @@ const ManagerHome = (props) => {
     }
     return (
         <React.Fragment>
+        <ReactNotification />
             <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
                 <div className="card viewer-wrapper">
                     <div className="card-heading">

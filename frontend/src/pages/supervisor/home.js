@@ -28,6 +28,18 @@ import queryString from 'query-string'
 
 import * as Yup from 'yup';
 import $ from 'jquery'; 
+import ReactNotification from 'react-notifications-component'
+import { store } from 'react-notifications-component';
+
+var notification = {
+    title: "Wonderful!",
+    message: "Configurable",
+    type: "success",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"]
+};
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().max(100).required().label("name"),
@@ -77,7 +89,13 @@ const SupervisorHome = (props) => {
             taskId: task_id,
         };
         
-        dispatch(reviewTask(data));
+        dispatch(reviewTask(data)).then(() => {        
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have published this task."
+            })
+        });;
     }
 
     const handleCheck = (memberId) => {
@@ -88,7 +106,12 @@ const SupervisorHome = (props) => {
         };
         
         dispatch(checkTask(data)).then(() => {
-            dispatch(getTaskMembers(data));
+            dispatch(getTaskMembers(data));      
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have checked task."
+            })
         });
     }
 
@@ -100,7 +123,13 @@ const SupervisorHome = (props) => {
         };
         
         dispatch(reworkTask(data)).then(() => {
-            dispatch(getTaskMembers(data));
+            dispatch(getTaskMembers(data)).then(() => {        
+                store.addNotification({
+                    ...notification,
+                    title: "Success!",
+                    message: "You have set reworking this task."
+                })
+            });
         });
     }
 
@@ -110,7 +139,13 @@ const SupervisorHome = (props) => {
             taskId: taskId,
             memberId: memberId
         };
-        dispatch(removeMember(data));
+        dispatch(removeMember(data)).then(() => {        
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have removed member successfully."
+            })
+        });
     }
 
     const handleAddTask = () => {
@@ -120,6 +155,13 @@ const SupervisorHome = (props) => {
             componentId: "componet id"
         }
         dispatch(addTask(data));
+        
+        store.addNotification({
+            ...notification,
+            title: "Success!",
+            message: "You have added new task. Please invite Engineer into the task."
+          })
+
         $(".add-member").show();
     }
     
@@ -248,7 +290,13 @@ const SupervisorHome = (props) => {
                 data.projectId = projectId;
                 data.engineerId = inviteList[index].id;
                 data.taskId = taskId;
-                dispatch(inviteEngineer(data));
+                dispatch(inviteEngineer(data)).then(() => {        
+                    store.addNotification({
+                        ...notification,
+                        title: "Success!",
+                        message: "You have invited Engineer into task."
+                    })
+                });
                 window.$("#addMemberModal").modal('hide');
                 break;
             case MemberRole:
@@ -260,10 +308,21 @@ const SupervisorHome = (props) => {
                         data.memberIds.push(inviteList[selected_index]._id);
                     });
                     data.taskId = taskId;
-                    dispatch(inviteMember(data));
+                    dispatch(inviteMember(data)).then(() => {        
+                        store.addNotification({
+                            ...notification,
+                            title: "Success!",
+                            message: "You have invited member into task."
+                        })
+                    });
                     window.$("#addMemberModal").modal('hide');
                 } else {
-                    alert("You can only invite members in task.");
+                    store.addNotification({
+                        ...notification,
+                        type: 'warning',
+                        title: "Warning!",
+                        message: "You can only invite members in task."
+                    });
                 }
         }
         $(".member-link").removeClass('clicked');
@@ -325,7 +384,8 @@ const SupervisorHome = (props) => {
     const handleNodeSelected = (viewer, model) => {
     }
     return (
-        <React.Fragment>
+        <React.Fragment> 
+            <ReactNotification />
             <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
                 <div className="card viewer-wrapper">
                     <div className="card-heading">
@@ -555,7 +615,7 @@ const SupervisorHome = (props) => {
                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
                                             <a className="dropdown-item" onClick={() => handleRoleSelected(EngineerRole)}> Engineer</a>
                                             <a className="dropdown-item" onClick={() => handleRoleSelected(MemberRole)}> Member</a>
-                                        </div>                                    
+                                        </div>                        
                                     </div>
                                     <div className="col-md-6 col-sm-6 text-right task-status">
                                         <span className="text-black mr-2">Available</span>

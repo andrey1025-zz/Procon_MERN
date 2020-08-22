@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTasks, getTaskDetail, getTaskMembers } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
-import { NotStart, Inprogress, Completed, Reviewed } from '../../enums/taskStatus';
+import { NotStart, Inprogress, Completed, Reviewed, Checked } from '../../enums/taskStatus';
 
 import $ from 'jquery';
 
@@ -38,6 +38,36 @@ const MemberTaskManage = () => {
             $(".selected-task-info").show();
         }
     };
+
+    var diffDays = -1;
+    var percent = 0;
+    var task_id = 0;
+
+    if(task.length > 0){
+        if(task[0].tasks.length > 0){
+            task_id = task[0].tasks[0]._id;
+            var startTime = new Date(task[0].tasks[0].startTime);
+            var endTime = new Date(task[0].tasks[0].endTime);
+            
+            const diffTime = Math.abs(endTime - startTime);
+            diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+            var members = task[0].tasks[0].members;
+            var total_members = 0;
+            var completed_members = 0;
+            var percent = 0;
+            if(members.length > 0){
+                total_members = members.length;
+                var i = 0;
+                for(i = 0 ; i < members.length; i++){
+                    if(members[i].status == Checked)
+                        completed_members++;
+                }
+                percent = completed_members * 100 / total_members;
+            }
+        }
+    }
+
     var today = new Date();
 
     const year = today.getFullYear();
@@ -61,11 +91,12 @@ const MemberTaskManage = () => {
                                 <div className="june-20">
                                     <h1>{year} <br /> {monthNames[month]}</h1>
                                 </div>
-                                <p className="days-20">20 days <br />till completion</p>
-
-                                <p className="text-muted1 mt-2 mb-0">Progress <span>12%</span></p>
+                                {
+                                    diffDays != -1 ? <p className="days-20">{diffDays} days <br />till completion</p> : ''
+                                }
+                                <p className="text-muted1 mt-2 mb-0">Progress <span>{percent}%</span></p>
                                 <div className="btn-task">
-                                    <a href="#" className="float-right">Enter task</a>
+                                    <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + task_id} className="float-right">Enter task</a>
                                 </div>
                             </div>
                         </div>
