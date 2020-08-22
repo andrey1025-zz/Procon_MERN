@@ -42,7 +42,9 @@ import {
     REMOVE_MEMBER_SUCCESS,
     GET_TASK_HISTORY_FAILURE,
     GET_PROJECT_SUPERINTENDENTS_SUCCESS,
-    GET_PROJECT_SUPERINTENDENTS_FAILURE
+    GET_PROJECT_SUPERINTENDENTS_FAILURE,
+    GET_MEMBER_PROFILE_SUCCESS,
+    GET_MEMBER_PROFILE_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -62,7 +64,8 @@ const initialState = {
     taskMessages: [],
     taskHistories: [],
     project: [],
-    projectSuperintendent: []
+    projectSuperintendent: [],
+    selectedMember: []
 };
 
 export default (state = initialState, action) => {
@@ -289,6 +292,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 notifications: 0,
+            };
+        case GET_MEMBER_PROFILE_SUCCESS:
+            return {
+                ...state,
+                selectedMember: action.payload.data,
+            };
+        case GET_MEMBER_PROFILE_FAILURE:
+            return {
+                ...state,
+                selectedMember: [],
             };
         default:
             return state;

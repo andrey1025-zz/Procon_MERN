@@ -852,12 +852,50 @@ async function getMembers() {
     };
     try {
         const members = await User.find({role: MemberRole});
+        var data = [];
+        for(i = 0 ; i < members.length; i++){
+            data.push(basicDetails(members[i]));
+        }
         try {
             return {
                 ...response,
                 status: responseStatus.success,
                 errorMessage: {},
-                members: members
+                members: data
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Member Profile
+async function getMemberProfile(memberId) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const member = await User.findById(memberId);
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: {
+                    firstName: member.firstName,
+                    lastName: member.lastName,
+                    email: member.email,
+                    mobile: member.mobile,
+                    dob: member.dob,
+                    address: member.address,
+                    experience: member.experience,
+                    photo: member.photo ? `${config.assetsBaseUrl}/${member.photo}` : null,
+                    role: member.role
+                }
             };
         } catch (error) {
             throw error;
@@ -1097,6 +1135,15 @@ async function startTask({ userId, projectId, taskId }) {
                 }
             );
 
+            await User.updateOne(
+                { _id: userId },
+                { 
+                    $set: {
+                        status: Inprogress
+                    }
+                }
+            );
+
             await Notification.deleteOne(
                 { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
                 // {projectId: projectId, taskId:taskId, to: userId},
@@ -1170,6 +1217,15 @@ async function submitForCheckingTask({ userId, projectId, taskId }) {
                 {
                     multi: true,
                     arrayFilters: [ { "elem._id": ObjectID(taskId) } , { "elem1.id": userId } ]
+                }
+            );
+
+            await User.updateOne(
+                { _id: userId },
+                { 
+                    $set: {
+                        status: Completed
+                    }
                 }
             );
 
@@ -1269,6 +1325,15 @@ async function checkTask({ userId, projectId, taskId, memberId }) {
                 // {projectId: projectId, taskId:taskId, to: userId},
             );
 
+            await User.updateOne(
+                { _id: memberId },
+                { 
+                    $set: {
+                        status: Checked
+                    }
+                }
+            );
+
             const session = await mongoose.startSession();
             const opts = { session, returnOriginal: false };
             const user_detail = basicDetails(user);
@@ -1359,6 +1424,15 @@ async function reworkTask({ userId, projectId, taskId, memberId }) {
                 {
                     multi: true,
                     arrayFilters: [ { "elem._id": ObjectID(taskId) } , { "elem1.id": memberId } ]
+                }
+            );
+
+            await User.updateOne(
+                { _id: memberId },
+                { 
+                    $set: {
+                        status: Inprogress
+                    }
                 }
             );
 
@@ -1544,6 +1618,15 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
                 }
             );
 
+            await User.updateOne(
+                { _id: memberId },
+                { 
+                    $set: {
+                        status: Checked
+                    }
+                }
+            );
+
             await Notification.deleteOne(
                 { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
             );
@@ -1712,6 +1795,14 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
         var taskMembers = [];
         for (let i = 0; i < memberIds.length; i++) {
             members.push({id: memberIds[i], status: NotStart});
+            await User.updateOne(
+                { _id: memberIds[i] },
+                { 
+                    $set: {
+                        status: NotStart
+                    }
+                }
+            );
         }
         await Project.updateOne(
             { _id: projectId },
@@ -2050,5 +2141,6 @@ module.exports = {
     getTaskHistory,
     deleteProject,
     updateProject,
-    getProjectSuperintendents
+    getProjectSuperintendents,
+    getMemberProfile
 };

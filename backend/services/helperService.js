@@ -22,9 +22,9 @@ function parseCookies(request) {
 }
 
 function basicDetails(user) {
-    const { id, firstName, lastName, role, photo, email, mobile } = user;
+    const { id, firstName, lastName, role, photo, email, mobile, status } = user;
     const completePath = photo ? `${config.assetsBaseUrl}/${photo}` : null
-    return { id, firstName, lastName, role, photo: completePath, email, mobile };
+    return { id, firstName, lastName, role, photo: completePath, email, mobile, status };
 }
 
 function projectDetails(project) {

@@ -111,7 +111,10 @@ import {
     GET_PROJECT_SUPERINTENDENTS_FAILURE,
     END_TASK_REQUEST,
     END_TASK_SUCCESS,
-    END_TASK_FAILURE
+    END_TASK_FAILURE,
+    GET_MEMBER_PROFILE_REQUEST,
+    GET_MEMBER_PROFILE_SUCCESS,
+    GET_MEMBER_PROFILE_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -216,6 +219,27 @@ export const addTask = (data) => async dispatch => {
     } else {
         dispatch({
             type: ADD_TASK_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const getMemberProfile = (data) => async dispatch => {
+    dispatch({
+        type: GET_MEMBER_PROFILE_REQUEST
+    });
+   
+    const response = await api.post('/project/member-profile', data);
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_MEMBER_PROFILE_SUCCESS,
+            payload: response.data
+        });
+
+    } else {
+        dispatch({
+            type: GET_MEMBER_PROFILE_FAILURE,
             payload: response.data
         });
     }

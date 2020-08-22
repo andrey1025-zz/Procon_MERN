@@ -546,7 +546,7 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-.btn-invite{
+.btn-invite-member{
   color: #5331C2 !important;
   cursor: pointer;
 }
@@ -554,6 +554,7 @@ input:checked + .slider:before {
 .personal-info{
   border: none !important;
   margin-top: 12px;
+  padding: 0 10px;
 }
 
 .personal-info .user-role {

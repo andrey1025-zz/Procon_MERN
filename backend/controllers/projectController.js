@@ -263,6 +263,14 @@ inviteSuperintendent = (req, res, next) => {
     }).catch(next)
 };
 
+// Get Member Profile
+getMemberProfile = (req, res, next) => {
+    const { memberId: memberId } = req.body;
+    projectService.getMemberProfile(memberId).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 // Invite Engineer to Project
 inviteEngineer = (req, res, next) => {
     const { projectId: projectId, engineerId: engineerId, taskId: taskId } = req.body;
@@ -629,6 +637,7 @@ module.exports = {
     updateProject,
     getProjectSuperintendents,
     endTask,
+    getMemberProfile,
     createBucket,
     getBucketDetail,
     uploadToBucket,
