@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { getSimpleRoleName } from '../../services';
 import { addProject, getProjects, getProjectDetail, deleteProject, updateProject } from '../../store/actions/projectActions';
 import { loadingSelector, errorSelector } from '../../store/selectors';
-import { Form, SubmitButton, FormField, ErrorMessage, FormTextarea } from '../../components/form';
+import { Form, SubmitButton, FormField, ErrorMessage } from '../../components/form';
 import CoverUpload from '../../components/CoverUpload';
 import ModelUpload from '../../components/ModelUpload';
 import $ from 'jquery'; 
@@ -76,10 +76,8 @@ const ManagerWelcome = () => {
     const handleUpdateProject = (data, { setErrors, setSubmitting }) => {
         data.coverImage = cover_path;
         data.model = model_path;
-        // data.name = $("#updatedName").val();
-        // data.location = $("#updatedLocation").val();
         data.projectId = $("#projectId").val();
-        // if(cover_path != null && model_path != null){
+        if(cover_path != null && model_path != null){
             dispatch(updateProject(data, setErrors, setSubmitting)).then((response) => {
                 window.$("#updateProjectModal").modal('hide');
                 store.addNotification({
@@ -88,7 +86,7 @@ const ManagerWelcome = () => {
                     message: "You have updated project."
                 });
             });
-        // }
+        }
     }
 
     const handleDisplayProject = (projectId) => {
@@ -97,10 +95,11 @@ const ManagerWelcome = () => {
     }
 
     const handleEditProject = (projectId) => {
-        dispatch(getProjectDetail(projectId));
-        window.$("#updateProjectModal").modal(); 
-        updateValues.location = project.location;
-        updateValues.name = project.name;
+        dispatch(getProjectDetail(projectId)).then(() => {
+            updateValues.location = project.location;
+            updateValues.name = project.name;
+            window.$("#updateProjectModal").modal();
+        });
     }
 
     const handleDeleteProject = (projectId) => {
@@ -219,13 +218,13 @@ const ManagerWelcome = () => {
                             </div>
                             <div className="modal-body">
                                 <div className="form-group row">
-                                    <label className="col-sm-3 col-form-label">Project name</label>
+                                    <label className="col-sm-3 col-form-label text-left">Project name</label>
                                     <label className="col-sm-9 col-form-label value-label">
                                         {project.name}
                                     </label>
                                 </div>
                                 <div className="form-group row">
-                                    <label className="col-sm-3 col-form-label">Project location</label>
+                                    <label className="col-sm-3 col-form-label text-left">Project location</label>
                                     <label className="col-sm-9 col-form-label value-label">
                                         {project.location}
                                     </label>
@@ -237,30 +236,32 @@ const ManagerWelcome = () => {
                         </div>
                     </div>
                 </div>
-                <div className="modal fade" id="updateProjectModal" role="dialog">
+                {
+                    project ? 
+                    <div className="modal fade" id="updateProjectModal" role="dialog">
                     <div className="modal-dialog">
                         <div className="modal-content">
                           <Form className="form-horizontal m-t-30"
                             onSubmit={handleUpdateProject}
-                            initialValues={initialValues}
+                            initialValues={updateValues}
                             >
                             <div className="modal-header">
                                 <p>Update Project</p>
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div className="modal-body">
-                                <FormField name="name" type="hidden" value={project._id || ''} id="projectId" name="projectId"/>
+                                <FormField type="hidden" value={project._id || ''} id="projectId" name="projectId"/>
                                 <div className="form-group row">
                                     <label className="col-sm-3 col-form-label">Project name</label>
                                     <div className="col-sm-9">
-                                        <FormField name="name" type="text" defaultValue={project.name} id="updatedName"/>
+                                        <FormField name="name" type="text" id="updatedName" defaultValue={project.name}/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <label className="col-sm-3 col-form-label">Project location</label>
                                     <div className="col-sm-9">
                                         {project.name} {project.location}
-                                        <FormField name="location" type="text" defaultValue={project.location} id="updatedLocation"/>
+                                        <FormField name="location" type="text" id="updatedLocation" defaultValue={project.location}/>
                                     </div>
                                 </div>
                                 <div className="form-group row">
@@ -282,7 +283,9 @@ const ManagerWelcome = () => {
                           </Form>
                         </div>
                     </div>
-                </div>
+                </div> : ''
+                }
+
             </div>
         </React.Fragment>
     )
