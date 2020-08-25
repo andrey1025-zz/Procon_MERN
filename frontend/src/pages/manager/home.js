@@ -130,19 +130,22 @@ const ManagerHome = (props) => {
                 <div className="card viewer-wrapper">
                     <div className="card-heading">
                         <div className="threed-effect">
-                            <ForgeViewer
-                                    version="6.0"
-                                    urn={urn}
-                                    view={view}
-                                    headless={false}
-                                    onViewerError={handleViewerError}
-                                    onTokenRequest={handleTokenRequested}
-                                    onDocumentLoad={handleDocumentLoaded}
-                                    onDocumentError={handleDocumentError}
-                                    onModelLoad={handleModelLoaded}
-                                    onModelError={handleModelError}
-                                    onSelectionEvent={() => handleNodeSelected}
-                                />
+                        {
+                                forgeToken ? 
+                                <ForgeViewer
+                                version="6.0"
+                                urn={urn}
+                                view={view}
+                                headless={false}
+                                onViewerError={handleViewerError}
+                                onTokenRequest={handleTokenRequested}
+                                onDocumentLoad={handleDocumentLoaded}
+                                onDocumentError={() => handleDocumentError}
+                                onModelLoad={handleModelLoaded}
+                                onModelError={() => handleModelError}
+                            />
+                                : ""
+                            }
                         </div>
                         {/* <div className="progress mt-4 mb-4" style={{height: '8px'}}>
                             <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>

@@ -236,7 +236,9 @@ const EngineerHome = (props) => {
                 <div className="card viewer-wrapper">
                     <div className="card-heading">
                         <div className="threed-effect">
-                            <ForgeViewer
+                        {
+                                forgeToken ? 
+                                <ForgeViewer
                                 version="6.0"
                                 urn={urn}
                                 view={view}
@@ -244,11 +246,12 @@ const EngineerHome = (props) => {
                                 onViewerError={handleViewerError}
                                 onTokenRequest={handleTokenRequested}
                                 onDocumentLoad={handleDocumentLoaded}
-                                onDocumentError={handleDocumentError}
+                                onDocumentError={() => handleDocumentError}
                                 onModelLoad={handleModelLoaded}
-                                onModelError={handleModelError}
-                                onSelectionEvent={() => handleNodeSelected}
+                                onModelError={() => handleModelError}
                             />
+                                : ""
+                            }
                         </div>
                     </div>
                 </div>
