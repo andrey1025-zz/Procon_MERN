@@ -1995,12 +1995,14 @@ async function getNotifications({ userId, projectId }) {
         var data = [];
         const project = await Project.findById(projectId);
         const notifications = await Notification.find({to: userId, projectId: projectId, isRead: false});
+
         for(i = 0 ; i < notifications.length; i++){
             const from = await User.findById(notifications[i].from);
+
             const task = await Project.find(
-                { _id: projectId },
+                { _id: ObjectID(projectId) },
                 { 
-                    tasks: { $elemMatch: { _id: ObjectID(notifications[i].taskId) } }
+                    tasks: { $elemMatch: { _id: notifications[i].taskId } }
                 }
                 );
             const fromUserDetail = basicDetails(from);

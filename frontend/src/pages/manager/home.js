@@ -185,7 +185,7 @@ const ManagerHome = (props) => {
                     </div>
                     : ''
                 }
-                <div className="text-center add-member custom-rounded">
+                <div className="row text-center add-member custom-rounded">
                     <a onClick={handleOpenMembersDialog} className="md-plus" data-toggle="modal" data-target="#addMemberModal"><i className="fas fa-plus"></i></a>
                 </div>
                 <div className="col-sm-12 col-xl-12 col-md-12">

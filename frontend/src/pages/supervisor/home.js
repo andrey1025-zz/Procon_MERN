@@ -305,7 +305,7 @@ const SupervisorHome = (props) => {
                     data.memberIds = [];
                     $(".member-link.clicked[data-type="+role+"]").each(function(){
                         var selected_index = $(this).data('index');
-                        data.memberIds.push(inviteList[selected_index]._id);
+                        data.memberIds.push(inviteList[selected_index].id);
                     });
                     data.taskId = taskId;
                     dispatch(inviteMember(data)).then(() => {        

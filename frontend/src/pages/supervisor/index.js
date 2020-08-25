@@ -41,8 +41,6 @@ const SupervisorWelcome = () => {
                                                   <i className="mdi mdi-menu"></i>
                                               </a>
                                               <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                  <a className="dropdown-item"> Display Project</a>
-                                                  <a className="dropdown-item d-block"> Edit Project</a>
                                                   <a className="dropdown-item"> End Project</a>
                                               </div>
                                           </div>

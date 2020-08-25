@@ -31,26 +31,6 @@ const EngineerWelcome = () => {
                 <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
                   <div className="project-wrapper">
                       <div className="project-title">
-                          <div className="mini-stat-icon float-right">
-                              <nav className="navbar-custom">
-                                  <ul className="navbar-right list-inline float-right mb-0">
-                                      <li className="dropdown notification-list list-inline-item">
-                                          <div className="dropdown notification-list nav-pro-img">
-                                              <a className="dropdown-toggle nav-link arrow-none nav-user"
-                                                  data-toggle="dropdown" role="button"
-                                                  aria-haspopup="false" aria-expanded="false">
-                                                  <i className="mdi mdi-menu"></i>
-                                              </a>
-                                              <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                  <a className="dropdown-item"> Display Project</a>
-                                                  <a className="dropdown-item d-block"> Edit Project</a>
-                                                  <a className="dropdown-item"> End Project</a>
-                                              </div>
-                                          </div>
-                                      </li>
-                                  </ul>
-                              </nav>
-                          </div>
                           <div className="p-20">
                               <h5 className="font-16">{value.name}</h5>
                               <p className="text-overflow">{value.location}</p>
