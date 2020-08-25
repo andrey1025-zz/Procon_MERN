@@ -375,14 +375,12 @@ const SupervisorHome = (props) => {
     
     const handleModelLoaded = (viewer, model) => {
         console.log('Loaded model:', model);
-        console.log(viewer.listeners.selection);
     }
     
     const handleModelError = (viewer, error) => {
         console.log('Error loading the model.');
     }
-    const handleNodeSelected = (viewer, model) => {
-    }
+
     return (
         <React.Fragment> 
             <ReactNotification />
@@ -390,7 +388,9 @@ const SupervisorHome = (props) => {
                 <div className="card viewer-wrapper">
                     <div className="card-heading">
                         <div className="threed-effect">
-                            <ForgeViewer
+                            {
+                                forgeToken ? 
+                                <ForgeViewer
                                 version="6.0"
                                 urn={urn}
                                 view={view}
@@ -398,11 +398,12 @@ const SupervisorHome = (props) => {
                                 onViewerError={handleViewerError}
                                 onTokenRequest={handleTokenRequested}
                                 onDocumentLoad={handleDocumentLoaded}
-                                onDocumentError={handleDocumentError}
+                                onDocumentError={() => handleDocumentError}
                                 onModelLoad={handleModelLoaded}
-                                onModelError={handleModelError}
-                                onSelectionEvent={() => handleNodeSelected}
+                                onModelError={() => handleModelError}
                             />
+                                : ""
+                            }
                             { !task_id ? <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={handleAddTask}>Add a new task</button> : ''}
                         </div>
                     </div>
