@@ -4126,13 +4126,14 @@ body {
 }
 .june-20 h1{
 	color: #fff;
-	margin-bottom: 75px;
+  margin-bottom: 75px;
+  font-size:30px;
 }
 .days-20{
-	    color: #fff;
-    font-size: 16px;
-    line-height: 20px;
-	margin-bottom: 75px;
+  color: #fff;
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 65px;
 }
 .text-muted1{
 	    font-size: 18px;
