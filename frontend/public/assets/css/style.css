@@ -4153,7 +4153,7 @@ body {
 }
 .card1 {
     background: #252529;
-    height: 400px;
+    min-height: 400px;
 }
 .scrollbar1 {
     height: 400px;
