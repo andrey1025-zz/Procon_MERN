@@ -760,6 +760,70 @@ async function postMessage(projectId, taskId, userId, message) {
     }
 };
 
+async function leaveFeedback(projectId, taskId, userId, message) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = User.findById(userId);
+        await Project.updateOne(
+            { _id: projectId },
+            {
+                $push: {
+                    "tasks.$[elem].feedback": {id: userId, message: message}
+                }
+            },
+            {
+                multi: true,
+                arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+            }
+        )
+        
+        const session = await mongoose.startSession();
+
+        const task = await Project.find(
+            { _id: projectId }, 
+            { 
+                tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+            } 
+        );
+        var engineerId = null;
+
+        if(task && task[0] && task[0].tasks[0]){
+            engineerId = task[0].tasks[0].engineers[0].id;
+        }
+
+        const opts = { session, returnOriginal: false };
+        const user_detail = basicDetails(user);
+        const notification = new Notification({
+            from: userId,
+            to: engineerId,
+            taskId: taskId,
+            projectId: projectId,
+            message: `The ${user_detail.firstName+` `+user_detail.lastName} left feedback.`
+        });
+        Notification.createCollection();
+        notification.save(opts);
+
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 // Get Users
 async function getUsers() {
     var response = {
@@ -896,6 +960,30 @@ async function getMemberProfile(memberId) {
                     photo: member.photo ? `${config.assetsBaseUrl}/${member.photo}` : null,
                     role: member.role
                 }
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Change User Role
+async function changeUserRole({ memberId, role }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = await User.findById(memberId);
+        await user.updateOne({ role: role });
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
             };
         } catch (error) {
             throw error;
@@ -1087,6 +1175,60 @@ async function getTaskMembers({ userId, projectId, taskId }) {
                 status: responseStatus.success,
                 errorMessage: {},
                 data: taskMembers
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Get Task Members
+async function getFeedbacks({ userId, projectId, taskId }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const user = User.findById(userId);
+        var feedBacks = [];
+        if(taskId != null){
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } }
+                } 
+            );
+
+            if(task && task.length > 0){
+                if(task[0].tasks && task[0].tasks.length > 0){
+                    var task_detail = task[0].tasks[0];
+                    if(task_detail.feedback && task_detail.feedback.length > 0){
+                        for(i = 0; i < task_detail.feedback.length; i++){
+                            var userInfo = await User.findById(task_detail.feedback[i].id);
+                            var basic_detail = basicDetails(userInfo);
+                            basic_detail.feedback = task_detail.feedback[i].message;
+                            console.log(basic_detail);
+                            feedBacks.push(basic_detail);
+                        }
+                    }
+                }
+            }
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                data: feedBacks
             };
         } catch (error) {
             //await session.abortTransaction();
@@ -1365,7 +1507,7 @@ async function checkTask({ userId, projectId, taskId, memberId }) {
                 }
             }
 
-            console.log("total_status", total_status);
+            // console.log("total_status", total_status);
 
             if(total_status == 1){
                 await Project.updateOne(
@@ -1591,7 +1733,6 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
     try {
         const user = await User.findById(userId);
         if(taskId != null){
-
             await Project.updateOne(
                 {_id: projectId},
                 {
@@ -1660,6 +1801,41 @@ async function removeMember({ userId, projectId, taskId, memberId }) {
                     ...response,
                     status: responseStatus.success,
                     data : taskMembers,
+                    errorMessage: {}
+                };
+            } catch (error) {
+                //await session.abortTransaction();
+                await session.endSession();
+                throw error;
+            }
+        } else {
+            const session = await mongoose.startSession();
+            await Project.updateOne(
+                {_id: projectId},
+                {
+                    $set: {
+                        superintendent: []
+                    }
+                }
+            );
+
+            await User.updateOne(
+                { _id: memberId },
+                { 
+                    $set: {
+                        status: Checked
+                    }
+                }
+            );
+
+            try {
+                //await session.startTransaction();
+                //await session.commitTransaction();
+                await session.endSession();
+                return {
+                    ...response,
+                    status: responseStatus.success,
+                    data : [],
                     errorMessage: {}
                 };
             } catch (error) {
@@ -2008,7 +2184,7 @@ async function getNotifications({ userId, projectId }) {
             const fromUserDetail = basicDetails(from);
             var item = {
                 count: notifications[i].count,
-                createdOn: notifications[i].createdOn,
+                createdOn: notifications[i].createdOn.toISOString().split('T')[0],
                 message: notifications[i].message,
                 firstName: fromUserDetail.firstName,
                 lastName: fromUserDetail.lastName,
@@ -2071,7 +2247,7 @@ async function getTaskMessages({ userId, projectId, taskId }) {
             data.push(item);
         }
 
-        console.log("item", data);
+        // console.log("item", data);
         try {
             return {
                 ...response,
@@ -2144,5 +2320,8 @@ module.exports = {
     deleteProject,
     updateProject,
     getProjectSuperintendents,
-    getMemberProfile
+    getMemberProfile,
+    changeUserRole,
+    leaveFeedback,
+    getFeedbacks
 };

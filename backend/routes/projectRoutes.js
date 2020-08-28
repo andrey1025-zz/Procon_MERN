@@ -42,11 +42,14 @@ router.post("/delete-task", authorize(), projectController.deleteTask);
 router.post("/remove-member", authorize(), projectController.removeMember);
 router.post("/clear-notification", authorize(), projectController.clearNotification);
 router.post("/post-message", authorize(), projectController.postMessage);
+router.post("/feedback", authorize(), projectController.leaveFeedback);
+router.post("/get-feedbacks", authorize(), projectController.getFeedbacks);
 router.post("/get-messages", authorize(), projectController.getTaskMessages);
 router.post("/delete", authorize(), projectController.deleteProject);
 router.post("/update-project", authorize(), projectController.updateProject);
 router.post("/get-project-superintendents", authorize(), projectController.getProjectSuperintendents);
 router.post("/end-task", authorize(), projectController.endTask);
 router.post("/member-profile", authorize(), projectController.getMemberProfile);
+router.post("/change-user-role", authorize(), projectController.changeUserRole);
 
 module.exports = router;

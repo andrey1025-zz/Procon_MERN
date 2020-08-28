@@ -28,15 +28,15 @@ const SupervisorNotification = () => {
                         (
                             notifications.map((value, index) => {
                                 return (
-                                <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                <div className="col-sm-6 col-xl-4 col-md-6 notific-item" key={index}>
                                     <div className="project-wrapper">
                                         <div className="project-title">
                                             <div className="row col-md-12">
-                                                <div className="float-left padding10 col-md-5">
-                                                    <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="user" className="custom-rounded mr-5 mr-20"/>
+                                                <div className="float-left padding10 col-md-3 col-sm-4 col-xl-4 col-4">
+                                                    <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="user" className="custom-rounded thumb-md mr-5 mr-20"/>
                                                     <span>{value.firstName}</span>
                                                 </div>
-                                                <div className="float-right padding10 col-md-7">
+                                                <div className="float-right padding10 col-md-9 col-sm-8 col-xl-8 col-8">
                                                     <div className="text-white no-margin middle-font text-right">
                                                         {value.taskName}
                                                         <div className="dropdown nav-pro-img inline">

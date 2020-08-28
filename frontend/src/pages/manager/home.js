@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSuperintendents, inviteSuperintendent, getViewerForgeToken, getProjectDetail, getProjectSuperintendents } from '../../store/actions/projectActions';
+import { getSuperintendents, inviteSuperintendent, getViewerForgeToken, getProjectDetail, getProjectSuperintendents, removeMember } from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
+
+import $ from 'jquery'; 
 import ReactNotification from 'react-notifications-component'
 import { store } from 'react-notifications-component';
 
-import $ from 'jquery'; 
 var notification = {
     title: "Wonderful!",
     message: "Configurable",
@@ -14,7 +15,11 @@ var notification = {
     insert: "top",
     container: "top-right",
     animationIn: ["animated", "fadeIn"],
-    animationOut: ["animated", "fadeOut"]
+    animationOut: ["animated", "fadeOut"],
+    dismiss: {
+        duration: 2000,
+        onScreen: true
+    }
 };
 
 const ManagerHome = (props) => {
@@ -44,6 +49,11 @@ const ManagerHome = (props) => {
             }
         });
 
+    });
+
+    $("body").on("click", ".member-item", function(){
+        $(".check-task").hide();
+        $(this).find('.check-task').show();
     });
     
     useEffect(() => {
@@ -84,6 +94,22 @@ const ManagerHome = (props) => {
                 message: "You have invited superintendent into your project."
             })
 
+        });
+    }
+
+    const handleRemoveMember = (memberId) => {
+        let data = {
+            projectId: projectId,
+            taskId: null,
+            memberId: memberId
+        };
+        dispatch(removeMember(data)).then(() => { 
+            dispatch(getProjectSuperintendents());
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have removed member successfully."
+            })
         });
     }
 
@@ -168,7 +194,7 @@ const ManagerHome = (props) => {
                             <div className="friends-suggestions">
                                 { 
                                     projectSuperintendent != [] > 0 ? 
-                                        <a href="#" className="friends-suggestions-list">
+                                        <a href="#" className="friends-suggestions-list member-item">
                                             <div className="border-bottom position-relative">
                                                 <div className="float-left mb-0 mr-3">
                                                     <img src={!projectSuperintendent.photo ? require('../../images/users/user.jpg') : projectSuperintendent.photo} alt="" className="roundedImg thumb-md"/>
@@ -178,6 +204,9 @@ const ManagerHome = (props) => {
                                                 <div className="desc">
                                                     <h5 className="font-14 mb-1 pt-2">{projectSuperintendent.email}</h5>
                                                     <p className="text-muted">{!projectSuperintendent.mobile ? '' : projectSuperintendent.mobile}</p>
+                                                </div>
+                                                <div className="check-task" data-id={projectSuperintendent.id}>
+                                                    <span className="remove-member" onClick={() => handleRemoveMember(projectSuperintendent.id)}>Remove Member</span>
                                                 </div>
                                             </div>
                                         </a> 

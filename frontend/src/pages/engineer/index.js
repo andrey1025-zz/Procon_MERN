@@ -28,7 +28,7 @@ const EngineerWelcome = () => {
         <React.Fragment>
             {projects.map((value, index) => {
               return (
-                <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                <div className="col-sm-6 col-xl-4 col-md-6 project-item" key={index}>
                   <div className="project-wrapper">
                       <div className="project-title">
                           <div className="p-20">

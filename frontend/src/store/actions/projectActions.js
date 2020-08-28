@@ -114,7 +114,16 @@ import {
     END_TASK_FAILURE,
     GET_MEMBER_PROFILE_REQUEST,
     GET_MEMBER_PROFILE_SUCCESS,
-    GET_MEMBER_PROFILE_FAILURE
+    GET_MEMBER_PROFILE_FAILURE,
+    CHANGE_USER_ROLE_REQUEST,
+    CHANGE_USER_ROLE_SUCCESS,
+    CHANGE_USER_ROLE_FAILURE,
+    LEAVE_FEEDBACK_REQUEST,
+    LEAVE_FEEDBACK_SUCCESS,
+    LEAVE_FEEDBACK_FAILURE,
+    GET_FEEDBACKS_REQUEST,
+    GET_FEEDBACKS_SUCCESS,
+    GET_FEEDBACKS_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -198,6 +207,27 @@ export const endTask = (data) => async dispatch => {
     } else {
         dispatch({
             type: END_TASK_FAILURE,
+            payload: response.data
+        });
+    }
+};
+
+export const changeUserRole = (data) => async dispatch => {
+    dispatch({
+        type: CHANGE_USER_ROLE_REQUEST
+    });
+   
+    const response = await api.post('/project/change-user-role', data);    
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: CHANGE_USER_ROLE_SUCCESS,
+            payload: response.data
+        });
+
+    } else {
+        dispatch({
+            type: CHANGE_USER_ROLE_FAILURE,
             payload: response.data
         });
     }
@@ -481,6 +511,26 @@ export const getTaskMembers = (data) => async dispatch => {
     }
 };
 
+export const getFeedbacks = (data) => async dispatch => {
+    dispatch({
+        type: GET_FEEDBACKS_REQUEST
+    });
+
+    const response = await api.post('/project/get-feedbacks', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_FEEDBACKS_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: GET_FEEDBACKS_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
 export const getTaskDetail = (data) => async dispatch => {
     dispatch({
         type: GET_TASK_DETAIL_REQUEST
@@ -516,6 +566,26 @@ export const postMessage = (data) => async dispatch => {
     } else if (response.data && response.data.status === 'failure' ){
         dispatch({
             type: POST_MESSAGE_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const leaveFeedback = (data) => async dispatch => {
+    dispatch({
+        type: LEAVE_FEEDBACK_REQUEST
+    });
+
+    const response = await api.post('/project/feedback', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: LEAVE_FEEDBACK_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: LEAVE_FEEDBACK_FAILURE,
             payload: response.data
         })
     }

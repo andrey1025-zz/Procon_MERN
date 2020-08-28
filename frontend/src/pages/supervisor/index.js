@@ -27,7 +27,7 @@ const SupervisorWelcome = () => {
         <React.Fragment>
             {projects.map((value, index) => {
               return (
-                <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                <div className="col-sm-6 col-xl-4 col-md-6 project-item" key={index}>
                   <div className="project-wrapper">
                       <div className="project-title">
                           <div className="mini-stat-icon float-right">
@@ -59,7 +59,7 @@ const SupervisorWelcome = () => {
                         </div>
                       </div>
                   </div>
-              </div>   
+              </div>
               )
             })}
         </React.Fragment>
