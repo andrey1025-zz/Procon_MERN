@@ -4136,7 +4136,7 @@ body {
   margin-bottom: 65px;
 }
 .text-muted1{
-	    font-size: 18px;
+  font-size: 18px;
   color: #fff !important;
 }
 .text-muted1 span{
@@ -4146,11 +4146,11 @@ body {
 	    margin-top: -42px;
 }
 .btn-task a{
-	    border: 2px solid #5331C2;
-    padding: 11px;
-    font-size: 16px;
-    color: #fff;
-    border-radius: 40px;
+  border: 2px solid #5331C2;
+  padding: 11px;
+  font-size: 16px;
+  color: #fff;
+  border-radius: 40px;
 }
 .card1 {
     background: #252529;
@@ -4161,7 +4161,6 @@ body {
 }
 .topbar .topbar-left .logo {
     line-height: 20px;
- 
 }
 .topbar .topbar-left {
     padding: 25px;
