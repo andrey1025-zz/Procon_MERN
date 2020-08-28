@@ -44,7 +44,9 @@ import {
     GET_PROJECT_SUPERINTENDENTS_SUCCESS,
     GET_PROJECT_SUPERINTENDENTS_FAILURE,
     GET_MEMBER_PROFILE_SUCCESS,
-    GET_MEMBER_PROFILE_FAILURE
+    GET_MEMBER_PROFILE_FAILURE,
+    GET_FEEDBACKS_SUCCESS,
+    GET_FEEDBACKS_FAILURE
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -65,7 +67,8 @@ const initialState = {
     taskHistories: [],
     project: [],
     projectSuperintendent: [],
-    selectedMember: []
+    selectedMember: [],
+    feedBacks: []
 };
 
 export default (state = initialState, action) => {
@@ -302,6 +305,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 selectedMember: [],
+            };
+        case GET_FEEDBACKS_SUCCESS:
+            return {
+                ...state,
+                feedBacks: action.payload.data,
+            };
+        case GET_FEEDBACKS_FAILURE:
+            return {
+                ...state,
+                feedBacks: [],
             };
         default:
             return state;

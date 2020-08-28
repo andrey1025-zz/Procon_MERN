@@ -21,7 +21,11 @@ var notification = {
     insert: "top",
     container: "top-right",
     animationIn: ["animated", "fadeIn"],
-    animationOut: ["animated", "fadeOut"]
+    animationOut: ["animated", "fadeOut"],
+    dismiss: {
+        duration: 2000,
+        onScreen: true
+    }
 };
 
 const validationSchema = Yup.object().shape({
@@ -115,7 +119,7 @@ const ManagerWelcome = () => {
     return (
         <React.Fragment>
             <ReactNotification />
-            <div className="col-sm-4 col-xl-4 col-md-4">
+            <div className="col-sm-6 col-xl-4 col-md-6 project-item">
                 <div className="popup" data-toggle="modal" data-target="#addProjectModal">
                     <img src={require('../../images/plus.png')} alt="user" className="menu-logo1 plus-project"/>
                     <p className="addNewProject">Add a new project</p>
@@ -123,7 +127,7 @@ const ManagerWelcome = () => {
             </div>
             {projects.map((value, index) => {
               return (
-                <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                <div className="col-sm-6 col-xl-4 col-md-6 project-item" key={index}>
                   <div className="project-wrapper">
                       <div className="project-title">
                           <div className="mini-stat-icon float-right">

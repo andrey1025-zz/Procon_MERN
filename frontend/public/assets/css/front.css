@@ -31,6 +31,9 @@
 #addMemberModal .modal-dialog{
   max-width: 1000px;
 }
+#inviteMemberModal .modal-dialog{
+  max-width: 700px;
+}
 .modal-header{
   border-bottom: none;
   text-align: center;
@@ -262,8 +265,8 @@
   border-radius: 50%;
   width: 25px;
   position: absolute;
-  left: 50px;
-  bottom: -10px;
+  left: 35px;
+  bottom: -17px;
   font-size: 15px;
 }
 .notific-text{
@@ -574,4 +577,8 @@ input:checked + .slider:before {
 #displayProjectModal img{
   height:300px;
   width:100%;
+}
+#inviteMemberModal button.close{
+  position: absolute;
+  right: 15px;
 }

@@ -16,7 +16,9 @@ import {
     submitForCheckingTask,
     getTaskMessages,
     getTaskMembers,
-    postMessage
+    postMessage,
+    leaveFeedback,
+    getFeedbacks
 } 
 from '../../store/actions/projectActions';
 import $ from 'jquery'; 
@@ -45,7 +47,11 @@ var notification = {
     insert: "top",
     container: "top-right",
     animationIn: ["animated", "fadeIn"],
-    animationOut: ["animated", "fadeOut"]
+    animationOut: ["animated", "fadeOut"],
+    dismiss: {
+        duration: 2000,
+        onScreen: true
+    }
 };
 
 const MemberHome = (props) => {
@@ -110,6 +116,7 @@ const MemberHome = (props) => {
     const task = useSelector(state => state.project.task);
     const taskEngineers = useSelector(state => state.project.taskEngineers);
     const taskMembers = useSelector(state => state.project.taskMembers);
+    const feedBacks = useSelector(state => state.project.feedBacks);
     const taskMessages = useSelector(state => state.project.taskMessages);
 
     const project = useSelector(state => state.project.project);
@@ -120,7 +127,8 @@ const MemberHome = (props) => {
 
     var scrollbar_class = '';
     var mystatus = '';
-    var i = 0;
+    var feedback_status = false;
+    var i = 0, j = 0;
     if(taskMessages.length > 0)
         scrollbar_class = 'scrollbar';
 
@@ -164,12 +172,20 @@ const MemberHome = (props) => {
             taskId: taskId
         }
         dispatch(getTaskMembers(data));
+        dispatch(getFeedbacks(data));
     }, []);
 
     // get my status
     for(i = 0 ; i < taskMembers.length; i++){
         if(taskMembers[i].id == user.id){
             mystatus = taskMembers[i].status;
+        }
+    }
+
+    // get my feedback status
+    for(j = 0 ; j < feedBacks.length; j++){
+        if(feedBacks[j].id == user.id){
+            feedback_status = true;
         }
     }
 
@@ -206,6 +222,21 @@ const MemberHome = (props) => {
             taskId: taskId
         }
         dispatch(getTaskMessages(data));
+    }
+
+    const handleLeaveFeedback = () => {
+        var message = $("#feedback").val();
+        if(taskId && message != ''){
+            let data = {
+                projectId: projectId,
+                taskId: taskId,
+                message: message
+            };
+            dispatch(leaveFeedback(data)).then(() => {
+                $(".feedback-container").hide();
+                $(".btn-feedback").hide();
+            });
+        }
     }
 
     const handlePostMessage = () => {
@@ -360,6 +391,23 @@ const MemberHome = (props) => {
                             </Form>
                         </div>
                     </div> : ''  
+                }
+                {
+                    user && taskId && mystatus == Checked && feedback_status == false ?
+                    <div className="feedback-container" style={{background: '#252529'}}>
+                        <div className="" id="style-2">
+                            <div className='chat-item right'>
+                                <div className="user-info inline-block">
+                                    <img src={!user.photo ? require('../../images/users/user.jpg') : user.photo} alt="" className="roundedImg thumb-md"/>
+                                    <p className="user-name" >{user.firstName} {user.lastName}</p>
+                                </div>
+                                <div className="edit-message">
+                                    <textarea name="message" id="feedback" className="message-content" placeholder="Please leave your feedback about task"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{display: 'flow-root'}}><button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20 btn-feedback" onClick={handleLeaveFeedback}>Leave Feedback</button></div>
+                    </div> : ''
                 }
                 {
                     taskId ? <button type="button" className="btn btn-info btn-lg task-btn mr-20 mb-20 show-blog" onClick={handleShowBlog}>Show Blog</button> : ''

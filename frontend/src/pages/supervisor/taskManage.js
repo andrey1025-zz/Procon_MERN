@@ -59,6 +59,14 @@ const SupervisorTaskManage = () => {
         }
     };
 
+    $(".btn-extend").click(function(){
+        $(this).closest('.row').find('.task-item').show();
+    });
+
+    $(".btn-hide").click(function(){
+        $(this).closest('.row').find('.task-item').hide();
+    });
+
     var diffDays = -1;
     var percent = 0;
     var task_id = 0;
@@ -84,6 +92,7 @@ const SupervisorTaskManage = () => {
                         completed_members++;
                 }
                 percent = completed_members * 100 / total_members;
+                percent = percent.toFixed(2);
             }
         }
     }
@@ -103,7 +112,7 @@ const SupervisorTaskManage = () => {
             {
                 task.length > 0 ?
                 <div className="selected-task-info col-md-12 row">
-                    <div className="col-sm-4 col-xl-4 col-md-4">
+                    <div className="col-sm-12 col-xl-4 col-md-6">
                         <div className="card card1">
                             <div className="card-heading p-4">
                                 <div className="mini-stat-icon float-right">
@@ -113,7 +122,7 @@ const SupervisorTaskManage = () => {
                                     </div>
                                 </div>
                                 <div className="june-20">
-                                    <h1>{year} <br /> {monthNames[month]}</h1>
+                                    <h2>{year} <br /> {monthNames[month]}</h2>
                                 </div>
                                 {
                                     diffDays != -1 ? <p className="days-20">{diffDays} days <br />till completion</p> : ''
@@ -125,7 +134,7 @@ const SupervisorTaskManage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-3 col-xl-3 col-md-3">
+                    <div className="col-sm-12 col-xl-4 col-md-6">
                         <div className="scrollbar scrollbar1" id="style-2">
                             <div className="force-overflow">
                                 <div className="card m-b-30">
@@ -180,7 +189,7 @@ const SupervisorTaskManage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-5 col-xl-5 col-md-5">
+                    <div className="col-sm-12 col-xl-4 col-md-12">
                         <div className="card card1">
                             <div className="chat-info">
                                 {
@@ -221,10 +230,10 @@ const SupervisorTaskManage = () => {
                     <div className="progress-tasks col-md-12">
                         <div>
                             <div className="row">
-                                <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
+                                <div className="col-sm-8 col-xl-6 col-md-8 tasks-title">
                                     Completed Tasks
                                 </div>
-                                <div className="col-sm-6 col-xl-6 col-md-6">
+                                <div className="col-sm-4 col-xl-6 col-md-4">
                                     <div className="mini-stat-icon float-right">
                                         <nav className="navbar-custom">
                                             <ul className="navbar-right list-inline float-right mb-0">
@@ -236,9 +245,8 @@ const SupervisorTaskManage = () => {
                                                             <i className="mdi mdi-menu"></i>
                                                         </a>
                                                         <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="supervisor-panel.html"> Create Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Task Management</a>
-                                                            <a className="dropdown-item " href="#"> Extend List</a>
+                                                            <a className="dropdown-item btn-extend" href="#"> Extend List</a>
+                                                            <a className="dropdown-item btn-hide" href="#"> Hide List</a>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -248,7 +256,7 @@ const SupervisorTaskManage = () => {
                                 </div>
                                 {tasks.completedTasks.map((value, index) => {
                                     return (
-                                        <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                        <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
                                             <div className="card">
                                                 <div className="card-heading">
                                                     <div className="float-left padding10">
@@ -256,7 +264,7 @@ const SupervisorTaskManage = () => {
                                                         <span>Supervisor</span>
                                                     </div>
                                                     <div className="float-right padding10">
-                                                        <div className="text-white no-margin middle-font">
+                                                        <div className="text-white no-margin middle-font text-right">
                                                             {value.name}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
@@ -271,7 +279,7 @@ const SupervisorTaskManage = () => {
                                                                 </div>
                                                             </div>  
                                                         </div>
-                                                        <div>DUE BY: {value.startTime}</div>
+                                                        <div>DUE BY: {value.startTime.split('T')[0]}</div>
                                                     </div>
                                                     <div className="pro-image">
                                                         <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
@@ -294,10 +302,10 @@ const SupervisorTaskManage = () => {
                     <div className="progress-tasks col-md-12">
                         <div>
                             <div className="row">
-                                <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
+                                <div className="col-sm-8 col-xl-6 col-md-8 tasks-title">
                                     In progress Tasks
                                 </div>
-                                <div className="col-sm-6 col-xl-6 col-md-6">
+                                <div className="col-sm-4 col-xl-6 col-md-4">
                                     <div className="mini-stat-icon float-right">
                                         <nav className="navbar-custom">
                                             <ul className="navbar-right list-inline float-right mb-0">
@@ -309,9 +317,8 @@ const SupervisorTaskManage = () => {
                                                             <i className="mdi mdi-menu"></i>
                                                         </a>
                                                         <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="supervisor-panel.html"> Create Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Task Management</a>
-                                                            <a className="dropdown-item " href="#"> Extend List</a>
+                                                            <a className="dropdown-item btn-extend" href="#"> Extend List</a>
+                                                            <a className="dropdown-item btn-hide" href="#"> Hide List</a>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -321,7 +328,7 @@ const SupervisorTaskManage = () => {
                                 </div>
                                 {tasks.inprogressTasks.map((value, index) => {
                                     return (
-                                        <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                        <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
                                             <div className="project-wrapper">
                                                 <div className="project-title">
                                                     <div className="float-left padding10">
@@ -329,7 +336,7 @@ const SupervisorTaskManage = () => {
                                                         <span>Supervisor</span>
                                                     </div>
                                                     <div className="float-right padding10">
-                                                        <div className="text-white no-margin middle-font">
+                                                        <div className="text-white no-margin middle-font text-right">
                                                             {value.name}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
@@ -344,7 +351,7 @@ const SupervisorTaskManage = () => {
                                                                 </div>
                                                             </div>  
                                                         </div>
-                                                        <div>DUE BY: {value.startTime}</div>
+                                                        <div>DUE BY: {value.startTime.split('T')[0]}</div>
                                                     </div>
                                                 </div>
                                                 <div className="project-body">
@@ -369,10 +376,10 @@ const SupervisorTaskManage = () => {
                     <div className="progress-tasks col-md-12">
                         <div>
                             <div className="row">
-                                <div className="col-sm-6 col-xl-6 col-md-6 tasks-title">
+                                <div className="col-sm-8 col-xl-6 col-md-8 tasks-title">
                                     Not started Tasks
                                 </div>
-                                <div className="col-sm-6 col-xl-6 col-md-6">
+                                <div className="col-sm-4 col-xl-6 col-md-4">
                                     <div className="mini-stat-icon float-right">
                                         <nav className="navbar-custom">
                                             <ul className="navbar-right list-inline float-right mb-0">
@@ -384,9 +391,8 @@ const SupervisorTaskManage = () => {
                                                             <i className="mdi mdi-menu"></i>
                                                         </a>
                                                         <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                            <a className="dropdown-item" href="supervisor-panel.html"> Create Task</a>
-                                                            <a className="dropdown-item d-block" href="addtask.html"> Task Management</a>
-                                                            <a className="dropdown-item " href="#"> Extend List</a>
+                                                            <a className="dropdown-item btn-extend" href="#"> Extend List</a>
+                                                            <a className="dropdown-item btn-hide" href="#"> Hide List</a>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -396,7 +402,7 @@ const SupervisorTaskManage = () => {
                                 </div>
                                 {tasks.notStartedTasks.map((value, index) => {
                                     return (
-                                        <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                        <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
                                             <div className="card">
                                                 <div className="card-heading">
                                                     <div className="float-left padding10">
@@ -404,7 +410,7 @@ const SupervisorTaskManage = () => {
                                                         <span>Supervisor</span>
                                                     </div>
                                                     <div className="float-right padding10">
-                                                        <div className="text-white no-margin middle-font">
+                                                        <div className="text-white no-margin middle-font text-right">
                                                             {value.name}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
@@ -419,7 +425,7 @@ const SupervisorTaskManage = () => {
                                                                 </div>
                                                             </div>  
                                                         </div>
-                                                        <div>DUE BY: {value.startTime}</div>
+                                                        <div>DUE BY: {value.startTime.split('T')[0]}</div>
                                                     </div>
                                                     <div className="pro-image">
                                                         <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>

@@ -5,16 +5,34 @@ import { getSimpleRoleName } from '../../services';
 import { Switch } from '../../components/form';
 import {SupervisorRole, EngineerRole, MemberRole} from '../../enums/roles';
 import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
+import { Form, SubmitButton, FormField, ErrorMessage, FormTextarea } from '../../components/form';
 import { 
     getSuperintendents, 
     getEngineers, 
     getMembers,
     removeMember,
-    getMemberProfile
+    getMemberProfile,
+    changeUserRole
 } 
 from '../../store/actions/projectActions';
 
 import $ from 'jquery';
+import ReactNotification from 'react-notifications-component'
+import { store } from 'react-notifications-component';
+
+var notification = {
+    title: "Wonderful!",
+    message: "Configurable",
+    type: "success",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"],
+    dismiss: {
+        duration: 2000,
+        onScreen: true
+    }
+};
 
 const SupervisorMembers = () => {
     const user = useSelector(state => state.auth.user);
@@ -25,6 +43,7 @@ const SupervisorMembers = () => {
     const engineers = useSelector(state => state.project.engineers);
     const members = useSelector(state => state.project.members);
     const selectedMember = useSelector(state => state.project.selectedMember);
+    var selectedMemberId = null;
 
     useEffect(() => {
         $("#side-menu").show();
@@ -40,32 +59,83 @@ const SupervisorMembers = () => {
         var data = {
             memberId: userId
         };
+        selectedMemberId = userId;
         
         dispatch(getMemberProfile(data));
     }
 
-    console.log(selectedMember);
+    const handleOpenSendEmailDialog = () => {
+        var radioValue = $("input[name='role']:checked").val();
+        if(radioValue != undefined){
+            window.$("#inviteMemberModal").modal('hide');
+            $("#selected_role").text(radioValue);
+            window.$("#sendEmailModal").modal();
+        } else {
+            store.addNotification({
+                ...notification,
+                type: 'info',
+                title: "Information",
+                message: "Please select user role first."
+            });
+        }
+    }
+
+    const handleOpenInviteDialog = () => {
+    }
+
+    const handleChangeRole = (memberId, role) => {
+        let data = {
+            memberId: memberId,
+            role: role
+        };
+        dispatch(changeUserRole(data)).then(() => {
+            store.addNotification({
+                ...notification,
+                type: 'success',
+                title: "Success!",
+                message: "You have changed user role."
+            });
+            dispatch(getSuperintendents());
+            dispatch(getEngineers());
+            dispatch(getMembers());
+        });
+
+    }
+
+    const handleRemoveMember = () => {
+        if(selectedMemberId != null){
+
+        } else {
+            store.addNotification({
+                ...notification,
+                type: 'warning',
+                title: "Warning!",
+                message: "Please select member first."
+            })
+        }
+    }
 
     return (
         <React.Fragment>
+            <ReactNotification />
             <div className="members-wrapper col-md-12">
                 <div>
                     <div className="row">
-                        <div className="col-sm-9 col-xl-9 col-md-9">
+                        <div className="col-sm-12 col-xl-9 col-md-6">
                             <div className="scrollbar-members row" id="style-2">
                                 <div className="row col-md-12" style={{padding: '15px'}}>
-                                    <div className="col-md-6 col-sm-6 text-left">
+                                    <div className="col-xl-5 col-md-12 col-sm-12 text-left">
                                         <a className="dropdown-toggle arrow-none nav-user selected-team" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                         Procon Team <i className="fa fa-sort-down"></i>                                        
                                         </a>
                                     </div>
-                                    <div className="col-md-6 col-sm-6 text-right" style={{paddingTop: '10px'}}>
+                                    <div className="col-xl-7 col-md-12 col-sm-12 text-right" style={{paddingTop: '10px'}}>
                                         <span>Manage Team&nbsp;&nbsp;</span>
                                         <Switch />
-                                        <a className="btn-invite-member">
+                                        <a className="btn-invite-member" onClick={handleOpenInviteDialog} data-toggle="modal" data-target="#inviteMemberModal">
                                             &nbsp;&nbsp;<span> Invite Member </span><i className="fa fa-user-plus"></i>
                                         </a>
-                                        <a className="btn-invite-member">
+                                        <a className="btn-invite-member" onClick={handleRemoveMember}>
                                             &nbsp;&nbsp;<span> Remove Member </span><i className="fa fa-user-minus"></i>
                                         </a>
                                     </div>
@@ -73,7 +143,7 @@ const SupervisorMembers = () => {
                                 { 
                                     superintendents.map((value, index) => {
                                         return (
-                                            <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                            <div className="col-sm-12 col-xl-4 col-md-12" key={index}>
                                                 <a onClick={() => handleSelectUser(value.id)} className="friends-suggestions-list team-member-list">
                                                     <div className="border-bottom position-relative">
                                                         <div className="float-left mb-0 mr-3">
@@ -84,9 +154,9 @@ const SupervisorMembers = () => {
                                                         {value.role} <i className="fa fa-sort-down"></i>                                        
                                                         </a>
                                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
-                                                            <a className="dropdown-item"> {SupervisorRole}</a>
-                                                            <a className="dropdown-item"> {EngineerRole}</a>
-                                                            <a className="dropdown-item"> {MemberRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, value.id, SupervisorRole)}> {SupervisorRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, EngineerRole)}> {EngineerRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, MemberRole)}> {MemberRole}</a>
                                                         </div>
                                                         <div className="desc">
                                                             <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
@@ -101,7 +171,7 @@ const SupervisorMembers = () => {
                                 { 
                                     engineers.map((value, index) => {
                                         return (
-                                            <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                            <div className="col-sm-12 col-xl-4 col-md-12" key={index}>
                                                 <a onClick={() => handleSelectUser(value.id)} className="friends-suggestions-list team-member-list">
                                                     <div className="border-bottom position-relative">
                                                         <div className="float-left mb-0 mr-3">
@@ -112,9 +182,9 @@ const SupervisorMembers = () => {
                                                         {value.role} <i className="fa fa-sort-down"></i>                                        
                                                         </a>
                                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
-                                                            <a className="dropdown-item"> {SupervisorRole}</a>
-                                                            <a className="dropdown-item"> {EngineerRole}</a>
-                                                            <a className="dropdown-item"> {MemberRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, SupervisorRole)}> {SupervisorRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, EngineerRole)}> {EngineerRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, MemberRole)}> {MemberRole}</a>
                                                         </div>
                                                         <div className="desc">
                                                             <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
@@ -129,7 +199,7 @@ const SupervisorMembers = () => {
                                 { 
                                     members.map((value, index) => {
                                         return (
-                                            <div className="col-sm-4 col-xl-4 col-md-4" key={index}>
+                                            <div className="col-sm-12 col-xl-4 col-md-12" key={index}>
                                                 <a onClick={() => handleSelectUser(value.id)} className="friends-suggestions-list team-member-list">
                                                     <div className="border-bottom position-relative">
                                                         <div className="float-left mb-0 mr-3">
@@ -155,9 +225,9 @@ const SupervisorMembers = () => {
                                                         {value.role} <i className="fa fa-sort-down"></i>                                        
                                                         </a>
                                                         <div className="dropdown-menu dropdown-menu-right role-dropdown">
-                                                            <a className="dropdown-item"> {SupervisorRole}</a>
-                                                            <a className="dropdown-item"> {EngineerRole}</a>
-                                                            <a className="dropdown-item"> {MemberRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, SupervisorRole)}> {SupervisorRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, EngineerRole)}> {EngineerRole}</a>
+                                                            <a className="dropdown-item" onClick={() => handleChangeRole(value.id, MemberRole)}> {MemberRole}</a>
                                                         </div>
                                                         <div className="desc">
                                                             <h5 className="font-14 mb-1 pt-2">{value.email}</h5>
@@ -187,7 +257,7 @@ const SupervisorMembers = () => {
                                 </div>                                                                         */}
                             </div>
                         </div>
-                        <div className="col-sm-3 col-xl-3 col-md-3">
+                        <div className="col-sm-12 col-xl-3 col-md-6">
                             <div className="card card-member">
                                 {
                                     selectedMember != [] ? <>
@@ -195,11 +265,11 @@ const SupervisorMembers = () => {
                                         <div className="border-bottom position-relative personal-info">
                                             <div className="float-left mb-0 mr-3">
                                                 <img src={selectedMember && !selectedMember.photo ? require('../../images/users/user.jpg') : selectedMember.photo} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >{selectedMember.firstName} {selectedMember.lastName}</p>
+                                                <p className="user-name" >{selectedMember.firstName}&nbsp;{selectedMember.lastName}</p>
                                             </div>
                                             <div className="user-role float-right mt-2 pt-1"> {selectedMember.role} </div>
                                         </div>
-                                        <div className="info-member mrg-space">
+                                        <div className="info-member mrg-space member-info">
                                             {selectedMember && selectedMember.dob && <p><i className="fa fa-birthday-cake icons-pro" /> {new Date(selectedMember.dob).toLocaleDateString()}</p>}
                                             {selectedMember && selectedMember.email && <p><i className="fa fa-envelope icons-pro" /> {selectedMember.email}</p>}
                                             {selectedMember && selectedMember.mobile && <p><i className="fa fa-mobile-alt icons-pro" /> {selectedMember.mobile}</p>}
@@ -217,14 +287,14 @@ const SupervisorMembers = () => {
                                                 <ul className="navbar-right list-inline float-right mb-0">
                                                     <li className="dropdown notification-list list-inline-item">
                                                         <div className="dropdown notification-list nav-pro-img">
-                                                            <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                                            {/* <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                                                 <i className="mdi mdi-menu"></i>
                                                             </a>
                                                             <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
                                                                 <a className="dropdown-item" href="taskdata.html"> Display Task</a>  
                                                                 <a className="dropdown-item d-block" href="addtask.html"> Edit Task</a>
                                                                 <a className="dropdown-item " href="#"> End Task</a>
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -238,6 +308,73 @@ const SupervisorMembers = () => {
                                             <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1" style={{width: '100%'}}/>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="col-sm-12 col-xl-12 col-md-12">
+                <div className="modal fade" id="sendEmailModal" role="dialog">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <p>Invite member</p>
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group row">
+                                    <label className="col-sm-3 col-form-label" style={{paddingTop: '10px'}} id="selected_role">Superintendent</label>
+                                    <div className="col-sm-9">
+                                        <input className="form-control" name="email" type="eamil" placeholder="example@example.com"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer text-center">
+                                <p><button className="btn btn-info btn-lg waves-effect waves-light task-btn3">Send Invitation Email</button></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal fade" id="inviteMemberModal" role="dialog">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header row">
+                                <p>Invite Member</p>
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div className="modal-body row">
+                                <div className="col-md-4 col-sm-4 col-xl-4 offset-1">
+                                    <input type="radio" id={SupervisorRole} name="role" value={SupervisorRole} />
+                                    <label for={SupervisorRole}>&nbsp;&nbsp;{SupervisorRole}</label><br/>
+                                </div>
+                                <div className="col-md-7 col-sm-7 col-xl-7" style={{fontSize: '17px'}}>
+                                    Create, delete tasks/Manage members
+                                </div>
+                                <div className="col-md-4 col-sm-4 col-xl-4 offset-1">
+                                    <input type="radio" id={EngineerRole} name="role" value={EngineerRole} />
+                                    <label for={EngineerRole}>&nbsp;&nbsp;{EngineerRole}</label><br/>
+                                </div>
+                                <div className="col-md-7 col-sm-7 col-xl-7" style={{fontSize: '17px'}}>
+                                   Edit tasks/Manage members
+                                </div>
+                                <div className="col-md-4 col-sm-4 col-xl-4 offset-1">
+                                    <input type="radio" id={MemberRole} name="role" value={MemberRole} />
+                                    <label for={MemberRole}>&nbsp;&nbsp;{MemberRole}</label>
+                                </div>
+                                <div className="col-md-7 col-sm-7 col-xl-7" style={{fontSize: '17px'}}>
+                                    Accept tasks/Feedback
+                                </div>
+                                <div className="col-sm-12 col-xl-12 col-md-12 text-center">
+                                    <button onClick={handleOpenSendEmailDialog}className="btn btn-info btn-lg task-btn2 task-btn3 btn-generate" style={{width: 'auto'}}>Generate an invitation </button>
+                                </div>
+                                <div className="col-sm-12 col-xl-12 col-md-12 text-center" style={{marginTop: '15px'}}>
+                                    <hr />
+                                </div>
+                                <div className="col-sm-12 col-xl-12 col-md-12 text-center" style={{padding: '17px'}}>
+                                    <a className="btn-invite-member" >
+                                        &nbsp;&nbsp;<span> Invite by an email </span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

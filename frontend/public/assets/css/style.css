@@ -1399,6 +1399,15 @@ dt {
   .footer {
     left: 0 !important;
   }
+  #wrapper .left.side-menu {
+    position: absolute;
+    width: 70px;
+    z-index: 5;
+  }
+  #wrapper .left.side-menu #sidebar-menu > ul > li > a span {
+    display: none;
+    padding-left: 10px;
+  }
 }
 
 .right-sidebar {
@@ -1967,6 +1976,10 @@ button:focus {
   .card-columns {
     -webkit-column-gap: 30px;
     column-gap: 30px;
+  }
+
+  .selected-task-info div:last-child{
+    margin-top: 20px;
   }
 }
 
@@ -3405,6 +3418,12 @@ table.focus-on tbody tr.focused td {
   opacity: 1;
 }
 
+@media (max-width: 845px) {
+  .content {
+    margin-left: 70px;
+  }
+}
+
 @media (max-width: 375px) {
   .date {
     display: none;
@@ -3733,6 +3752,20 @@ table.focus-on tbody tr.focused td {
   }
   .main-timeline .timeline:nth-child(2n) .year {
     left: 25%;
+  }
+  
+  #wrapper .left.side-menu {
+    position: absolute;
+    width: 70px;
+    z-index: 5;
+  }
+  #wrapper .left.side-menu #sidebar-menu > ul > li > a span {
+    display: none;
+    padding-left: 10px;
+  }
+
+  .content-page{
+    margin-left: 70px;
   }
 }
 

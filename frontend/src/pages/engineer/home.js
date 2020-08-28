@@ -32,7 +32,11 @@ var notification = {
     insert: "top",
     container: "top-right",
     animationIn: ["animated", "fadeIn"],
-    animationOut: ["animated", "fadeOut"]
+    animationOut: ["animated", "fadeOut"],
+    dismiss: {
+        duration: 2000,
+        onScreen: true
+    }
 };
 
 const validationSchema = Yup.object().shape({

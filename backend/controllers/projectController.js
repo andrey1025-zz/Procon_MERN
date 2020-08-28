@@ -145,6 +145,15 @@ postMessage = (req, res, next) => {
     }).catch(next)
 };
 
+// Leave Feedback
+leaveFeedback = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId, message: message } = req.body;
+    projectService.leaveFeedback(projectId, taskId, userId, message).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 // Add New Task
 addTask = (req, res, next) => {
     const { components, componentId, projectId } = req.body;
@@ -271,6 +280,14 @@ getMemberProfile = (req, res, next) => {
     }).catch(next)
 };
 
+// Change User Role
+changeUserRole = (req, res, next) => {
+    const { memberId: memberId, role: role } = req.body;
+    projectService.changeUserRole({ memberId, role }).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 // Invite Engineer to Project
 inviteEngineer = (req, res, next) => {
     const { projectId: projectId, engineerId: engineerId, taskId: taskId } = req.body;
@@ -325,6 +342,16 @@ getTaskMembers = (req, res, next) => {
     const { sub: userId } = req.user;
     const { projectId: projectId, taskId: taskId } = req.body;
     projectService.getTaskMembers({ userId, projectId, taskId })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
+
+// Get Feedbacks
+getFeedbacks = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { projectId: projectId, taskId: taskId } = req.body;
+    projectService.getFeedbacks({ userId, projectId, taskId })
         .then(data => {
             res.json(data);
         }).catch(next);
@@ -638,6 +665,9 @@ module.exports = {
     getProjectSuperintendents,
     endTask,
     getMemberProfile,
+    changeUserRole,
+    leaveFeedback,
+    getFeedbacks,
     createBucket,
     getBucketDetail,
     uploadToBucket,
