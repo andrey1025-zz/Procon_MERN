@@ -1979,7 +1979,7 @@ button:focus {
   }
 
   .selected-task-info div:last-child{
-    margin-top: 20px;
+    /* margin-top: 20px; */
   }
 }
 

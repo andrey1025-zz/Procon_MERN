@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTasks, getTaskDetail, getTaskMembers, getProjectDetail, endTask, getTaskMessages } from '../../store/actions/projectActions';
+import { getTasks, getTaskDetail, getTaskMembers, getProjectDetail, endTask, getTaskMessages, getFeedbacks } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
 import { NotStart, Inprogress, Completed, Checked } from '../../enums/taskStatus';
 
@@ -16,6 +16,7 @@ const SupervisorTaskManage = () => {
     const taskMembers = useSelector(state => state.project.taskMembers);
     const project = useSelector(state => state.project.project);
     const taskMessages = useSelector(state => state.project.taskMessages);
+    const feedBacks = useSelector(state => state.project.feedBacks);
 
     useEffect(() => {
         $("#side-menu").show();
@@ -38,8 +39,9 @@ const SupervisorTaskManage = () => {
                 taskId: taskId
             }
             dispatch(getTaskDetail(data));
-            dispatch(getTaskMembers(data));
-            dispatch(getTaskMessages(data));
+            dispatch(getTaskMembers(data)).then(() => {
+                dispatch(getFeedbacks(data));
+            });
         }
 
         if(task.length > 0){
@@ -106,6 +108,10 @@ const SupervisorTaskManage = () => {
     const date = today.getDate();
 
     var scrollbar_class = '';
+
+    if(feedBacks.length > 0){
+        scrollbar_class = 'scrollbar';
+    }
 
     return (
         <React.Fragment>
@@ -191,14 +197,11 @@ const SupervisorTaskManage = () => {
                     </div>
                     <div className="col-sm-12 col-xl-4 col-md-12">
                         <div className="card card1">
-                            <div className="chat-info">
-                                {
-                                    taskMessages.length > 0 ? scrollbar_class = 'scrollbar' : ''
-                                }
+                            <div className="feedback" style={{marginTop: '0px !important;'}}>
                                 <div className={scrollbar_class} id="style-2">
                                     { 
-                                        taskMessages != [] > 0 ? 
-                                            taskMessages.map((value, index) => {
+                                        feedBacks != [] > 0 ? 
+                                            feedBacks.map((value, index) => {
                                                 {
                                                     var class_name = 'chat-item';
                                                     value.myId == value.from ? class_name = 'chat-item right' : class_name = 'chat-item';
@@ -210,7 +213,7 @@ const SupervisorTaskManage = () => {
                                                             <p className="user-name" >{value.firstName} {value.lastName}</p>
                                                         </div>
                                                         <div className="inline-block">
-                                                            <p className="chat-content" >{value.message}</p>
+                                                            <p className="chat-content" >{value.feedback}</p>
                                                             <p class="text-muted text-time">{value.createdOn}</p>
                                                         </div>
                                                     </div>
