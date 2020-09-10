@@ -120,6 +120,14 @@ getProjectDetail = (req, res, next) => {
     }).catch(next)
 };
 
+// End Project
+endProject = (req, res, next) => {
+    const { projectId: projectId } = req.body;
+    projectService.endProject(projectId).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
+
 // Delete Project
 deleteProject = (req, res, next) => {
     const { projectId: projectId } = req.body;
@@ -667,6 +675,7 @@ module.exports = {
     getMemberProfile,
     changeUserRole,
     leaveFeedback,
+    endProject,
     getFeedbacks,
     createBucket,
     getBucketDetail,

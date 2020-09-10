@@ -265,6 +265,37 @@ async function getProjectDetail(projectId) {
     }
 };
 
+
+// End Project
+async function endProject(projectId) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        await Project.updateOne(
+            {_id: projectId},
+            {
+                $set: {
+                    'status': Completed
+                }
+            }
+        );
+        try {
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 // Delete Project
 async function deleteProject(projectId) {
     var response = {
@@ -1447,6 +1478,7 @@ async function checkTask({ userId, projectId, taskId, memberId }) {
     };
     try {
         const user = await User.findById(userId);
+        const project = await Project.findById(projectId);
         if(taskId != null){
 
             await Project.updateOne(
@@ -1520,6 +1552,29 @@ async function checkTask({ userId, projectId, taskId, memberId }) {
                     {
                         multi: true,
                         arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+                    }
+                );
+            }
+
+            var projectStatus = 1;
+            if(project && project.tasks && project.tasks.length > 0){
+                for(j = 0; j < project.tasks.length; j++){
+                    if(project.tasks[j].status == Checked)
+                        projectStatus *= 1;
+                    else
+                        projectStatus *= 0;
+                }
+            }
+
+            // console.log("total_status", total_status);
+
+            if(projectStatus == 1){
+                await Project.updateOne(
+                    {_id: projectId},
+                    {
+                        $set: {
+                            'status': Completed
+                        }
                     }
                 );
             }
@@ -2323,5 +2378,6 @@ module.exports = {
     getMemberProfile,
     changeUserRole,
     leaveFeedback,
-    getFeedbacks
+    getFeedbacks,
+    endProject
 };

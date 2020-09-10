@@ -33,10 +33,10 @@ const supervisorRoutes = [
         path: '/supervisor/notification',
         component: SupervisorNotification
     },
-    {
-        path: '/supervisor/members',
-        component: SupervisorMembers
-    },
+    // {
+    //     path: '/supervisor/members',
+    //     component: SupervisorMembers
+    // },
     {
         path: '/supervisor/change-password',
         component: ChangePassword

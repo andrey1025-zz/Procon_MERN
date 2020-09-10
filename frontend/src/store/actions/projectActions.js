@@ -123,7 +123,10 @@ import {
     LEAVE_FEEDBACK_FAILURE,
     GET_FEEDBACKS_REQUEST,
     GET_FEEDBACKS_SUCCESS,
-    GET_FEEDBACKS_FAILURE
+    GET_FEEDBACKS_FAILURE,
+    END_PROJECT_REQUEST,
+    END_PROJECT_SUCCESS,
+    END_PROJECT_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -334,6 +337,30 @@ export const getProjectDetail = (projectId) => async dispatch => {
     } else if (response.data && response.data.status === 'failure') {
         dispatch({
             type: GET_PROJECT_DETAIL_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const endProject = (projectId) => async dispatch => {
+
+    let data = {
+        projectId: projectId
+    };
+    dispatch({
+        type: END_PROJECT_REQUEST
+    });
+
+    const response = await api.post('/project/end-project', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: END_PROJECT_SUCCESS,
+            payload: response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: END_PROJECT_FAILURE,
             payload: response.data
         })
     }

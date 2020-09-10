@@ -17,7 +17,8 @@ const projectSchema = new Schema({
     },
     status: {
         type: String,
-        maxlength: 100
+        maxlength: 100,
+        default: 'inprogress'
     },
     userId: {
         type: Schema.Types.ObjectId,

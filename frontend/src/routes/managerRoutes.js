@@ -3,6 +3,7 @@ import ManagerHome from '../pages/manager/home';
 import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 import ManagerNotification from '../pages/manager/notification';
+import ManagerMembers from '../pages/manager/members';
 
 const mangerRoutes = [
     {
@@ -24,6 +25,10 @@ const mangerRoutes = [
     {
         path: '/manager/account',
         component: Account
+    },
+    {
+        path: '/manager/members',
+        component: ManagerMembers
     }
 ];
 export default mangerRoutes;

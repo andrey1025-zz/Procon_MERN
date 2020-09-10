@@ -26,6 +26,7 @@ const ManagerHome = (props) => {
     const dispatch = useDispatch();
     const superintendents = useSelector(state => state.project.superintendents);
     const projectId = props.match.params.id;
+    window.localStorage.setItem("projectId", projectId);
     var index = 0;
     const forgeToken = useSelector(state => state.project.forgeToken);
     const project = useSelector(state => state.project.project);

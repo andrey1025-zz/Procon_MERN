@@ -98,6 +98,10 @@ const ManagerWelcome = () => {
         window.$("#displayProjectModal").modal();
     }
 
+    const handleEndProject = (projectId) => {
+        dispatch(getProjectDetail(projectId));
+    }
+
     const handleEditProject = (projectId) => {
         dispatch(getProjectDetail(projectId)).then(() => {
             updateValues.location = project.location;
@@ -143,7 +147,7 @@ const ManagerWelcome = () => {
                                               <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
                                                   <a className="dropdown-item" onClick={() => handleDisplayProject(value._id)}> Display Project</a>
                                                   <a className="dropdown-item d-block" onClick={() => handleEditProject(value._id)}> Edit Project</a>
-                                                  <a className="dropdown-item"> End Project</a>
+                                                  <a className="dropdown-item" onClick={() => handleEndProject(value._id)}> End Project</a>
                                                   <a className="dropdown-item" onClick={() => handleDeleteProject(value._id)}> Delete Project</a>
                                               </div>
                                           </div>

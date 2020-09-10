@@ -629,3 +629,7 @@ body.enlarged .content-page{
 .feedback .scrollbar{
   height: auto !important;
 }
+
+.react-switch-label.off{
+  background: #2e304a !important;
+}

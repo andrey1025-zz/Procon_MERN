@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 import { getNotificationCount } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
+import { ProjectManagerRole } from '../../enums/roles';
 
 const SideMenu = () => {
     const user = useSelector(state => state.auth.user);
@@ -55,11 +56,14 @@ const SideMenu = () => {
                                 <img src={require('../../images/th.png')} /> <span> Task History </span>
                             </NavLink>
                         </li>
-                        <li>
-                            <NavLink to={`/${getSimpleRoleName(user.role)}/members`} className={getClassName('members')}  >
-                                <img src={require('../../images/member.png')} /> <span> Member </span>
-                            </NavLink>
-                        </li>                                                
+                        {
+                            user.role == ProjectManagerRole ? 
+                            <li>
+                                <NavLink to={`/${getSimpleRoleName(user.role)}/members`} className={getClassName('members')}  >
+                                    <img src={require('../../images/member.png')} /> <span> Member </span>
+                                </NavLink>
+                            </li> : ''
+                        }                                             
                     </ul>
                 </div>
             </div>
