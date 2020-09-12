@@ -126,7 +126,10 @@ import {
     GET_FEEDBACKS_FAILURE,
     END_PROJECT_REQUEST,
     END_PROJECT_SUCCESS,
-    END_PROJECT_FAILURE
+    END_PROJECT_FAILURE,
+    GET_TASK_FORCOMPONENT_REQUEST,
+    GET_TASK_FORCOMPONENT_SUCCESS,
+    GET_TASK_FORCOMPONENT_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -415,6 +418,26 @@ export const getTasks = (projectId) => async dispatch => {
     }
 }
 
+export const getTaskforComponent = (data) => async dispatch => {
+
+    dispatch({
+        type: GET_TASK_FORCOMPONENT_REQUEST
+    });
+
+    const response = await api.post('/project/taskforcomponent', data);
+
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: GET_TASK_FORCOMPONENT_SUCCESS,
+            payload:response.data
+        });
+    } else if (response.data && response.data.status === 'failure') {
+        dispatch({
+            type: GET_TASK_FORCOMPONENT_FAILURE,
+            payload: response.data
+        })
+    }
+}
 export const inviteSuperintendent = (data) => async dispatch => {
     dispatch({
         type: INVITE_SUPERINTENDENT_REQUEST

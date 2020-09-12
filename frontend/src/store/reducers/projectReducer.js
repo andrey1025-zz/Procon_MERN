@@ -43,6 +43,8 @@ import {
     GET_TASK_HISTORY_FAILURE,
     GET_PROJECT_SUPERINTENDENTS_SUCCESS,
     GET_PROJECT_SUPERINTENDENTS_FAILURE,
+    GET_TASK_FORCOMPONENT_SUCCESS,
+    GET_TASK_FORCOMPONENT_FAILURE,
     GET_MEMBER_PROFILE_SUCCESS,
     GET_MEMBER_PROFILE_FAILURE,
     GET_FEEDBACKS_SUCCESS,
@@ -68,6 +70,7 @@ const initialState = {
     project: [],
     projectSuperintendent: [],
     selectedMember: [],
+    tasksForComponent: [],
     feedBacks: []
 };
 
@@ -110,7 +113,17 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 project: [],
-            };                
+            };
+        case GET_TASK_FORCOMPONENT_SUCCESS:
+            return {
+                ...state,
+                tasksForComponent: action.payload.tasks,
+            };
+        case GET_TASK_FORCOMPONENT_FAILURE:
+            return {
+                ...state,
+                tasksForComponent: [],
+            };                               
         case GET_FORGE_TOKEN_SUCCESS:
             return {
                 ...state,

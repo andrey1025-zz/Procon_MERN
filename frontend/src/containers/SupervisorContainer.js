@@ -30,6 +30,7 @@ const SupervisorContainer = () => {
             {user && <TopNavbar />}
             {user && <SideMenu />}
             <div className="content-page">
+                <div className="lds-ripple"><div></div><div></div></div>
                 <div className="content">
                     <div className="container-fluid">
                         <div className="row space-top">

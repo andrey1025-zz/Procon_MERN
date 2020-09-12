@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, FormField, SubmitButton, FormTextarea } from '../../components/form';
 import { loadingSelector } from '../../store/selectors';
 import { SupervisorRole, EngineerRole, MemberRole } from '../../enums/roles';
+import { getSimpleRoleName } from '../../services';
 import { NotStart, Inprogress, Completed, Reviewed, Checked } from '../../enums/taskStatus';
 import { 
     addTask,
@@ -20,11 +21,15 @@ import {
     getTaskDetail,
     checkTask,
     reworkTask,
+    endTask,
+    getTasks,
+    getTaskforComponent,
     removeMember
 } 
 from '../../store/actions/projectActions';
 import ForgeViewer from 'react-forge-viewer';
 import queryString from 'query-string'
+import { debounce } from 'lodash';
 
 import * as Yup from 'yup';
 import $ from 'jquery'; 
@@ -45,21 +50,21 @@ var notification = {
     }
 };
 
-const validationSchema = Yup.object().shape({
-    name: Yup.string().max(100).required().label("name"),
-    startTime: Yup.string().max(100).required().label("startTime"),
-    endTime: Yup.string().max(255).required().label("endTime"),
-    equipTools: Yup.string().max(255).required().label("equipTools"),
-    components: Yup.string().max(255).required().label("components"),
-    materials: Yup.string().max(255).required().label("materials"),
-    workingArea: Yup.string().max(255).required().label("workingArea"),
-    weather: Yup.string().max(255).required().label("weather"),
-    siteCondition: Yup.string().max(255).required().label("siteCondition"),
-    nearbyIrrelevantObjects: Yup.string().max(255).required().label("nearbyIrrelevantObjects"),
-    cultural_legal_constraints: Yup.string().max(255).required().label("cultural_legal_constraints"),
-    technical_safety_specifications: Yup.string().max(255).required().label("technical_safety_specifications"),
-    publicRelationRequirements: Yup.string().max(255).required().label("publicRelationRequirements"),
-});
+// const validationSchema = Yup.object().shape({
+//     name: Yup.string().max(100).required().label("name"),
+//     startTime: Yup.string().max(100).required().label("startTime"),
+//     endTime: Yup.string().max(255).required().label("endTime"),
+//     equipTools: Yup.string().max(255).required().label("equipTools"),
+//     components: Yup.string().max(255).required().label("components"),
+//     materials: Yup.string().max(255).required().label("materials"),
+//     workingArea: Yup.string().max(255).required().label("workingArea"),
+//     weather: Yup.string().max(255).required().label("weather"),
+//     siteCondition: Yup.string().max(255).required().label("siteCondition"),
+//     nearbyIrrelevantObjects: Yup.string().max(255).required().label("nearbyIrrelevantObjects"),
+//     cultural_legal_constraints: Yup.string().max(255).required().label("cultural_legal_constraints"),
+//     technical_safety_specifications: Yup.string().max(255).required().label("technical_safety_specifications"),
+//     publicRelationRequirements: Yup.string().max(255).required().label("publicRelationRequirements"),
+// });
 
 const initialValues = {
     name: "",
@@ -78,9 +83,12 @@ const initialValues = {
 };
 
 const SupervisorHome = (props) => {
+    $('.lds-ripple').hide();
     const loading = useSelector(state => loadingSelector(['REVIEW_TASK'])(state));
     const values = queryString.parse(props.location.search)
     const task_id = values.task_id;
+    const user = useSelector(state => state.auth.user);
+    var componentId = "";
     let index = 0;
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
@@ -101,7 +109,17 @@ const SupervisorHome = (props) => {
             })
         });;
     }
-
+    const handleEndTask = (taskId) => {
+        if(taskId){
+            let data = {
+                projectId: projectId,
+                taskId: taskId
+            };
+            dispatch(endTask(data)).then(() => {
+                dispatch(getTasks(projectId));
+            });
+        }
+    };
     const handleCheck = (memberId) => {
         let data = {
             projectId: projectId,
@@ -153,20 +171,30 @@ const SupervisorHome = (props) => {
     }
 
     const handleAddTask = () => {
-        let data = {
-            projectId: projectId,
-            components: "Test Component",
-            componentId: "componet id"
-        }
-        dispatch(addTask(data));
-        
-        store.addNotification({
-            ...notification,
-            title: "Success!",
-            message: "You have added new task. Please invite Engineer into the task."
-          })
+        if(componentId == ""){
+            store.addNotification({
+                ...notification,
+                title: "Warning!",
+                message: "You should select one component at least for adding new task."
+              })
 
-        $(".add-member").show();
+        } else {
+            let data = {
+                projectId: projectId,
+                components: "Test Component",
+                componentId: componentId
+            }
+            dispatch(addTask(data));
+            
+            store.addNotification({
+                ...notification,
+                title: "Success!",
+                message: "You have added new task. Please invite Engineer into the task."
+              })
+    
+            $(".add-member").show();
+   
+        }
     }
     
     const project = useSelector(state => state.project.project);
@@ -178,6 +206,7 @@ const SupervisorHome = (props) => {
     const task = useSelector(state => state.project.task);
     const taskEngineers = useSelector(state => state.project.taskEngineers);
     const taskMembers = useSelector(state => state.project.taskMembers);
+    const tasksForComponent = useSelector(state => state.project.tasksForComponent);
 
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
@@ -376,9 +405,27 @@ const SupervisorHome = (props) => {
           setView(viewables[0]);
         }
     }
-    
+    const Autodesk = window.Autodesk;
+
     const handleModelLoaded = (viewer, model) => {
         console.log('Loaded model:', model);
+        viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, debounce((model) => {
+            $('.lds-ripple').show();
+            if(model.selections[0]){
+                var id_arr = model.selections[0].dbIdArray;
+                id_arr.sort(function(a, b) {
+                    return a - b;
+                });
+                componentId = id_arr.join();
+                let data = {
+                    componentId:componentId,
+                    projectId : projectId
+                }
+                dispatch(getTaskforComponent(data)).then(function(){
+                    $('.lds-ripple').hide();
+                });  
+            }    
+        }), 200);      
     }
     
     const handleModelError = (viewer, error) => {
@@ -415,6 +462,47 @@ const SupervisorHome = (props) => {
                 {/* <div className="progress mt-4 mb-4">
                     <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                 </div> */}
+                <div className="row">
+                    {tasksForComponent.map((value, index) => {
+                        return (
+                            <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
+                                <div className="project-wrapper">
+                                    <div className="project-title">
+                                        <div className="float-left padding10">
+                                            <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
+                                            <span>Supervisor</span>
+                                        </div>
+                                        <div className="float-right padding10">
+                                            <div className="text-white no-margin middle-font text-right">
+                                                {value.name != '' ? value.name : 'Just Created'}
+                                                <div className="dropdown nav-pro-img inline">
+                                                    <a className="dropdown-toggle arrow-none nav-user padding10"
+                                                        data-toggle="dropdown" role="button"
+                                                        aria-haspopup="false" aria-expanded="false">
+                                                        <i className="mdi mdi-menu"></i>
+                                                    </a>
+                                                    <div className="dropdown-menu dropdown-menu-right task-history-dropdown">
+                                                        <a className="dropdown-item d-block" href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}> Edit Task</a>
+                                                        <a className="dropdown-item" onClick={() => handleEndTask(value._id)}> End Task</a>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                            <div>DUE BY: {value.startTime.split('T')[0] != '' ? value.startTime.split('T')[0] : '0000-00-00'}</div>
+                                        </div>
+                                    </div>
+                                    <div className="project-body">
+                                        <div className="pro-image">
+                                            <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
+                                                <img src={require('../../images/project.jpg')} alt="user" className="menu-logo1 project-img"/>
+                                            </a>
+                                        </div>                                                    
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}                    
+                </div>
+
                 {
                     task.length > 0 && task_id != null ? 
                     <div className="task-info" style={{display: 'block'}}>

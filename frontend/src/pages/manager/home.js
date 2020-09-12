@@ -7,7 +7,6 @@ import ForgeViewer from 'react-forge-viewer';
 import $ from 'jquery'; 
 import ReactNotification from 'react-notifications-component'
 import { store } from 'react-notifications-component';
-import { debounce } from 'lodash';
 var notification = {
     title: "Wonderful!",
     message: "Configurable",
@@ -140,21 +139,9 @@ const ManagerHome = (props) => {
           setView(viewables[0]);
         }
     }
-    const Autodesk = window.Autodesk;
 
     const handleModelLoaded = (viewer, model) => {
         console.log('Loaded model:', model);
-        viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, debounce((model) => {
-            if(model.selections[0]){
-                var id_arr = model.selections[0].dbIdArray;
-                id_arr.sort(function(a, b) {
-                    return a - b;
-                });
-                var id_str = id_arr.join();  
-                console.log(id_str);                  
-            }    
-
-          }), 200);        
     }
     
     const handleModelError = (viewer, error) => {

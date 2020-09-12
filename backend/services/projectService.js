@@ -626,6 +626,29 @@ async function getTasks(projectId) {
     }
 };
 
+// Get Task for selecting component
+async function getTaskforComponent(projectId, componentId) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        const tasks = await Project.find(
+            { _id: projectId }, 
+            { 
+                tasks: { $elemMatch: { componentId: componentId } },
+            });
+        return {
+            ...response,
+            status: responseStatus.success,
+            errorMessage: {},
+            tasks: tasks[0].tasks
+        };
+    }
+    catch (error) {
+        throw error;
+    }
+};
 // Get Task History
 async function getTaskHistory(projectId) {
     var response = {
@@ -2348,6 +2371,7 @@ module.exports = {
     editTask,
     reviewTask,
     getTasks,
+    getTaskforComponent,
     getTaskDetail,
     getSuperintendents,
     getEngineers,

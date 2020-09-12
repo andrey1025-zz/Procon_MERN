@@ -217,6 +217,17 @@ getTasks = (req, res, next) => {
         }).catch(next);
 };
 
+// Get Task for selecting component
+getTaskforComponent = (req, res, next) => {
+    const { projectId: projectId, componentId : componentId } = req.body;
+    projectService.getTaskforComponent(projectId, componentId)
+        .then(response => {
+            if (response.status === responseStatus.success)
+                setTokenCookie(res, response.refreshToken);
+            res.json(_.omit(response, 'refreshToken'));
+        }).catch(next);
+};
+
 // Get Task History
 getTaskHistory = (req, res, next) => {
     const { projectId: projectId } = req.body;
@@ -643,6 +654,7 @@ module.exports = {
     addTask,
     editTask,
     getTasks,
+    getTaskforComponent,
     getForgeAccessToken,
     getUsers,
     getSuperintendents,
