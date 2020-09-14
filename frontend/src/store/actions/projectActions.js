@@ -129,7 +129,10 @@ import {
     END_PROJECT_FAILURE,
     GET_TASK_FORCOMPONENT_REQUEST,
     GET_TASK_FORCOMPONENT_SUCCESS,
-    GET_TASK_FORCOMPONENT_FAILURE
+    GET_TASK_FORCOMPONENT_FAILURE,
+    ACCEPT_NOTIFICATION_REQUEST,
+    ACCEPT_NOTIFICATION_SUCCESS,
+    ACCEPT_NOTIFICATION_FAILURE
 } from '../types';
 import api from '../../api';
 
@@ -819,6 +822,27 @@ export const clearNotification = (data) => async dispatch => {
         })
     }
 };
+
+export const acceptNotification = (data) => async dispatch => {
+    dispatch({
+        type: ACCEPT_NOTIFICATION_REQUEST
+    });
+
+    const response = await api.post('/project/accept-notification', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: ACCEPT_NOTIFICATION_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: ACCEPT_NOTIFICATION_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
 
 export const getUsers = () => async dispatch => {
 

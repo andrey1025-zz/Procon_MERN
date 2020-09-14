@@ -43,6 +43,7 @@ router.post("/rework-task", authorize(), projectController.reworkTask);
 router.post("/delete-task", authorize(), projectController.deleteTask);
 router.post("/remove-member", authorize(), projectController.removeMember);
 router.post("/clear-notification", authorize(), projectController.clearNotification);
+router.post("/accept-notification", authorize(), projectController.acceptNotification);
 router.post("/post-message", authorize(), projectController.postMessage);
 router.post("/feedback", authorize(), projectController.leaveFeedback);
 router.post("/get-feedbacks", authorize(), projectController.getFeedbacks);

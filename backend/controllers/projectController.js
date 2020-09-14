@@ -466,6 +466,14 @@ clearNotification = (req, res, next) => {
         }).catch(next);
 };
 
+acceptNotification = (req, res, next) => {
+    const { sub: userId } = req.user;
+    const { noti_id: noti_id } = req.body;
+    projectService.acceptNotification({ noti_id })
+        .then(data => {
+            res.json(data);
+        }).catch(next);
+};
 // Get Notification Count
 getNotificationCount = (req, res, next) => {
     const { sub: userId } = req.user;
@@ -678,6 +686,7 @@ module.exports = {
     removeMember,
     getTaskMessages,
     clearNotification,
+    acceptNotification,
     getTaskHistory,
     submitForCheckingTask,
     deleteProject,

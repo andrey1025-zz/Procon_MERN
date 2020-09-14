@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getNotifications } from '../../store/actions/projectActions';
+import { getNotifications, acceptNotification } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
 
 import $ from 'jquery';
@@ -21,7 +21,18 @@ const ManagerNotification = () => {
 
     
     const dispatch = useDispatch();
-
+    const handleNotification = (noti_id) =>{
+        let data = {
+            noti_id : noti_id
+        }
+        dispatch(acceptNotification(data));
+        var count = parseInt($(".notification-badge").html());
+        if(count > 1){
+            $(".notification-badge").html(count - 1);
+        } else{
+            $(".notification-badge").html('');
+        }
+    }
     return (
         <React.Fragment>
                     {notifications && notifications.length > 0 ? 
@@ -63,7 +74,7 @@ const ManagerNotification = () => {
                                             <p>{value.message}</p>
                                             </div>
                                             <div className="pro-image">
-                                                <Link to={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value.taskId}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
+                                                <Link to={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value.taskId} onClick={() => handleNotification(value._id)}><img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1"/></Link>
                                             </div>
                                         </div>
                                     </div>

@@ -39,6 +39,8 @@ import {
     GET_TASK_MESSAGES_SUCCESS,
     GET_TASK_MESSAGES_FAILURE,
     GET_TASK_HISTORY_SUCCESS,
+    ACCEPT_NOTIFICATION_SUCCESS,
+    ACCEPT_NOTIFICATION_FAILURE,
     REMOVE_MEMBER_SUCCESS,
     GET_TASK_HISTORY_FAILURE,
     GET_PROJECT_SUPERINTENDENTS_SUCCESS,
@@ -308,6 +310,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 notifications: 0,
+            };
+        case ACCEPT_NOTIFICATION_SUCCESS:
+            return {
+                ...state,
+                progress: 0,
+            };
+        case ACCEPT_NOTIFICATION_FAILURE:
+            return {
+                ...state,
+                progress: 0,
             };
         case GET_MEMBER_PROFILE_SUCCESS:
             return {

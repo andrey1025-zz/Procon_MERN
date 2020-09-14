@@ -91,6 +91,7 @@ const SupervisorHome = (props) => {
     let index = 0;
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
+
     if(projectId == '')
         projectId = window.localStorage.getItem("projectId");
     const dispatch = useDispatch();

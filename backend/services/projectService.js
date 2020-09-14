@@ -429,9 +429,9 @@ async function editTask({ name, startTime, endTime, equipTools, components, mate
                     arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
                 }
             )
-            await Notification.deleteOne(
-                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 }
-            )
+            // await Notification.deleteOne(
+            //     { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 }
+            // )
             const notification = new Notification({
                 from: userId,
                 to: project.superintendent[0].id,
@@ -521,10 +521,9 @@ async function reviewTask({projectId, taskId, userId, ipAddress }) {
                 engineerId = task[0].tasks[0].engineers[0].id;
             }
 
-            await Notification.deleteOne(
-                { projectId: ObjectID(projectId), taskId: ObjectID(taskId), from: ObjectID(engineerId), to: ObjectID(userId), type: 0 },
-                // {projectId: projectId, taskId:taskId, from: engineerId, to: userId},
-            )
+            // await Notification.deleteOne(
+            //     { projectId: ObjectID(projectId), taskId: ObjectID(taskId), from: ObjectID(engineerId), to: ObjectID(userId), type: 0 },
+            // )
 
             const session = await mongoose.startSession();
             const opts = { session, returnOriginal: false };
@@ -2037,6 +2036,39 @@ async function clearNotification({ userId, projectId, taskId }) {
     }
 };
 
+// accept Notification
+async function acceptNotification({ noti_id }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    try {
+        if(noti_id != null){
+            await Notification.deleteOne(
+                { _id: ObjectID(noti_id) }
+            );
+        }
+        const session = await mongoose.startSession();
+        try {
+            //await session.startTransaction();
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {}
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
 // Invite Member
 async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress }) {
     var response = {
@@ -2261,6 +2293,7 @@ async function getNotifications({ userId, projectId }) {
                 );
             const fromUserDetail = basicDetails(from);
             var item = {
+                _id : notifications[i]._id,
                 count: notifications[i].count,
                 createdOn: notifications[i].createdOn.toISOString().split('T')[0],
                 message: notifications[i].message,
@@ -2392,6 +2425,7 @@ module.exports = {
     deleteTask,
     removeMember,
     clearNotification,
+    acceptNotification,
     postMessage,
     getTaskMessages,
     endTask,
