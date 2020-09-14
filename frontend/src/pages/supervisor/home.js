@@ -83,12 +83,11 @@ const initialValues = {
 };
 
 const SupervisorHome = (props) => {
-    $('.lds-ripple').hide();
     const loading = useSelector(state => loadingSelector(['REVIEW_TASK'])(state));
     const values = queryString.parse(props.location.search)
     const task_id = values.task_id;
     const user = useSelector(state => state.auth.user);
-    var componentId = "";
+    let componentId = "";
     let index = 0;
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
@@ -171,6 +170,7 @@ const SupervisorHome = (props) => {
     }
 
     const handleAddTask = () => {
+        var componentId = localStorage.getItem("componentId");
         if(componentId == ""){
             store.addNotification({
                 ...notification,
@@ -417,6 +417,7 @@ const SupervisorHome = (props) => {
                     return a - b;
                 });
                 componentId = id_arr.join();
+                localStorage.setItem("componentId", componentId);
                 let data = {
                     componentId:componentId,
                     projectId : projectId
@@ -455,7 +456,7 @@ const SupervisorHome = (props) => {
                             />
                                 : ""
                             }
-                            { !task_id ? <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={handleAddTask}>Add a new task</button> : ''}
+                            { !task_id ? <button className="btn btn-info btn-lg task-btn2 btn-add-task" onClick={() => handleAddTask(componentId)}>Add a new task</button> : ''}
                         </div>
                     </div>
                 </div>
