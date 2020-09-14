@@ -427,6 +427,7 @@ const SupervisorHome = (props) => {
                     $('.lds-ripple').hide();
                 });  
             } else{
+                localStorage.setItem("componentId", '');
                 $('.lds-ripple').hide();
             }    
         }), 200);      
