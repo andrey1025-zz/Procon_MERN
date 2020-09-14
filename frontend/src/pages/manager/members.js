@@ -167,8 +167,6 @@ const ManagerMembers = () => {
 
     var teamNames = [];
     
-    console.log("times");
-
     if(project){
         if(project.tasks){
             var i = 0;
@@ -189,7 +187,6 @@ const ManagerMembers = () => {
 
     if(selectedTaskId != 0){
         console.log(selectedTaskId);
-        // handleTeamSelected(selectedTaskId, 0);
     }
 
     useEffect(() => {

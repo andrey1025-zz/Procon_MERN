@@ -425,6 +425,8 @@ const SupervisorHome = (props) => {
                 dispatch(getTaskforComponent(data)).then(function(){
                     $('.lds-ripple').hide();
                 });  
+            } else{
+                $('.lds-ripple').hide();
             }    
         }), 200);      
     }
