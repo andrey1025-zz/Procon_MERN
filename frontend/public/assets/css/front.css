@@ -669,3 +669,6 @@ body.enlarged .content-page{
     opacity: 0;
   }
 }
+.completed-project-title{
+  background: #5331c2 !important;
+}

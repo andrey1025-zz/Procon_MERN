@@ -116,6 +116,7 @@ const SupervisorHome = (props) => {
                 taskId: taskId
             };
             dispatch(endTask(data)).then(() => {
+                $("#" + taskId).addClass("completed-project-title");
                 dispatch(getTasks(projectId));
             });
         }
@@ -423,8 +424,10 @@ const SupervisorHome = (props) => {
                     componentId:componentId,
                     projectId : projectId
                 }
+
                 dispatch(getTaskforComponent(data)).then(function(){
                     $('.lds-ripple').hide();
+                    $(".task-info").hide();
                 });  
             } else{
                 localStorage.setItem("componentId", '');
@@ -472,7 +475,7 @@ const SupervisorHome = (props) => {
                         return (
                             <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
                                 <div className="project-wrapper">
-                                    <div className="project-title">
+                                    <div className="project-title" id={value._id}>
                                         <div className="float-left padding10">
                                             <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
                                             <span>Supervisor</span>
