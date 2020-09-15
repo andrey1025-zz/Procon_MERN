@@ -25,7 +25,7 @@ const SideMenu = () => {
                 <div id="sidebar-menu">
                     <img src={require('../../images/side-logo.png')} className="Forhome"/>
                     <ul className="metismenu icon-image-menu" id="side-menu">
-                        <li>
+                        {/* <li>
                             <a className="waves-effect" aria-expanded="false">
                                 <span> Procon team <span className="float-right menu-arrow"><i className="mdi mdi-chevron-right"></i></span></span>
                             </a>
@@ -35,7 +35,7 @@ const SideMenu = () => {
                                 <li><a>Team 3</a></li>
                                 <li><a>Add Team +</a></li>
                             </ul>
-                        </li>
+                        </li> */}
                         <li>
                             <NavLink to={`/${getSimpleRoleName(user.role)}/home/` + projectId} className={getClassName('home')}  >
                                 <img src={require('../../images/home.png')} /> <span> Homepage </span>
