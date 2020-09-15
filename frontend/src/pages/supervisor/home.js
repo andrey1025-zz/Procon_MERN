@@ -209,7 +209,6 @@ const SupervisorHome = (props) => {
     const taskEngineers = useSelector(state => state.project.taskEngineers);
     const taskMembers = useSelector(state => state.project.taskMembers);
     const tasksForComponent = useSelector(state => state.project.tasksForComponent);
-
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);
     const [role, setRole] = useState(null);
@@ -408,9 +407,21 @@ const SupervisorHome = (props) => {
         }
     }
     const Autodesk = window.Autodesk;
-
+    var task_detail_flag = true;
     const handleModelLoaded = (viewer, model) => {
         console.log('Loaded model:', model);
+        viewer.addEventListener(Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT, debounce((model) => {
+            if(task_id){
+                task_detail_flag = false;
+                var str_arr = task[0].tasks[0].componentId.split(',');
+                var dbArray = [];
+                for (let index = 0; index < str_arr.length; index++) {
+                    dbArray.push(parseInt(str_arr[index]));
+                }
+                viewer.select(dbArray);
+            }
+        }), 200);      
+
         viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, debounce((model) => {
             $('.lds-ripple').show();
             if(model.selections[0]){
@@ -427,7 +438,15 @@ const SupervisorHome = (props) => {
 
                 dispatch(getTaskforComponent(data)).then(function(){
                     $('.lds-ripple').hide();
-                    $(".task-info").hide();
+                    if(!task_detail_flag){
+                        $(".task-info").show();
+                        $(".task-for-component").hide();
+                        task_detail_flag = true;
+                    } else{
+                        $(".task-info").hide();
+                        $(".task-for-component").show();
+                        task_detail_flag = true;
+                    }
                 });  
             } else{
                 localStorage.setItem("componentId", '');
@@ -470,7 +489,7 @@ const SupervisorHome = (props) => {
                 {/* <div className="progress mt-4 mb-4">
                     <div className="progress-bar bg-primary" role="progressbar" style={{width: '75%'}} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                 </div> */}
-                <div className="row">
+                <div className="row task-for-component">
                     {tasksForComponent.map((value, index) => {
                         return (
                             <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
@@ -632,13 +651,13 @@ const SupervisorHome = (props) => {
                                     <a href="#" className="friends-suggestions-list">
                                         <div className="border-bottom position-relative">
                                             <div className="float-left mb-0 mr-3">
-                                                <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                                <img src={!taskEngineers[0].photo ? require('../../images/users/user.jpg') : taskEngineers[0].photo} alt="" className="roundedImg thumb-md"/>
+                                                <p className="user-name" >{taskEngineers[0].firstName} {taskEngineers[0].lastName}</p>
                                             </div>
-                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
+                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers[0].role} </div>
                                             <div className="desc">
-                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers.email}</h5>
-                                                <p className="text-muted">{!taskEngineers.mobile ? '' : taskEngineers.mobile}</p>
+                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers[0].email}</h5>
+                                                <p className="text-muted">{!taskEngineers[0].mobile ? '' : taskEngineers[0].mobile}</p>
                                             </div>
                                         </div>
                                     </a> 
