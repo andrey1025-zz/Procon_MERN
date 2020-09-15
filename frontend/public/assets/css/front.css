@@ -479,10 +479,12 @@
 .selected-team {
   font-size: 20px;
   color: white;
+  margin-left: 50px;
 }
 
 .selected-team i{
   color: #5331C2;
+  margin-left: 5px;
 }
 
 .user-role i{

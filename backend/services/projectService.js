@@ -686,8 +686,8 @@ async function getTaskHistory(projectId) {
                         const engineer = await User.findById(project.tasks[i].engineers[j].id);
                         item.members.push(basicDetails(engineer));
                     }
-                    for(k = 0; k < project.tasks[i].engineers.length; k++){
-                        const member = await User.findById(project.tasks[i].engineers[k].id);
+                    for(k = 0; k < project.tasks[i].members.length; k++){
+                        const member = await User.findById(project.tasks[i].members[k].id);
                         item.members.push(basicDetails(member));
                     }
                     tasks.push(item);
@@ -1114,12 +1114,14 @@ async function getTaskEngineers({ userId, projectId, taskId }) {
             const task = await Project.find(
                 { _id: projectId }, 
                 { 
-                    tasks: { $elemMatch: { _id: taskId } }
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } }
                 } 
             );
             if(task && task.length > 0){
                 if(task[0].tasks && task[0].tasks.length > 0){
                     var task_detail = task[0].tasks[0];
+
+
                     for(i = 0; i < task_detail.engineers.length; i++){
                         const userInfo = await User.findById(task_detail.engineers[i].id);
                         taskEngineers.push(basicDetails(userInfo));

@@ -3916,7 +3916,7 @@ table.focus-on tbody tr.focused td {
 }
 .force-overflow
 {
-	min-height: 450px;
+	min-height: 400px;
 }
 #style-2::-webkit-scrollbar-track
 {

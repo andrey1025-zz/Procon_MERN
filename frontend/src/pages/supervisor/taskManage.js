@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTasks, getTaskDetail, getTaskMembers, getProjectDetail, endTask, getTaskMessages, getFeedbacks } from '../../store/actions/projectActions';
+import { getTasks, getTaskDetail, getTaskMembers, getProjectDetail, endTask, getTaskMessages, getFeedbacks, getTaskEngineers } from '../../store/actions/projectActions';
 import { getSimpleRoleName } from '../../services';
 import { NotStart, Inprogress, Completed, Checked } from '../../enums/taskStatus';
 
@@ -14,6 +14,7 @@ const SupervisorTaskManage = () => {
     const tasks = useSelector(state => state.project.tasks);
     const task = useSelector(state => state.project.task);
     const taskMembers = useSelector(state => state.project.taskMembers);
+    const taskEngineers = useSelector(state => state.project.taskEngineers);
     const project = useSelector(state => state.project.project);
     const taskMessages = useSelector(state => state.project.taskMessages);
     const feedBacks = useSelector(state => state.project.feedBacks);
@@ -39,6 +40,7 @@ const SupervisorTaskManage = () => {
                 taskId: taskId
             }
             dispatch(getTaskDetail(data));
+            dispatch(getTaskEngineers(data));
             dispatch(getTaskMembers(data)).then(() => {
                 dispatch(getFeedbacks(data));
             });
@@ -78,24 +80,17 @@ const SupervisorTaskManage = () => {
             task_id = task[0].tasks[0]._id;
             var startTime = new Date(task[0].tasks[0].startTime);
             var endTime = new Date(task[0].tasks[0].endTime);
-            
-            const diffTime = Math.abs(endTime - startTime);
-            diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            var currentTime = new Date(Date.now());
 
-            var members = task[0].tasks[0].members;
-            var total_members = 0;
-            var completed_members = 0;
+            const diffTime = Math.abs(endTime - currentTime);
+            diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
             var percent = 0;
-            if(members.length > 0){
-                total_members = members.length;
-                var i = 0;
-                for(i = 0 ; i < members.length; i++){
-                    if(members[i].status == Checked)
-                        completed_members++;
-                }
-                percent = completed_members * 100 / total_members;
-                percent = percent.toFixed(2);
-            }
+            const totalTime = Math.abs(endTime - startTime);
+            const totalDays = Math.ceil(totalTime / (1000 * 60 * 60 * 24)); 
+            
+            const workingTime = Math.abs(currentTime - startTime);
+            const workingDays = Math.ceil(workingTime / (1000 * 60 * 60 * 24)); 
+            percent = ((workingDays / totalDays) * 100).toFixed(2);
         }
     }
 
@@ -145,8 +140,50 @@ const SupervisorTaskManage = () => {
                             <div className="force-overflow">
                                 <div className="card m-b-30">
                                     <div className="card-body">
-                                        <h4 className="mt-0 header-title mb-4">Member List</h4>
+                                        <h4 className="mt-0 header-title mb-4">Engineer and Member List</h4>
                                         <div className="friends-suggestions">
+                                        { 
+                                            taskEngineers != [] > 0 ? 
+                                            taskEngineers.map((value, index) => {
+                                                    return (
+                                                        <a href="#" className="friends-suggestions-list" key={index}>
+                                                            <div className="border-bottom position-relative">
+                                                                <div className="float-left mb-0 mr-3">
+                                                                    <img src={!value.photo ? require('../../images/users/user.jpg') : value.photo} alt="" className="rounded-circle11 thumb-md"/>
+                                                                </div>
+                                                                <div className="suggestion-icon float-right">
+                                                                    <p>2020.06.26 22:36:24</p>
+                                                                </div>
+                                                                {
+                                                                    value.status == NotStart ? 
+                                                                        <div className="task-status notstart">not start</div>
+                                                                    : ''
+                                                                }
+                                                                {
+                                                                    value.status == Inprogress ? 
+                                                                        <div className="task-status inprogress">in progress</div>
+                                                                    : ''
+                                                                }
+                                                                {
+                                                                    value.status == Completed ? 
+                                                                        <div className="task-status reviewing">reveiwing</div>
+                                                                    : ''
+                                                                }
+                                                                {
+                                                                    value.status == Checked ? 
+                                                                        <div className="task-status complete">available</div>
+                                                                    : ''
+                                                                }
+                                                                <div className="desc1">
+                                                                    <h5 className="font-14 mb-1 pt-2">{value.firstName} {value.lastName}</h5>
+                                                                    <p className="text-muted">{ task.length > 0 ? task[0].tasks[0].name : ''}</p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    ) 
+                                                })
+                                            : ''
+                                        }
                                         { 
                                             taskMembers != [] > 0 ? 
                                                 taskMembers.map((value, index) => {
@@ -197,7 +234,7 @@ const SupervisorTaskManage = () => {
                     </div>
                     <div className="col-sm-12 col-xl-4 col-md-12">
                         <div className="card card1">
-                            <div className="feedback" style={{marginTop: '0px !important;'}}>
+                            <div className="feedback" style={{marginTop: '0px !important'}}>
                                 <div className={scrollbar_class} id="style-2">
                                     { 
                                         feedBacks != [] > 0 ? 
