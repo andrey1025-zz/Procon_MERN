@@ -261,6 +261,18 @@ const MemberHome = (props) => {
     }
     const handleNodeSelected = (viewer, model) => {
     }
+    var task_startTime = '';
+    var task_endTime = '';
+    if(task.length > 0){
+        if(task[0].tasks[0].startTime.length > 16)
+            task_startTime = task[0].tasks[0].startTime.substring(0, task[0].tasks[0].startTime.length - 5);
+        else 
+            task_startTime = task[0].tasks[0].startTime;
+        if(task[0].tasks[0].endTime.length > 16)
+            task_endTime = task[0].tasks[0].endTime.substring(0, task[0].tasks[0].endTime.length - 5);
+        else 
+            task_endTime = task[0].tasks[0].endTime;
+    }
     return (
         <React.Fragment>
             <div className="col-sm-9 col-xl-9 col-md-9 project-detail">
@@ -304,13 +316,13 @@ const MemberHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task_startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task_endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
@@ -509,13 +521,13 @@ const MemberHome = (props) => {
                                     <a href="#" className="friends-suggestions-list" >
                                         <div className="border-bottom position-relative">
                                             <div className="float-left mb-0 mr-3">
-                                                <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                                <img src={!taskEngineers[0].photo ? require('../../images/users/user.jpg') : taskEngineers[0].photo} alt="" className="roundedImg thumb-md"/>
+                                                <p className="user-name" >{taskEngineers[0].firstName} {taskEngineers[0].lastName}</p>
                                             </div>
-                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
+                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers[0].role} </div>
                                             <div className="desc">
-                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers.email}</h5>
-                                                <p className="text-muted">{!taskEngineers.mobile ? '' : taskEngineers.mobile}</p>
+                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers[0].email}</h5>
+                                                <p className="text-muted">{!taskEngineers[0].mobile ? '' : taskEngineers[0].mobile}</p>
                                             </div>
                                         </div>
                                     </a> 

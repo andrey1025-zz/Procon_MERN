@@ -1306,6 +1306,34 @@ async function startTask({ userId, projectId, taskId }) {
         const user = await User.findById(userId);
         var taskMembers = [];
         if(taskId != null){
+            
+
+            const task = await Project.find(
+                { _id: projectId }, 
+                { 
+                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
+                } 
+            );
+
+            if(task && task[0] && task[0].tasks[0]){
+                var taskStatus = task[0].tasks[0].status;
+                if(taskStatus == NotStart){
+                    var currentTime = new Date(Date.now());
+                    await Project.updateOne(
+                        {_id: projectId},
+                        {
+                            $set: {
+                                'tasks.$[elem].startTime': currentTime.toISOString()
+                            }
+                        },
+                        {
+                            multi: true,
+                            arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+                        }
+                    );
+                }
+            }
+
             await Project.updateOne(
                 {_id: projectId},
                 {
@@ -1344,13 +1372,6 @@ async function startTask({ userId, projectId, taskId }) {
             await Notification.deleteOne(
                 { projectId: ObjectID(projectId), taskId: ObjectID(taskId), to: ObjectID(userId), type: 0 },
                 // {projectId: projectId, taskId:taskId, to: userId},
-            );
-
-            const task = await Project.find(
-                { _id: projectId }, 
-                { 
-                    tasks: { $elemMatch: { _id: new ObjectID(taskId) } },
-                } 
             );
             var engineerId = null;
 
@@ -1566,6 +1587,19 @@ async function checkTask({ userId, projectId, taskId, memberId }) {
             // console.log("total_status", total_status);
 
             if(total_status == 1){
+                var currentTime = new Date(Date.now());
+                await Project.updateOne(
+                    {_id: projectId},
+                    {
+                        $set: {
+                            'tasks.$[elem].endTime': currentTime.toISOString()
+                        }
+                    },
+                    {
+                        multi: true,
+                        arrayFilters: [ { "elem._id": { $eq: ObjectID(taskId)} } ]
+                    }
+                );
                 await Project.updateOne(
                     {_id: projectId},
                     {
@@ -2211,6 +2245,9 @@ async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress
                 projectId: projectId,
                 message: "The Superintendent invited you to the project as an engineer."
             });
+            
+            var task_engineer = [];
+            task_engineer.push(basicDetails(engineer));
     
             const session = await mongoose.startSession();
             try {
@@ -2230,7 +2267,7 @@ async function inviteEngineer({ projectId, engineerId, userId, taskId, ipAddress
                     errorMessage: {},
                     token: jwtToken,
                     refreshToken: refreshToken.token,
-                    data: basicDetails(engineer)
+                    data: task_engineer
                 };
             } catch (error) {
                 //await session.abortTransaction();

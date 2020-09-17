@@ -107,6 +107,9 @@ const EngineerHome = (props) => {
 
     var scrollbar_class = '';
 
+    console.log("aaaaaaaaaaaaaa", taskEngineers);
+    
+    console.log("bbbbbbbbb", taskMembers);
     useEffect(() => {
         if(project){
             setUrn(project.model);
@@ -233,6 +236,19 @@ const EngineerHome = (props) => {
     }
     const handleNodeSelected = (viewer, model) => {
     }
+
+    var task_startTime = '';
+    var task_endTime = '';
+    if(task.length > 0){
+        if(task[0].tasks[0].startTime.length > 16)
+            task_startTime = task[0].tasks[0].startTime.substring(0, task[0].tasks[0].startTime.length - 5);
+        else 
+            task_startTime = task[0].tasks[0].startTime;
+        if(task[0].tasks[0].endTime.length > 16)
+            task_endTime = task[0].tasks[0].endTime.substring(0, task[0].tasks[0].endTime.length - 5);
+        else 
+            task_endTime = task[0].tasks[0].endTime;
+    }
     return (
         <React.Fragment>
             <ReactNotification />
@@ -278,13 +294,13 @@ const EngineerHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="startTime" defaultValue={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" defaultValue={task_startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="endTime" defaultValue={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" defaultValue={task_endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
@@ -413,7 +429,7 @@ const EngineerHome = (props) => {
 
             <div className="col-sm-3 col-xl-3 col-md-3 member-panel">
             {
-                (taskEngineers != [] > 0 || taskMembers != [] > 0 ) ?
+                (taskMembers != [] > 0 || taskEngineers != [] > 0 || taskEngineers ) ?
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
                         <div className="friends-suggestions">
@@ -422,13 +438,13 @@ const EngineerHome = (props) => {
                                     <a href="#" className="friends-suggestions-list" >
                                         <div className="border-bottom position-relative">
                                             <div className="float-left mb-0 mr-3">
-                                                <img src={!taskEngineers.photo ? require('../../images/users/user.jpg') : taskEngineers.photo} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >{taskEngineers.firstName} {taskEngineers.lastName}</p>
+                                                <img src={!taskEngineers[0].photo ? require('../../images/users/user.jpg') : taskEngineers[0].photo} alt="" className="roundedImg thumb-md"/>
+                                                <p className="user-name" >{taskEngineers[0].firstName} {taskEngineers[0].lastName}</p>
                                             </div>
-                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers.role} </div>
+                                            <div className="suggestion-icon float-right mt-2 pt-1"> {taskEngineers[0].role} </div>
                                             <div className="desc">
-                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers.email}</h5>
-                                                <p className="text-muted">{!taskEngineers.mobile ? '' : taskEngineers.mobile}</p>
+                                                <h5 className="font-14 mb-1 pt-2">{taskEngineers[0].email}</h5>
+                                                <p className="text-muted">{!taskEngineers[0].mobile ? '' : taskEngineers[0].mobile}</p>
                                             </div>
                                         </div>
                                     </a> 

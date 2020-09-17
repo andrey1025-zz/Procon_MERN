@@ -214,7 +214,6 @@ const SupervisorHome = (props) => {
     const [role, setRole] = useState(null);
     let inviteList = [];
     let roleType = EngineerRole;
-
     useEffect(() => {
         if(project){
             setUrn(project.model);
@@ -459,6 +458,20 @@ const SupervisorHome = (props) => {
         console.log('Error loading the model.');
     }
 
+    
+    var task_startTime = '';
+    var task_endTime = '';
+    if(task.length > 0){
+        if(task[0].tasks[0].startTime.length > 16)
+            task_startTime = task[0].tasks[0].startTime.substring(0, task[0].tasks[0].startTime.length - 5);
+        else 
+            task_startTime = task[0].tasks[0].startTime;
+        if(task[0].tasks[0].endTime.length > 16)
+            task_endTime = task[0].tasks[0].endTime.substring(0, task[0].tasks[0].endTime.length - 5);
+        else 
+            task_endTime = task[0].tasks[0].endTime;
+    }
+
     return (
         <React.Fragment> 
             <ReactNotification />
@@ -548,13 +561,13 @@ const SupervisorHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task[0].tasks[0].startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task_startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task[0].tasks[0].endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task_endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
@@ -642,7 +655,7 @@ const SupervisorHome = (props) => {
 
             <div className="col-sm-3 col-xl-3 col-md-3 member-panel">
             {
-                (taskEngineers != [] > 0 || taskMembers != [] > 0 ) ?
+                (taskMembers != [] > 0 || taskEngineers != [] > 0) ?
                 <div className="row tasks-wrapper" style={{marginBottom:"20px"}}>
                     <div className="card-body">
                         <div className="friends-suggestions">
