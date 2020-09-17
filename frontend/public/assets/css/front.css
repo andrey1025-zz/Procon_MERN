@@ -674,3 +674,16 @@ body.enlarged .content-page{
 .completed-project-title{
   background: #5331c2 !important;
 }
+@media (max-width: 635px){
+  .task-user{
+    width: 40% !important;
+  }
+  .task-title{
+    width: 60% !important;
+  }
+}
+@media (max-width: 576px){
+  .task-title > div{
+    display: flex;
+  }
+}

@@ -202,13 +202,13 @@ const EngineerTaskManage = () => {
                                         <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
                                             <div className="card">
                                                 <div className="card-heading">
-                                                    <div className="float-left padding10">
+                                                    <div className="float-left padding10 col-md-4 col-sm-4 col-xl-4 task-user">
                                                         <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
                                                         <span>Supervisor</span>
                                                     </div>
-                                                    <div className="float-right padding10">
+                                                    <div className="float-right padding10 col-md-7 col-sm-7 col-xl-7 task-title">
                                                         <div className="text-white no-margin middle-font text-right">
-                                                            {value.name}
+                                                            {value.name.substring(0, 8)}{value.name.length > 7 ? '...' : ''}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
                                                                     data-toggle="dropdown" role="button"
@@ -222,7 +222,7 @@ const EngineerTaskManage = () => {
                                                                 </div>
                                                             </div>  
                                                         </div>
-                                                        <div>DUE BY: {value.startTime.split('T')[0]}</div>
+                                                        <div className="text-right">DUE BY: {value.startTime.split('T')[0]}</div>
                                                     </div>
                                                     <div className="pro-image">
                                                         <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
@@ -274,13 +274,13 @@ const EngineerTaskManage = () => {
                                         <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
                                             <div className="card">
                                                 <div className="card-heading">
-                                                    <div className="float-left padding10">
+                                                    <div className="float-left padding10 col-md-4 col-sm-4 col-xl-4 task-user">
                                                         <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
                                                         <span>Supervisor</span>
                                                     </div>
-                                                    <div className="float-right padding10">
+                                                    <div className="float-right padding10 col-md-7 col-sm-7 col-xl-7 task-title">
                                                         <div className="text-white no-margin middle-font text-right">
-                                                            {value.name}
+                                                            {value.name.substring(0, 8)}{value.name.length > 7 ? '...' : ''}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
                                                                     data-toggle="dropdown" role="button"
@@ -294,7 +294,7 @@ const EngineerTaskManage = () => {
                                                                 </div>
                                                             </div>  
                                                         </div>
-                                                        <div>DUE BY: {value.startTime.split('T')[0]}</div>
+                                                        <div className="text-right">DUE BY: {value.startTime.split('T')[0]}</div>
                                                     </div>
                                                     <div className="pro-image">
                                                         <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>
@@ -346,13 +346,13 @@ const EngineerTaskManage = () => {
                                         <div className="col-sm-12 col-xl-4 col-md-6 task-item" key={index}>
                                             <div className="card">
                                                 <div className="card-heading">
-                                                    <div className="float-left padding10">
+                                                    <div className="float-left padding10 col-md-4 col-sm-4 col-xl-4 task-user">
                                                         <img src={require('../../images/users/user-7.jpg')} alt="user" className="custom-rounded mr-5 mr-20"/>
                                                         <span>Supervisor</span>
                                                     </div>
-                                                    <div className="float-right padding10">
+                                                    <div className="float-right padding10 col-md-7 col-sm-7 col-xl-7 task-title">
                                                         <div className="text-white no-margin middle-font text-right">
-                                                            {value.name}
+                                                            {value.name.substring(0, 8)}{value.name.length > 7 ? '...' : ''}
                                                             <div className="dropdown nav-pro-img inline">
                                                                 <a className="dropdown-toggle arrow-none nav-user padding10"
                                                                     data-toggle="dropdown" role="button"
@@ -366,7 +366,7 @@ const EngineerTaskManage = () => {
                                                                 </div>
                                                             </div>  
                                                         </div>
-                                                        <div>DUE BY: {value.startTime.split('T')[0]}</div>
+                                                        <div className="text-right">DUE BY: {value.startTime.split('T')[0]}</div>
                                                     </div>
                                                     <div className="pro-image">
                                                         <a href={`/${getSimpleRoleName(user.role)}/home/` + projectId + "?task_id=" + value._id}>

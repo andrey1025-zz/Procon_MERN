@@ -64,23 +64,23 @@ const SupervisorTaskHistory = () => {
                                                     <p>Task start time:</p>
                                                     <div className="text-white middle-font mb-30">
                                                         {/* <span>2020-06-27</span><br/><span>13:50:46</span>  */}
-                                                        <span>{value.startTime}</span> 
+                                                        <span>{value.startTime.split('T')[0]}</span> 
                                                     </div>
                                                     <p>Task end time:</p>
                                                     <div className="text-white middle-font">
-                                                        <span>{value.endTime}</span> 
+                                                        <span>{value.endTime.split('T')[0]}</span> 
                                                     </div>
                                                 </div>
                                                 <div className="team-members-history-task row">
-                                                    <div className="col-sm-2 col-xl-2 col-md-2">
+                                                    <div className="col-sm-12 col-xl-2 col-md-12">
                                                         <span className="text-white middle-font">Team</span>
                                                     </div>
-                                                    <div className="col-sm-10 col-xl-10 col-md-10 row">
+                                                    <div className="col-sm-12 col-xl-10 col-md-12 row">
                                                         {                                                       
                                                             value.members && value.members.length > 0 ?
                                                                 value.members.map((member, index) => {
                                                                     return (
-                                                                        <div className="col-sm-3 col-xl-3 col-md-3" key={index}>
+                                                                        <div className="col-sm-12 col-xl-3 col-md-6" key={index}>
                                                                             <div className="member-status custom-rounded mb-2">
                                                                                 <img src={!member.photo ? require('../../images/users/user.jpg') : member.photo} alt="" className="custom-rounded mr-5 member-image"/>
                                                                                 <span className="suggestion-icon mt-3"> {member.firstName} {member.lastName} </span>
@@ -108,7 +108,7 @@ const SupervisorTaskHistory = () => {
                                                 }
                                                 <div className="mini-stat-icon float-right padding10">
                                                     <p className="text-white no-margin middle-font">{value.taskName}</p>
-                                                    <div>DUE BY: {value.endTime}</div>
+                                                    <div>DUE BY: {value.endTime.split('T')[0]}</div>
                                                 </div>
                                                 <div className="pro-image">
                                                     <img src={value.coverImage ? value.coverImage : require('../../images/project.jpg')} alt="cover-image" className="menu-logo1 project-img"/>
