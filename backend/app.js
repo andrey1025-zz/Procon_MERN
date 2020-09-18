@@ -25,7 +25,7 @@ app.use(compression());
 //#region CORS
 app.use(
     cors({
-        origin: "http://localhost:3001",
+        origin: "http://localhost:3000",
         allowedHeaders: "Content-Type, Authorization, X-Requested-With",
         methods: "*",
         credentials: true
