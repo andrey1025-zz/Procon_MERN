@@ -86,12 +86,12 @@ const SupervisorHome = (props) => {
     const loading = useSelector(state => loadingSelector(['REVIEW_TASK'])(state));
     const values = queryString.parse(props.location.search)
     const task_id = values.task_id;
+    if(!task_id) $(".task-for-component").hide();
     const user = useSelector(state => state.auth.user);
     let componentId = "";
     let index = 0;
     var projectId = props.match.params.id;
     window.localStorage.setItem("projectId", projectId);
-
     if(projectId == '')
         projectId = window.localStorage.getItem("projectId");
     const dispatch = useDispatch();
@@ -206,8 +206,12 @@ const SupervisorHome = (props) => {
     const members = useSelector(state => state.project.members);
     const taskId = useSelector(state => state.project.taskId);
     const task = useSelector(state => state.project.task);
-    const taskEngineers = useSelector(state => state.project.taskEngineers);
-    const taskMembers = useSelector(state => state.project.taskMembers);
+    var taskEngineers = useSelector(state => state.project.taskEngineers);
+    var taskMembers = useSelector(state => state.project.taskMembers);
+    if(!task_id){
+        taskEngineers = [];
+        taskMembers = [];
+    }
     const tasksForComponent = useSelector(state => state.project.tasksForComponent);
     const [urn, setUrn] = useState("");
     const [view, setView] = useState(null);

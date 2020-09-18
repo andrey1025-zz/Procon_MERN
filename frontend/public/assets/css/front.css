@@ -687,3 +687,6 @@ body.enlarged .content-page{
     display: flex;
   }
 }
+.time-wrapper{
+  min-width: 200px;
+}

@@ -95,8 +95,12 @@ const EngineerHome = (props) => {
     const values = queryString.parse(props.location.search)
     const taskId = values.task_id;
     const task = useSelector(state => state.project.task);
-    const taskEngineers = useSelector(state => state.project.taskEngineers);
-    const taskMembers = useSelector(state => state.project.taskMembers);
+    var taskEngineers = useSelector(state => state.project.taskEngineers);
+    var taskMembers = useSelector(state => state.project.taskMembers);
+    if(!taskId){
+        taskEngineers = [];
+        taskMembers = [];
+    }
     const taskMessages = useSelector(state => state.project.taskMessages);
 
     const project = useSelector(state => state.project.project);
@@ -106,10 +110,7 @@ const EngineerHome = (props) => {
     const [view, setView] = useState(null);
 
     var scrollbar_class = '';
-
-    console.log("aaaaaaaaaaaaaa", taskEngineers);
-    
-    console.log("bbbbbbbbb", taskMembers);
+   
     useEffect(() => {
         if(project){
             setUrn(project.model);
@@ -234,8 +235,6 @@ const EngineerHome = (props) => {
     const handleModelError = (viewer, error) => {
         console.log('Error loading the model.');
     }
-    const handleNodeSelected = (viewer, model) => {
-    }
 
     var task_startTime = '';
     var task_endTime = '';
@@ -288,85 +287,85 @@ const EngineerHome = (props) => {
                                     <div className="form-group-task">
                                         <label>Task name:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="name" defaultValue={task[0].tasks[0].name}/>
+                                            <FormTextarea className="form-control-task" name="name" value={task[0].tasks[0].name}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected start time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="startTime" defaultValue={task_startTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="startTime" value={task_startTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Task expected end time:</label>
                                         <div>
-                                            <FormField className="form-control-task" type="datetime-local" name="endTime" defaultValue={task_endTime}/>
+                                            <FormField className="form-control-task" type="datetime-local" name="endTime" value={task_endTime}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Equipment and tools:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="equipTools" defaultValue={task[0].tasks[0].equipTools}/>
+                                            <FormTextarea className="form-control-task" name="equipTools" value={task[0].tasks[0].equipTools}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Components:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="components" defaultValue={task[0].tasks[0].components}/>
+                                            <FormTextarea className="form-control-task" name="components" value={task[0].tasks[0].components}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Materials:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="materials" defaultValue={task[0].tasks[0].materials}/>
+                                            <FormTextarea className="form-control-task" name="materials" value={task[0].tasks[0].materials}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Working area:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="workingArea" defaultValue={task[0].tasks[0].workingArea}/>
+                                            <FormTextarea className="form-control-task" name="workingArea" value={task[0].tasks[0].workingArea}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Weather:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="weather" defaultValue={task[0].tasks[0].weather}/>
+                                            <FormTextarea className="form-control-task" name="weather" value={task[0].tasks[0].weather}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Site condition:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="siteCondition" defaultValue={task[0].tasks[0].siteCondition}/>
+                                            <FormTextarea className="form-control-task" name="siteCondition" value={task[0].tasks[0].siteCondition}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Nearby irrelevant objects:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects" defaultValue={task[0].tasks[0].nearbyIrrelevantObjects}/>
+                                            <FormTextarea className="form-control-task" name="nearbyIrrelevantObjects" value={task[0].tasks[0].nearbyIrrelevantObjects}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Cultural and legal constraints:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="cultural_legal_constraints" defaultValue={task[0].tasks[0].cultural_legal_constraints}/>
+                                            <FormTextarea className="form-control-task" name="cultural_legal_constraints" value={task[0].tasks[0].cultural_legal_constraints}/>
                                         </div>
                                     </div>
 
                                     <div className="form-group-task">
                                         <label>Technical and safety specifications:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="technical_safety_specifications" defaultValue={task[0].tasks[0].technical_safety_specifications}/>
+                                            <FormTextarea className="form-control-task" name="technical_safety_specifications" value={task[0].tasks[0].technical_safety_specifications}/>
                                         </div>
                                     </div>
                                     <div className="form-group-task">
                                         <label>Public relation requirements:</label>
                                         <div>
-                                            <FormTextarea className="form-control-task" name="publicRelationRequirements" defaultValue={task[0].tasks[0].publicRelationRequirements}/>
+                                            <FormTextarea className="form-control-task" name="publicRelationRequirements" value={task[0].tasks[0].publicRelationRequirements}/>
                                         </div>
                                     </div>
                                 </div>

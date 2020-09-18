@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProjects, getTaskHistory, deleteTask } from '../../store/actions/projectActions';
@@ -6,7 +6,7 @@ import { getProjects, getTaskHistory, deleteTask } from '../../store/actions/pro
 import { getSimpleRoleName } from '../../services';
 import $ from 'jquery';
 
-const SupervisorTaskHistory = () => {
+const EngineerTaskHistory = () => {
     const user = useSelector(state => state.auth.user);
     var projectId = window.localStorage.getItem("projectId");
     useEffect(() => {
@@ -139,4 +139,4 @@ const SupervisorTaskHistory = () => {
         </React.Fragment>
     )
 }
-export default SupervisorTaskHistory;
+export default EngineerTaskHistory;

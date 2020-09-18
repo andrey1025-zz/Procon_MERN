@@ -114,8 +114,8 @@ const MemberHome = (props) => {
     const values = queryString.parse(props.location.search)
     const taskId = values.task_id;
     const task = useSelector(state => state.project.task);
-    const taskEngineers = useSelector(state => state.project.taskEngineers);
-    const taskMembers = useSelector(state => state.project.taskMembers);
+    var taskEngineers = useSelector(state => state.project.taskEngineers);
+    var taskMembers = useSelector(state => state.project.taskMembers);
     const feedBacks = useSelector(state => state.project.feedBacks);
     const taskMessages = useSelector(state => state.project.taskMessages);
 
@@ -142,7 +142,10 @@ const MemberHome = (props) => {
             $(".task-info").show();
         }
     }, [project]);
-     
+    if(!taskId){
+        taskEngineers = [];
+        taskMembers = [];
+    }
     useEffect(() => {
         dispatch(getViewerForgeToken());
     }, []);

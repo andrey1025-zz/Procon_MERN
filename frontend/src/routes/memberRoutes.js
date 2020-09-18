@@ -4,6 +4,7 @@ import ChangePassword from '../pages/changePassword';
 import Account from '../pages/account';
 import MemberNotification from '../pages/member/notification';
 import MemberTaskManage from '../pages/member/taskManage';
+import MemberTaskHistory from '../pages/member/taskHistory';
 
 const memberRoutes = [
     {
@@ -18,6 +19,10 @@ const memberRoutes = [
         path: '/member/task_manage',
         component: MemberTaskManage
     },
+    {
+        path: '/member/task_history',
+        component: MemberTaskHistory
+    },    
     {
         path: '/member/home/:id',
         component: MemberHome

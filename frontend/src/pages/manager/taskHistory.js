@@ -32,7 +32,21 @@ const ManagerTaskHistory = () => {
         
         dispatch(deleteTask(data));
     }
-
+    const tconvert = (time) => {
+        var convert_time = '';
+        if(time != ''){
+            var date = time.split('T')[0];
+            var fullTime = time.split('T')[1];
+            fullTime = fullTime.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)?$/) || [fullTime];
+            if (fullTime.length > 1) { // If time format correct
+                fullTime = fullTime.slice (1);  // Remove full string match value
+                fullTime[5] = +fullTime[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
+                fullTime[0] = +fullTime[0] % 12 || 12; // Adjust hours
+            }
+            convert_time = date + ' ' + fullTime.join('');
+        }
+        return convert_time;
+    }
     const projects = useSelector(state => state.project.projects);
     const taskHistories = useSelector(state => state.project.taskHistories);
     const dispatch = useDispatch();
@@ -60,15 +74,14 @@ const ManagerTaskHistory = () => {
                                                 </div>  
                                             </div>
                                             <div className="col-sm-12 col-xl-12 col-md-12">
-                                                <div className="float-left padding15">
+                                                <div className="float-left padding15 time-wrapper">
                                                     <p>Task start time:</p>
                                                     <div className="text-white middle-font mb-30">
-                                                        {/* <span>2020-06-27</span><br/><span>13:50:46</span>  */}
-                                                        <span>{value.startTime.split('T')[0]}</span> 
+                                                        <span>{tconvert(value.startTime)}</span> 
                                                     </div>
                                                     <p>Task end time:</p>
                                                     <div className="text-white middle-font">
-                                                        <span>{value.endTime.split('T')[0]}</span> 
+                                                        <span>{tconvert(value.endTime)}</span> 
                                                     </div>
                                                 </div>
                                                 <div className="team-members-history-task row">
