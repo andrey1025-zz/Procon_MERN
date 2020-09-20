@@ -1,8 +1,8 @@
 {
-  "assetsBaseUrl": "http://localhost:3000",
+  "assetsBaseUrl": "http://localhost:4000",
   "SENDGRID_API_KEY": "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",
   "emailFrom": "liuruiaijiu@gmail.com",
   "db": "mongodb+srv://11-proCON-11:procon11@cluster0.qxgij.mongodb.net/test?authSource=admin&replicaSet=atlas-4jlyrd-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true",
   "secret": "DNuRDgxFfP",
-  "passwordResetLink": "http://localhost:3001/authentication/reset-password"
+  "passwordResetLink": "http://localhost:3000/authentication/reset-password"
 }
