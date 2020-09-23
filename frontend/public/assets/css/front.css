@@ -687,6 +687,12 @@ body.enlarged .content-page{
     display: flex;
   }
 }
+@media (max-width:850px){
+  .suggestion-icon{
+    display: block !important;
+    margin-top: 0px !important;
+  }
+}
 .time-wrapper{
   min-width: 200px;
 }
