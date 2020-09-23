@@ -55,25 +55,25 @@ const MemberTaskManage = () => {
     if(task.length > 0){
         if(task[0].tasks.length > 0){
             task_id = task[0].tasks[0]._id;
-            var startTime = new Date(task[0].tasks[0].startTime);
-            var endTime = new Date(task[0].tasks[0].endTime);
-            
-            const diffTime = Math.abs(endTime - startTime);
-            diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            if(task[0].tasks[0].startTime != '' && task[0].tasks[0].endTime != ''){
 
-            var members = task[0].tasks[0].members;
-            var total_members = 0;
-            var completed_members = 0;
-            var percent = 0;
-            if(members.length > 0){
-                total_members = members.length;
-                var i = 0;
-                for(i = 0 ; i < members.length; i++){
-                    if(members[i].status == Checked)
-                        completed_members++;
-                }
-                percent = completed_members * 100 / total_members;
-                percent = percent.toFixed(2);
+                var startTime = new Date(task[0].tasks[0].startTime);
+                var endTime = new Date(task[0].tasks[0].endTime);
+                var currentTime = new Date(Date.now());
+
+                const diffTime = Math.abs(endTime - currentTime);
+                diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                var percent = 0;
+                const totalTime = Math.abs(endTime - startTime);
+                var totalDays = Math.ceil(totalTime / (1000 * 60 * 60 * 24)); 
+                
+                const workingTime = Math.abs(currentTime - startTime);
+                var workingDays = Math.ceil(workingTime / (1000 * 60 * 60 * 24)); 
+                if(workingDays > totalDays) workingDays = totalDays;
+                percent = ((workingDays / totalDays) * 100).toFixed(2);
+    
+            } else {
+                percent = 0;
             }
         }
     }
