@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSimpleRoleName } from '../../services';
+import { loadingSelector } from '../../store/selectors';
 import { Switch } from '../../components/form';
 import {SupervisorRole, EngineerRole, MemberRole} from '../../enums/roles';
 import { NotStart, Inprogress, Completed } from '../../enums/taskStatus';
-import { Form, SubmitButton, FormField, ErrorMessage, FormTextarea } from '../../components/form';
 import { 
     getSuperintendents, 
     getEngineers, 
@@ -17,6 +16,7 @@ import {
     getTaskEngineers,
     getTaskMembers,
     getProjectSuperintendents,
+    sendEmail,
     checkTask
 } 
 from '../../store/actions/projectActions';
@@ -40,13 +40,9 @@ var notification = {
 };
 
 const ManagerMembers = () => {
-    const user = useSelector(state => state.auth.user);
+    const loading = useSelector(state => loadingSelector(['SEND_EMAIL'])(state));
     const dispatch = useDispatch();
     const projectId = window.localStorage.getItem("projectId");
-    const tasks = useSelector(state => state.project.tasks);
-    const superintendents = useSelector(state => state.project.superintendents);
-    const engineers = useSelector(state => state.project.engineers);
-    const members = useSelector(state => state.project.members);
     const selectedMember = useSelector(state => state.project.selectedMember);
     const project = useSelector(state => state.project.project);
     const projectSuperintendent = useSelector(state => state.project.projectSuperintendent);
@@ -54,7 +50,6 @@ const ManagerMembers = () => {
     const taskMembers = useSelector(state => state.project.taskMembers);
     var selectedMemberId = null;
     var selectedTaskId = 0;
-
     useEffect(() => {
         $("#side-menu").show();
         $(".Forhome").hide();
@@ -78,9 +73,6 @@ const ManagerMembers = () => {
 
     useEffect(() => {
         dispatch(getProjectSuperintendents(projectId));
-        // dispatch(getSuperintendents());
-        // dispatch(getEngineers());
-        // dispatch(getMembers());
         dispatch(getProjectDetail(projectId)).then(() => {
             if(project && project.tasks && project.tasks.length > 0)
                 selectedTaskId = project.tasks[0]._id;
@@ -151,7 +143,24 @@ const ManagerMembers = () => {
         var teamName = $(".team-dropdown > a:nth-child("+index+")").text();
         $("a.selected-team").html(teamName + "<i class='fa fa-sort-down'></i>");
     }
-
+    const handleSendEmail = () => {
+        var role = $("input[name='role']:checked").val();
+        var ToAddressEmail = $("input[name='email']").val();
+        if(role != '' && ToAddressEmail != ''){
+            let data = {
+                role : role,
+                ToAddressEmail : ToAddressEmail
+            }
+            dispatch(sendEmail(data)).then(() => {
+                window.$("#sendEmailModal").modal('hide');
+                store.addNotification({
+                    ...notification,
+                    title: "Success!",
+                    message: "You sent email successfully."
+                })
+            });
+        }
+    }
     const handleRemoveMember = () => {
         if(selectedMemberId != null){
 
@@ -336,22 +345,6 @@ const ManagerMembers = () => {
                                         ) 
                                     })
                                 }
-                                {/* <div className="col-sm-4 col-xl-4 col-md-4">
-                                    <a href="#" className="friends-suggestions-list team-member-list">
-                                        <div className="border-bottom position-relative">
-                                            <div className="float-left mb-0 mr-3">
-                                                <img src={require('../../images/users/user.jpg')} alt="" className="roundedImg thumb-md"/>
-                                                <p className="user-name" >John Franklin</p>
-                                            </div>
-                                            <div className="circle-light light-green mr-3"></div>
-                                            <div className="user-role float-right mt-2 pt-1"> Engineer </div>
-                                            <div className="desc">
-                                                <h5 className="font-14 mb-1 pt-2">engineer@gmail.com</h5>
-                                                <p className="text-muted">1958552578</p>
-                                            </div>
-                                        </div>
-                                    </a>                                     
-                                </div>                                                                         */}
                             </div>
                         </div>
                         <div className="col-sm-12 col-xl-3 col-md-6">
@@ -384,14 +377,6 @@ const ManagerMembers = () => {
                                                 <ul className="navbar-right list-inline float-right mb-0">
                                                     <li className="dropdown notification-list list-inline-item">
                                                         <div className="dropdown notification-list nav-pro-img">
-                                                            {/* <a className="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                                                <i className="mdi mdi-menu"></i>
-                                                            </a>
-                                                            <div className="dropdown-menu dropdown-menu-right profile-dropdown ">
-                                                                <a className="dropdown-item" href="taskdata.html"> Display Task</a>  
-                                                                <a className="dropdown-item d-block" href="addtask.html"> Edit Task</a>
-                                                                <a className="dropdown-item " href="#"> End Task</a>
-                                                            </div> */}
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -428,7 +413,7 @@ const ManagerMembers = () => {
                                 </div>
                             </div>
                             <div className="modal-footer text-center">
-                                <p><button className="btn btn-info btn-lg waves-effect waves-light task-btn3">Send Invitation Email</button></p>
+                                <p><button className="btn btn-info btn-lg waves-effect waves-light task-btn3" loading={loading} disabled={loading} onClick={() => handleSendEmail()}>Send Invitation Email</button></p>
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
-
+const AWS = require('aws-sdk');
 const config = require('config');
 const User = require('../models/userModel');
 const Project = require('../models/projectModel');
@@ -17,8 +17,14 @@ const { SupervisorRole, ProjectManagerRole, EngineerRole, MemberRole } = require
 const { NotStart, Inprogress, Completed, Created, Reviewed, Checked } = require('../enums/taskStatus');
 const { Console } = require('console');
 const { ObjectID } = require('mongodb');
+const { setFlagsFromString } = require('v8');
 const saltRounds = 10;
-
+const SESconfig = {
+    apiVersion : '2010-12-01',
+    accessKeyId : 'AKIARCJ37CQLB47MZJCS',
+    secretAccessKey : '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',
+    region : 'us-east-2'
+}
 // Add New Project
 async function addProject({ name, location, model, coverImage, userId, ipAddress }) {
     var response = {
@@ -1169,6 +1175,8 @@ async function getProjectSuperintendents({ userId, projectId }) {
                 superintendent = basicDetails(user);
             }
         }
+        
+
         const session = await mongoose.startSession();
         try {
             //await session.startTransaction();
@@ -2157,29 +2165,6 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
             const opts = { session, returnOriginal: false };
             //await session.startTransaction();
             await RefreshToken.createCollection();
-            
-            // Send Notification after publishing task
-
-            // for (let i = 0; i < memberIds.length; i++) {
-            //     const old_notification = await Notification.findOne({to: memberIds[i], from: userId, taskId: taskId, projectId: projectId, isRead: false});
-            //     if(old_notification && old_notification.length > 0){
-            //         var count = old_notification.count + 1;
-            //         old_notification.overwrite = ({count: count});
-            //         await old_notification.save();
-            //     } else {
-            //         const notification = new Notification({
-            //             from: userId,
-            //             to: memberIds[i],
-            //             taskId: taskId,
-            //             projectId: projectId,
-            //             message: "The Superintendent invited you to the task as member."
-            //         });
-            //         Notification.createCollection();
-            //         notification.save(opts);
-            //     }
-            // }
-
-            // End Sending Notification after publishing Task
 
             const jwtToken = generateJwtToken(user);
             const refreshToken = generateRefreshToken(user, ipAddress);
@@ -2193,6 +2178,64 @@ async function inviteMember({ projectId, taskId, memberIds, userId, ipAddress })
                 token: jwtToken,
                 refreshToken: refreshToken.token,
                 data: taskMembers
+            };
+        } catch (error) {
+            //await session.abortTransaction();
+            await session.endSession();
+            throw error;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+// Invite Member
+async function sendEmail({ role, ToAddressEmail, userId, ipAddress }) {
+    var response = {
+        status: responseStatus.failure,
+        errorMessage: {}
+    };
+    const user =  User.findById(userId);
+    try {
+
+        var params = {
+            Source:'laywilliam450@gmail.com',
+            Destination:{
+                ToAddresses:[ToAddressEmail]
+            },
+            ReplyToAddresses:['laywilliam450@gmail.com'],
+            Message:{
+                Body:{
+                    Html:{
+                        Charset:'UTF-8',
+                        Data:"You can assing into Procon as " + role + "<br><a href='http://13.59.52.174:3000/'>Please click here</a>"
+                    }
+                },
+                Subject:{
+                    Charset:'UTF-8',
+                    Data : 'Invite to Procon'
+                }
+            }
+        }
+        new AWS.SES(SESconfig).sendEmail(params).promise();
+        const session = await mongoose.startSession();
+        try {
+            const opts = { session, returnOriginal: false };
+            //await session.startTransaction();
+            await RefreshToken.createCollection();
+
+            const jwtToken = generateJwtToken(user);
+            const refreshToken = generateRefreshToken(user, ipAddress);
+            await refreshToken.save(opts);
+            //await session.commitTransaction();
+            await session.endSession();
+            return {
+                ...response,
+                status: responseStatus.success,
+                errorMessage: {},
+                token: jwtToken,
+                refreshToken: refreshToken.token,
             };
         } catch (error) {
             //await session.abortTransaction();
@@ -2442,6 +2485,7 @@ module.exports = {
     addTask,
     editTask,
     reviewTask,
+    sendEmail,
     getTasks,
     getTaskforComponent,
     getTaskDetail,

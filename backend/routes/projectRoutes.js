@@ -48,6 +48,7 @@ router.post("/post-message", authorize(), projectController.postMessage);
 router.post("/feedback", authorize(), projectController.leaveFeedback);
 router.post("/get-feedbacks", authorize(), projectController.getFeedbacks);
 router.post("/get-messages", authorize(), projectController.getTaskMessages);
+router.post("/send-Email", authorize(), projectController.sendEmail);
 router.post("/delete", authorize(), projectController.deleteProject);
 router.post("/update-project", authorize(), projectController.updateProject);
 router.post("/get-project-superintendents", authorize(), projectController.getProjectSuperintendents);

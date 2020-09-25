@@ -66,7 +66,6 @@ const MemberHome = (props) => {
     const handleSubmit = (data, { setErrors, setSubmitting }) => {
         data.projectId = projectId;
         data.taskId = taskId;
-        // dispatch(startTask(data, setErrors, setSubmitting));
         $(".member-panel").show();
     }
 
@@ -451,47 +450,6 @@ const MemberHome = (props) => {
                                 })
                             : ''
                         }
-                        {/* <div className='chat-item'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdfAaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item right'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div>
-                        <div className='chat-item right'>
-                            <div className="user-info inline-block">
-                            <img src={require('../../images/users/user-5.jpg')} alt="" className="roundedImg thumb-md"/>
-                            <p className="user-name" >Aaron Kim</p>
-                            </div>
-                            <div className="inline-block">
-                                <p className="chat-content" >Aaron Kimfdsafdsfadsfada fdsafdsfads fdsafdsfasdfsdf</p>
-                                <p class="text-muted text-time">aaaaaaaa</p>
-                            </div>
-                        </div> */}
                     </div>
                 </div>
                 {

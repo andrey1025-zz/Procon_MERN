@@ -50,7 +50,10 @@ import {
     GET_MEMBER_PROFILE_SUCCESS,
     GET_MEMBER_PROFILE_FAILURE,
     GET_FEEDBACKS_SUCCESS,
-    GET_FEEDBACKS_FAILURE
+    GET_FEEDBACKS_FAILURE,
+    SEND_EMAIL_FAILURE,
+    SEND_EMAIL_SUCCESS,
+    SEND_EMAIL_REQUEST
 } from "../types";
 const initialState = {
     cover_path: null,
@@ -226,6 +229,16 @@ export default (state = initialState, action) => {
                 ...state,
                 progress: 0,
             };
+        case SEND_EMAIL_SUCCESS:
+            return {
+                ...state,
+                progress: 0,
+            };
+        case SEND_EMAIL_FAILURE:
+            return {
+                ...state,
+                progress: 0,
+            };            
         case GET_TASK_ENGINEERS_SUCCESS:
             return {
                 ...state,

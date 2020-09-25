@@ -326,7 +326,14 @@ inviteMember = async (req, res, next) => {
         res.json(data);
     }).catch(next)
 };
-
+sendEmail = async (req, res, next) => {
+    const { sub: userId } = req.user;
+    const ipAddress = req.ip;
+    const { role: role, ToAddressEmail: ToAddressEmail } = req.body;
+    projectService.sendEmail({ role, ToAddressEmail, userId, ipAddress }).then((data) => {
+        res.json(data);
+    }).catch(next)
+};
 reviewTask = async (req, res, next) => {
     const { projectId: projectId, taskId: taskId } = req.body;
     const { sub: userId } = req.user;
@@ -693,6 +700,7 @@ module.exports = {
     updateProject,
     getProjectSuperintendents,
     endTask,
+    sendEmail,
     getMemberProfile,
     changeUserRole,
     leaveFeedback,

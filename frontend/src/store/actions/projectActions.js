@@ -132,7 +132,10 @@ import {
     GET_TASK_FORCOMPONENT_FAILURE,
     ACCEPT_NOTIFICATION_REQUEST,
     ACCEPT_NOTIFICATION_SUCCESS,
-    ACCEPT_NOTIFICATION_FAILURE
+    ACCEPT_NOTIFICATION_FAILURE,
+    SEND_EMAIL_SUCCESS,
+    SEND_EMAIL_REQUEST,
+    SEND_EMAIL_FAILURE,
 } from '../types';
 import api from '../../api';
 
@@ -476,6 +479,26 @@ export const inviteEngineer = (data) => async dispatch => {
     } else if (response.data && response.data.status === 'failure' ){
         dispatch({
             type: INVITE_ENGINEER_FAILURE,
+            payload: response.data
+        })
+    }
+};
+
+export const sendEmail = (data) => async dispatch => {
+    dispatch({
+        type: SEND_EMAIL_REQUEST
+    });
+    
+    const response = await api.post('/project/send-email', data);
+    
+    if (response.data && response.data.status === 'success') {
+        dispatch({
+            type: SEND_EMAIL_SUCCESS,
+            payload: response.data
+        })
+    } else if (response.data && response.data.status === 'failure' ){
+        dispatch({
+            type: SEND_EMAIL_FAILURE,
             payload: response.data
         })
     }
